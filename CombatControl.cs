@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class CombatControl : MonoBehaviour
 {
-    GameControl gameControl;
+    public GameControl gameControl;
     
     private int maxLanes;
     private int maxUnits;
