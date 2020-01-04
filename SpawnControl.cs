@@ -29,7 +29,7 @@ public class SpawnControl : MonoBehaviour
         
     }
 
-    void SpawnCreatureLane( int laneNum, GameControl.Sides side, int creatureType )
+    void SpawnCreatureLane(int laneNum, GameControl.Sides side, int creatureType)
     {
         if (playerCreatureNum == maxUnits)
         {
@@ -42,7 +42,7 @@ public class SpawnControl : MonoBehaviour
         SummonCreature(laneNum, side, creatureType);
     }
 
-    void SummonCreature( int laneNum, GameControl.Sides side, int creatueType )
+    void SummonCreature(int laneNum, GameControl.Sides side, int creatueType)
     {
         //spawn an actor through instantiate
 
@@ -59,8 +59,8 @@ public class SpawnControl : MonoBehaviour
 
         for(int i=0; i<maxLanes; ++i)
         {
-            startCoord[i] = new Vector3(-200.0f, 0.0f, i * 100.0f);
-            endCoord[i] = new Vector3(200.0f, 0.0f, i * 100.0f);
+            startCoord[i] = new Vector3(-200.0f, i * 100.0f, 0.0f);
+            endCoord[i] = new Vector3(200.0f, i * 100.0f, 0.0f);
         }
     }
 }
