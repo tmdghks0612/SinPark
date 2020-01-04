@@ -14,14 +14,14 @@ public class SpawnControl : MonoBehaviour
     //number of type of creatures
     private int typeCreature = 2;
 
-    private GameObject currentCreature;
+    private DefaultCreature currentCreature;
 
     private int playerCreatureNum = 0;
 
-    Vector3[] startCoord;
-    Vector3[] endCoord;
+    Vector2[] startCoord;
+    Vector2[] endCoord;
 
-    public GameObject[] prefabArray;
+    public DefaultCreature[] prefabArray;
 
     // Start is called before the first frame update
     void Start()
@@ -34,6 +34,12 @@ public class SpawnControl : MonoBehaviour
 
         //default creature
         currentCreature = prefabArray[0];
+        SpawnCreatureLane(0, GameControl.Sides.Friendly, 0);
+        SpawnCreatureLane(1, GameControl.Sides.Friendly, 0);
+        SpawnCreatureLane(2, GameControl.Sides.Friendly, 0);
+        SpawnCreatureLane(0, GameControl.Sides.Hostile, 0);
+        SpawnCreatureLane(1, GameControl.Sides.Hostile, 0);
+        SpawnCreatureLane(2, GameControl.Sides.Hostile, 0);
     }
 
     // Update is called once per frame
@@ -54,38 +60,38 @@ public class SpawnControl : MonoBehaviour
         //summon a certaine creature in lane
         SummonCreature(laneNum, side, creatureType);
     }
+
     void SummonCreature(int laneNum, GameControl.Sides side, int creatureType)
     {
         //spawn an actor through instantiate
-        GameObject newCreature;
+        DefaultCreature newCreature;
 
-        newCreature = Instantiate<GameObject>(prefabArray[creatureType]);
-        
+        newCreature = Instantiate<DefaultCreature>(prefabArray[creatureType])
+        newCreature.SetCreature(startCoord[laneNum], endCoord[laneNum], side);
     }
-
 
     //initialization functions
 
     //initialize coordinates of start, end of lanes
     void InitLaneCoords()
     {
-        startCoord = new Vector3[maxLanes];
-        endCoord = new Vector3[maxLanes];
+        startCoord = new Vector2[maxLanes];
+        endCoord = new Vector2[maxLanes];
 
         for(int i=0; i < maxLanes; ++i)
         {
-            startCoord[i] = new Vector3(-200.0f, i * 100.0f, 0.0f);
-            endCoord[i] = new Vector3(200.0f, i * 100.0f, 0.0f);
+            startCoord[i] = new Vector2(-200.0f, i * 100.0f);
+            endCoord[i] = new Vector2(200.0f, i * 100.0f);
         }
     }
 
     void InitPrefabs()
     {
-        prefabArray = new GameObject[typeCreature];
+        prefabArray = new DefaultCreature[typeCreature];
 
         for(int i=0; i < typeCreature; ++i)
         {
-            prefabArray[i] = Resources.Load("creature" + i.ToString() + "/creature" + i.ToString() + "Prefab") as GameObject;
+            prefabArray[i] = Resources.Load("creature" + i.ToString() + "/creature" + i.ToString() + "Prefab") as DefaultCreature;
         }
     }
 }
