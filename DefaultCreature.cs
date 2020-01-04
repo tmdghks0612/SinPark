@@ -18,17 +18,10 @@ public class DefaultCreature : MonoBehaviour
 	public GameControl gameControl;
 	void Start()
     {
-		
 		attackSpeed = 2.0f;
 		side = false;
 		speed = 0.1f;
 		InvokeRepeating("DetectEnemy", 0.5f, attackSpeed);
-		start = new Vector2(10.0f, 0.0f);
-		end = new Vector2(-10.0f, 0.0f);
-		MoveTo(start, end);
-		
-		Instantiate(1, side, 1);
-
 	}
 
 	void MoveTo(Vector2 st, Vector2 ed)
@@ -43,16 +36,17 @@ public class DefaultCreature : MonoBehaviour
 		//moveFlag = GameControl.Detect();
 		Debug.Log("detect");
 	}
-	void Instantiate(int lane, bool sideCheck, int creatureType)
+	public void SetCreature(Vector2 st, Vector2 ed, bool sideCheck)
 	{
-		
+
 		side = sideCheck;
-		laneNum = lane;
 		if(!side)
 		{
 			speed *= -1;
 			transform.localScale = new Vector2(transform.localScale.x * -1, transform.localScale.y);
 		}
+
+		MoveTo(st, ed);
 	}
 
 	void SetCreature()
