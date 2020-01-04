@@ -21,7 +21,7 @@ public class SpawnControl : MonoBehaviour
     Vector2[] startCoord;
     Vector2[] endCoord;
 
-    public DefaultCreature[] prefabArray;
+    public GameObject[] prefabArray;
 
     // Start is called before the first frame update
     void Start()
@@ -33,7 +33,7 @@ public class SpawnControl : MonoBehaviour
         InitPrefabs();
 
         //default creature
-        currentCreature = prefabArray[0];
+        currentCreature = prefabArray[0].GetComponent<DefaultCreature>();
         SpawnCreatureLane(0, GameControl.Sides.Friendly, 0);
         SpawnCreatureLane(1, GameControl.Sides.Friendly, 0);
         SpawnCreatureLane(2, GameControl.Sides.Friendly, 0);
@@ -64,10 +64,17 @@ public class SpawnControl : MonoBehaviour
     void SummonCreature(int laneNum, GameControl.Sides side, int creatureType)
     {
         //spawn an actor through instantiate
-        DefaultCreature newCreature;
+        GameObject newCreature;
 
-        newCreature = Instantiate<DefaultCreature>(prefabArray[creatureType])
-        newCreature.SetCreature(startCoord[laneNum], endCoord[laneNum], side);
+        newCreature = Instantiate<GameObject>(prefabArray[creatureType]);
+        if(side == GameControl.Sides.Friendly)
+        {
+            newCreature.GetComponent<DefaultCreature>().SetCreature(startCoord[laneNum], endCoord[laneNum], side);
+        }
+        else
+        {
+            newCreature.GetComponent<DefaultCreature>().SetCreature(endCoord[laneNum], startCoord[laneNum], side);
+        }
     }
 
     //initialization functions
@@ -80,18 +87,20 @@ public class SpawnControl : MonoBehaviour
 
         for(int i=0; i < maxLanes; ++i)
         {
-            startCoord[i] = new Vector2(-200.0f, i * 100.0f);
-            endCoord[i] = new Vector2(200.0f, i * 100.0f);
+            startCoord[i] = new Vector2(-20.0f, i * 5.0f);
+            endCoord[i] = new Vector2(20.0f, i * 5.0f);
         }
     }
 
     void InitPrefabs()
     {
-        prefabArray = new DefaultCreature[typeCreature];
+        prefabArray = new GameObject[typeCreature];
 
         for(int i=0; i < typeCreature; ++i)
         {
-            prefabArray[i] = Resources.Load("creature" + i.ToString() + "/creature" + i.ToString() + "Prefab") as DefaultCreature;
+            prefabArray[i] = Resources.Load("creature" + i.ToString() + "/creature" + i.ToString() + "Prefab") as GameObject;
+            
+            Debug.Log("creature" + i.ToString() + "/creature" + i.ToString() + "Prefab");
         }
     }
 }

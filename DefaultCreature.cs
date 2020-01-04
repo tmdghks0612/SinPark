@@ -6,7 +6,7 @@ public class DefaultCreature : MonoBehaviour
 {
     // Start is called before the first frame update
     //Transform creatureTransform;
-	bool side;
+	GameControl.Sides side;
 	int laneNum;
 	float speed;
 	int hp;
@@ -18,17 +18,10 @@ public class DefaultCreature : MonoBehaviour
 	public GameControl gameControl;
 	void Start()
     {
-		
 		attackSpeed = 2.0f;
-		side = false;
+		side = GameControl.Sides.Friendly;
 		speed = 0.1f;
 		InvokeRepeating("DetectEnemy", 0.5f, attackSpeed);
-		start = new Vector2(10.0f, 0.0f);
-		end = new Vector2(-10.0f, 0.0f);
-		MoveTo(start, end);
-		
-		Instantiate(1, side, 1);
-
 	}
 
 	void MoveTo(Vector2 st, Vector2 ed)
@@ -43,30 +36,26 @@ public class DefaultCreature : MonoBehaviour
 		//moveFlag = GameControl.Detect();
 		Debug.Log("detect");
 	}
-	void Instantiate(int lane, bool sideCheck, int creatureType)
+	public void SetCreature(Vector2 st, Vector2 ed, GameControl.Sides sideCheck)
 	{
-		
+
 		side = sideCheck;
-		laneNum = lane;
-		if(!side)
+		if(side == GameControl.Sides.Hostile)
 		{
 			speed *= -1;
 			transform.localScale = new Vector2(transform.localScale.x * -1, transform.localScale.y);
 		}
-	}
 
-	void SetCreature()
-	{
-		
+		MoveTo(st, ed);
 	}
 
 	void DamageTaken(int damage)
 	{
 		hp -= damage;
 		if (hp <= 0)
-			dead();
+			Dead();
 	}
-	void dead()
+	void Dead()
 	{
 		//GameControl.dead(this);
 		Destroy(this);
@@ -77,12 +66,12 @@ public class DefaultCreature : MonoBehaviour
     {
         if(moveFlag)
 		{
-			if(side && transform.position.x <= end.x)
+			if(side == GameControl.Sides.Friendly && transform.position.x <= end.x)
 			{
 				moveFlag = true;
 				transform.position = new Vector2(transform.position.x + speed, transform.position.y);
 			}
-			else if(!side && transform.position.x >= end.x)
+			else if(side == GameControl.Sides.Hostile && transform.position.x >= end.x)
 			{
 				moveFlag = true;
 				transform.position = new Vector2(transform.position.x + speed, transform.position.y);
