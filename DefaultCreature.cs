@@ -49,18 +49,13 @@ public class DefaultCreature : MonoBehaviour
 		MoveTo(st, ed);
 	}
 
-	void SetCreature()
-	{
-		
-	}
-
 	void DamageTaken(int damage)
 	{
 		hp -= damage;
 		if (hp <= 0)
-			dead();
+			Dead();
 	}
-	void dead()
+	void Dead()
 	{
 		//GameControl.dead(this);
 		Destroy(this);
