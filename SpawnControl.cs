@@ -29,7 +29,7 @@ public class SpawnControl : MonoBehaviour
         
     }
 
-    void SpawnCreatureLane(int laneNum, GameControl.Sides side, int creatureType)
+    void SpawnCreatureLane( int laneNum, GameControl.Sides side, int creatureType )
     {
         if (playerCreatureNum == maxUnits)
         {
@@ -42,7 +42,7 @@ public class SpawnControl : MonoBehaviour
         SummonCreature(laneNum, side, creatureType);
     }
 
-    void SummonCreature(int laneNum, GameControl.Sides side, int creatueType)
+    void SummonCreature( int laneNum, GameControl.Sides side, int creatueType )
     {
         //spawn an actor through instantiate
 

@@ -35,7 +35,7 @@ public class CombatControl : MonoBehaviour
     }
 
     //push creature called when a creature is spawned in a certain lane
-    public void PushCreature(int laneNum, GameControl.Sides side, DefaultCreature newCreature)
+    public void PushCreature( int laneNum, GameControl.Sides side, DefaultCreature newCreature )
     {
         if(side == GameControl.Sides.Friendly)
         {
@@ -50,9 +50,9 @@ public class CombatControl : MonoBehaviour
     }
 
     //pop creature called when a creature died in a certain lane
-    public void PopCreature(int laneNum, GameControl.Sides Side, DefaultCreature deadCreature)
+    public void PopCreature( int laneNum, GameControl.Sides side, DefaultCreature deadCreature )
     {
-        if (Side == GameControl.Sides.Friendly)
+        if (side == GameControl.Sides.Friendly)
         {
             //remove the deadCreature to friendly lanes in current laneNum
             friendlyLanes.creatureList[laneNum].Remove(deadCreature);
