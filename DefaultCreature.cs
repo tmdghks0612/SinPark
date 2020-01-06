@@ -40,14 +40,17 @@ public class DefaultCreature : MonoBehaviour
 	{
 		bool detectCheck;
 		currentPosition = transform.position;
-		detectCheck = SearchCreature(currentPosition, attackRange, laneNum, side);
+		detectCheck = combatControl.SearchCreature(currentPosition, attackRange, laneNum, side);
+
+		
 
 		if(detectCheck)
 		{
+			Debug.Log("found");
 			moveFlag = false;
 			if(creatureAttackType == attackType.Melee)
 			{
-				MeleeAttack(currentPosition, attackRange, attackDamage, laneNum, side);
+				combatControl.MeleeAttack(currentPosition, attackRange, attackDamage, laneNum, side);
 			}
 			else if(creatureAttackType == attackType.Missile)
 			{
@@ -60,7 +63,7 @@ public class DefaultCreature : MonoBehaviour
 			moveFlag = true;
 		}
 
-		Debug.Log("detect");
+		//Debug.Log("detect");
 	}
 	public void SetCreature(Vector2 st, Vector2 ed, int lane, GameControl.Sides sideCheck)
 	{
@@ -84,7 +87,7 @@ public class DefaultCreature : MonoBehaviour
 		attackSpeed = 2.0f; //Fixed Value. Should be changed later
 		InvokeRepeating("DetectEnemy", 0.5f, attackSpeed);
 	}
-	void DamageTaken(int damage)
+	public void DamageTaken(int damage)
 	{
 		hp -= damage;
 		if (hp <= 0)

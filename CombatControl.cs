@@ -68,7 +68,7 @@ public class CombatControl : MonoBehaviour
 
     //functions to search and attack according to creature list
 
-    bool SearchCreature( Vector3 currentPosition, float attackRange, int laneNum, GameControl.Sides side )
+    public bool SearchCreature( Vector3 currentPosition, float attackRange, int laneNum, GameControl.Sides side )
     {
         //attack from friendly to hostile
         if (side == GameControl.Sides.Friendly)
@@ -97,7 +97,7 @@ public class CombatControl : MonoBehaviour
         return false;
     }
 
-    void MeleeAttack( Vector3 currentPosition, float attackRange, int attackDamage, int laneNum, GameControl.Sides side )
+    public void MeleeAttack( Vector3 currentPosition, float attackRange, int attackDamage, int laneNum, GameControl.Sides side )
     {
         //attack from friendly to hostile
         if (side == GameControl.Sides.Friendly)
