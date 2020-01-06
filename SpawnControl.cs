@@ -4,23 +4,42 @@ using UnityEngine;
 
 public class SpawnControl : MonoBehaviour
 {
-    GameControl gameControl;
-    CombatControl combatControl;
+    public GameControl gameControl;
+    public CombatControl combatControl;
 
     // maxLanes according to CombatControl
     private int maxLanes;
     private int maxUnits;
 
+    //number of type of creatures
+    private int typeCreature = 2;
+
+    private DefaultCreature currentCreature;
+
     private int playerCreatureNum = 0;
 
-    Vector3[] startCoord;
-    Vector3[] endCoord;
+    Vector2[] startCoord;
+    Vector2[] endCoord;
+
+    public GameObject[] prefabArray;
 
     // Start is called before the first frame update
     void Start()
     {
         maxLanes = gameControl.maxLanes;
         maxUnits = gameControl.maxUnits;
+
+        InitLaneCoords();
+        InitPrefabs();
+
+        //default creature
+        currentCreature = prefabArray[0].GetComponent<DefaultCreature>();
+        SpawnCreatureLane(0, GameControl.Sides.Friendly, 0);
+        SpawnCreatureLane(1, GameControl.Sides.Friendly, 0);
+        SpawnCreatureLane(2, GameControl.Sides.Friendly, 0);
+        SpawnCreatureLane(0, GameControl.Sides.Hostile, 0);
+        SpawnCreatureLane(1, GameControl.Sides.Hostile, 0);
+        SpawnCreatureLane(2, GameControl.Sides.Hostile, 0);
     }
 
     // Update is called once per frame
@@ -42,11 +61,20 @@ public class SpawnControl : MonoBehaviour
         SummonCreature(laneNum, side, creatureType);
     }
 
-    void SummonCreature(int laneNum, GameControl.Sides side, int creatueType)
+    void SummonCreature(int laneNum, GameControl.Sides side, int creatureType)
     {
         //spawn an actor through instantiate
+        GameObject newCreature;
 
-        //start and end coordinates given through startCoord and endCoord
+        newCreature = Instantiate<GameObject>(prefabArray[creatureType]);
+        if(side == GameControl.Sides.Friendly)
+        {
+            newCreature.GetComponent<DefaultCreature>().SetCreature(startCoord[laneNum], endCoord[laneNum], laneNum, side);
+        }
+        else
+        {
+            newCreature.GetComponent<DefaultCreature>().SetCreature(endCoord[laneNum], startCoord[laneNum], laneNum, side);
+        }
     }
 
     //initialization functions
@@ -54,13 +82,25 @@ public class SpawnControl : MonoBehaviour
     //initialize coordinates of start, end of lanes
     void InitLaneCoords()
     {
-        startCoord = new Vector3[maxLanes];
-        endCoord = new Vector3[maxLanes];
+        startCoord = new Vector2[maxLanes];
+        endCoord = new Vector2[maxLanes];
 
-        for(int i=0; i<maxLanes; ++i)
+        for(int i=0; i < maxLanes; ++i)
         {
-            startCoord[i] = new Vector3(-200.0f, i * 100.0f, 0.0f);
-            endCoord[i] = new Vector3(200.0f, i * 100.0f, 0.0f);
+            startCoord[i] = new Vector2(-20.0f, i * 5.0f);
+            endCoord[i] = new Vector2(20.0f, i * 5.0f);
+        }
+    }
+
+    void InitPrefabs()
+    {
+        prefabArray = new GameObject[typeCreature];
+
+        for(int i=0; i < typeCreature; ++i)
+        {
+            prefabArray[i] = Resources.Load("creature" + i.ToString() + "/creature" + i.ToString() + "Prefab") as GameObject;
+            
+            Debug.Log("creature" + i.ToString() + "/creature" + i.ToString() + "Prefab");
         }
     }
 }

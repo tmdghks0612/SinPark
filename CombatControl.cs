@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class CombatControl : MonoBehaviour
 {
-    GameControl gameControl;
+    public GameControl gameControl;
     
     private int maxLanes;
     private int maxUnits;
@@ -34,8 +34,10 @@ public class CombatControl : MonoBehaviour
         
     }
 
+    //functions to push and pop from creature lists
+
     //push creature called when a creature is spawned in a certain lane
-    public void PushCreature(int laneNum, GameControl.Sides side, DefaultCreature newCreature)
+    public void PushCreature( int laneNum, GameControl.Sides side, DefaultCreature newCreature )
     {
         if(side == GameControl.Sides.Friendly)
         {
@@ -50,9 +52,9 @@ public class CombatControl : MonoBehaviour
     }
 
     //pop creature called when a creature died in a certain lane
-    public void PopCreature(int laneNum, GameControl.Sides Side, DefaultCreature deadCreature)
+    public void PopCreature( int laneNum, GameControl.Sides side, DefaultCreature deadCreature )
     {
-        if (Side == GameControl.Sides.Friendly)
+        if (side == GameControl.Sides.Friendly)
         {
             //remove the deadCreature to friendly lanes in current laneNum
             friendlyLanes.creatureList[laneNum].Remove(deadCreature);
@@ -62,6 +64,70 @@ public class CombatControl : MonoBehaviour
             //remove the deadCreature to hostile lanes in current laneNum
             hostileLanes.creatureList[laneNum].Remove(deadCreature);
         }
+    }
+
+    //functions to search and attack according to creature list
+
+    bool SearchCreature( Vector3 currentPosition, float attackRange, int laneNum, GameControl.Sides side )
+    {
+        //attack from friendly to hostile
+        if (side == GameControl.Sides.Friendly)
+        {
+            //search creatures within attackrange of friendly lanes in current laneNum
+            foreach( DefaultCreature currentCreature in hostileLanes.creatureList[laneNum])
+            {
+                if( currentCreature.transform.position.x - currentPosition.x < attackRange)
+                {
+                    return true;
+                }
+            }
+        }
+        //attack from hostile to friendly
+        else
+        {
+            //search creatures within attackrange of hostile lanes in current laneNum
+            foreach (DefaultCreature currentCreature in friendlyLanes.creatureList[laneNum])
+            {
+                if ( currentPosition.x - currentCreature.transform.position.x < attackRange)
+                {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    void MeleeAttack( Vector3 currentPosition, float attackRange, int attackDamage, int laneNum, GameControl.Sides side )
+    {
+        //attack from friendly to hostile
+        if (side == GameControl.Sides.Friendly)
+        {
+            //search creatures within attackrange of friendly lanes in current laneNum
+            foreach (DefaultCreature currentCreature in hostileLanes.creatureList[laneNum])
+            {
+                if ( currentCreature.transform.position.x - currentPosition.x < attackRange)
+                {
+                    currentCreature.DamageTaken( attackDamage );
+                }
+            }
+        }
+        //attack from hostile to friendly
+        else
+        {
+            //search creatures within attackrange of hostile lanes in current laneNum
+            foreach (DefaultCreature currentCreature in friendlyLanes.creatureList[laneNum])
+            {
+                if ( currentPosition.x - currentCreature.transform.position.x < attackRange)
+                {
+                    currentCreature.DamageTaken( attackDamage );
+                }
+            }
+        }
+    }
+
+    void MissileAttack( Vector3 currentPosition, float attackRange, int attackDamage, int laneNum, GameControl.Sides side)
+    {
+
     }
 
     //initializing functions

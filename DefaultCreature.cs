@@ -6,6 +6,7 @@ public class DefaultCreature : MonoBehaviour
 {
     // Start is called before the first frame update
     //Transform creatureTransform;
+
 	private GameControl.Sides side;
 	private int laneNum;
 	private Vector3 speed;
@@ -94,7 +95,7 @@ public class DefaultCreature : MonoBehaviour
 		combatControl.PopCreature(laneNum, side, this);
 		Destroy(this);
 	}
-
+  
 	// Update is called once per frame
 	void Update()
     {
@@ -109,6 +110,7 @@ public class DefaultCreature : MonoBehaviour
 			{
 				moveFlag = true;
 				transform.position += speed;
+
 			}
 			else
 			{
