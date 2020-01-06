@@ -33,6 +33,7 @@ public class SpawnControl : MonoBehaviour
         InitPrefabs();
 
         //default creature
+        combatControl.InitLanes();
         currentCreature = prefabArray[0].GetComponent<DefaultCreature>();
         SpawnCreatureLane(0, GameControl.Sides.Friendly, 0);
         SpawnCreatureLane(1, GameControl.Sides.Friendly, 0);
@@ -64,17 +65,25 @@ public class SpawnControl : MonoBehaviour
     void SummonCreature(int laneNum, GameControl.Sides side, int creatureType)
     {
         //spawn an actor through instantiate
-        GameObject newCreature;
+        GameObject newObject;
+        DefaultCreature newCreature;
 
-        newCreature = Instantiate<GameObject>(prefabArray[creatureType]);
+        newObject = Instantiate<GameObject>(prefabArray[creatureType]);
+        newCreature = newObject.GetComponent<DefaultCreature>();
+
+        newCreature.gameControl = gameControl;
+        newCreature.combatControl = combatControl;
+
         if(side == GameControl.Sides.Friendly)
         {
-            newCreature.GetComponent<DefaultCreature>().SetCreature(startCoord[laneNum], endCoord[laneNum], laneNum, side);
+            newCreature.SetCreature(startCoord[laneNum], endCoord[laneNum], laneNum, side);
         }
         else
         {
-            newCreature.GetComponent<DefaultCreature>().SetCreature(endCoord[laneNum], startCoord[laneNum], laneNum, side);
+            newCreature.SetCreature(endCoord[laneNum], startCoord[laneNum], laneNum, side);
         }
+
+        combatControl.PushCreature(laneNum, side, newCreature);
     }
 
     //initialization functions
