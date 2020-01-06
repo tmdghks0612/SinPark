@@ -43,10 +43,8 @@ public class DefaultCreature : MonoBehaviour
 		currentPosition = transform.position;
 		detectCheck = combatControl.SearchCreature(currentPosition, attackRange, laneNum, side);
 
-        Debug.Log("detecting...");
 		if(detectCheck)
 		{
-			Debug.Log("found");
 			moveFlag = false;
 			if(creatureAttackType == AttackType.Melee)
 			{
@@ -58,7 +56,6 @@ public class DefaultCreature : MonoBehaviour
 			{
 				
 			}
-
 		}
 		else
 		{
@@ -90,7 +87,7 @@ public class DefaultCreature : MonoBehaviour
 		attackSpeed = 2.0f; //Fixed Value. Should be changed later
 		InvokeRepeating("DetectEnemy", 0.5f, attackSpeed);
         attackDamage = 3;
-        attackRange = 50.0f;
+        attackRange = 5.0f;
         hp = 30;
         creatureAttackType = AttackType.Melee;
 	}

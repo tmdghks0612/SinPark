@@ -108,8 +108,6 @@ public class SpawnControl : MonoBehaviour
         for(int i=0; i < typeCreature; ++i)
         {
             prefabArray[i] = Resources.Load("creature" + i.ToString() + "/creature" + i.ToString() + "Prefab") as GameObject;
-            
-            Debug.Log("creature" + i.ToString() + "/creature" + i.ToString() + "Prefab");
         }
     }
 }

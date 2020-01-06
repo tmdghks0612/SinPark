@@ -49,7 +49,6 @@ public class CombatControl : MonoBehaviour
             //add the newCreature to hostile lanes in current laneNum
             hostileLanes.creatureList[laneNum].Add(newCreature);
         }
-        Debug.Log("pushed to lane "+laneNum+ "/count : " + friendlyLanes.creatureList[0].Count);
     }
 
     //pop creature called when a creature died in a certain lane
@@ -71,17 +70,12 @@ public class CombatControl : MonoBehaviour
 
     public bool SearchCreature( Vector3 currentPosition, float attackRange, int laneNum, GameControl.Sides side )
     {
-        Debug.Log("lane num is ? " + laneNum);
-        Debug.Log("current friendly lane" + friendlyLanes.creatureList[0].Count);
-        Debug.Log("current enemy lane" + friendlyLanes.creatureList[0].Count);
         //attack from friendly to hostile
         if (side == GameControl.Sides.Friendly)
         {
-            Debug.Log("hello world");
             //search creatures within attackrange of friendly lanes in current laneNum
             foreach( DefaultCreature currentCreature in hostileLanes.creatureList[laneNum] )
             {
-                Debug.Log("current enemy position" + currentCreature.transform.position.x.ToString());
                 if( currentCreature.transform.position.x - currentPosition.x < attackRange )
                 {
                     return true;
