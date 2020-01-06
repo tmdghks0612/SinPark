@@ -8,6 +8,8 @@ public class CombatControl : MonoBehaviour
     
     private int maxLanes;
     private int maxUnits;
+    private readonly object lock_friendlyLanes = new object();
+    private readonly object lock_hostileLanes = new object();
 
     //structure for sides containing creatureList(lanes)
     //creatureList contains creatures in the lane
@@ -41,13 +43,19 @@ public class CombatControl : MonoBehaviour
     {
         if (side == GameControl.Sides.Friendly)
         {
-            //add the newCreature to friendly lanes in current laneNum
-            friendlyLanes.creatureList[laneNum].Add(newCreature);
+            lock (lock_friendlyLanes)
+            {
+                //add the newCreature to friendly lanes in current laneNum
+                friendlyLanes.creatureList[laneNum].Add(newCreature);
+            }
         }
         else
         {
-            //add the newCreature to hostile lanes in current laneNum
-            hostileLanes.creatureList[laneNum].Add(newCreature);
+            lock (lock_hostileLanes)
+            {
+                //add the newCreature to hostile lanes in current laneNum
+                hostileLanes.creatureList[laneNum].Add(newCreature);
+            }
         }
     }
 
@@ -57,12 +65,19 @@ public class CombatControl : MonoBehaviour
         if (side == GameControl.Sides.Friendly)
         {
             //remove the deadCreature to friendly lanes in current laneNum
-            friendlyLanes.creatureList[laneNum].Remove(deadCreature);
+            lock (lock_friendlyLanes)
+            {
+                //remove the deadCreature to friendly lanes in current laneNum
+                friendlyLanes.creatureList[laneNum].Remove(deadCreature);
+            }
         }
         else
         {
-            //remove the deadCreature to hostile lanes in current laneNum
-            hostileLanes.creatureList[laneNum].Remove(deadCreature);
+            lock (lock_hostileLanes)
+            {
+                //remove the deadCreature to hostile lanes in current laneNum
+                hostileLanes.creatureList[laneNum].Remove(deadCreature);
+            }
         }
     }
 
@@ -73,53 +88,67 @@ public class CombatControl : MonoBehaviour
         //attack from friendly to hostile
         if (side == GameControl.Sides.Friendly)
         {
-            //search creatures within attackrange of friendly lanes in current laneNum
-            foreach( DefaultCreature currentCreature in hostileLanes.creatureList[laneNum] )
+            lock (lock_hostileLanes)
             {
-                if( currentCreature.transform.position.x - currentPosition.x < attackRange )
+                //search creatures within attackrange of friendly lanes in current laneNum
+                foreach (DefaultCreature currentCreature in hostileLanes.creatureList[laneNum])
                 {
-                    return true;
+
+                    if (currentCreature.transform.position.x - currentPosition.x < attackRange)
+                    {
+                        return true;
+                    }
                 }
             }
         }
         //attack from hostile to friendly
         else
         {
-            //search creatures within attackrange of hostile lanes in current laneNum
-            foreach ( DefaultCreature currentCreature in friendlyLanes.creatureList[laneNum] )
+            lock (lock_friendlyLanes)
             {
-                if ( currentPosition.x - currentCreature.transform.position.x < attackRange )
+                //search creatures within attackrange of hostile lanes in current laneNum
+                foreach (DefaultCreature currentCreature in friendlyLanes.creatureList[laneNum])
                 {
-                    return true;
+                    if (currentPosition.x - currentCreature.transform.position.x < attackRange)
+                    {
+                        return true;
+                    }
                 }
             }
         }
         return false;
     }
 
-    public void MeleeAttack( Vector3 currentPosition, float attackRange, int attackDamage, int laneNum, GameControl.Sides side )
+    public void MeleeAttack(Vector3 currentPosition, float attackRange, int attackDamage, int laneNum, GameControl.Sides side)
     {
         //attack from friendly to hostile
         if (side == GameControl.Sides.Friendly)
         {
-            //search creatures within attackrange of friendly lanes in current laneNum
-            foreach (DefaultCreature currentCreature in hostileLanes.creatureList[laneNum])
+            lock(lock_hostileLanes)
             {
-                if ( currentCreature.transform.position.x - currentPosition.x < attackRange)
+                List<DefaultCreature> currentList = hostileLanes.creatureList[laneNum];
+                //search creatures within attackrange of friendly lanes in current laneNum
+                for (int i = currentList.Count-1; i >= 0; i--)
                 {
-                    currentCreature.DamageTaken( attackDamage );
+                    if (currentList[i].transform.position.x - currentPosition.x < attackRange)
+                    {
+                        currentList[i].DamageTaken(attackDamage);
+                    }
                 }
             }
         }
         //attack from hostile to friendly
         else
         {
-            //search creatures within attackrange of hostile lanes in current laneNum
-            foreach (DefaultCreature currentCreature in friendlyLanes.creatureList[laneNum])
+            lock(lock_friendlyLanes)
             {
-                if ( currentPosition.x - currentCreature.transform.position.x < attackRange)
+                List<DefaultCreature> currentList = friendlyLanes.creatureList[laneNum];
+                for (int i = currentList.Count-1; i >= 0; i--)
                 {
-                    currentCreature.DamageTaken( attackDamage );
+                    if (currentList[i].transform.position.x - currentPosition.x < attackRange)
+                    {
+                        currentList[i].DamageTaken(attackDamage);
+                    }
                 }
             }
         }
@@ -135,9 +164,6 @@ public class CombatControl : MonoBehaviour
     //initialize struct of lists
     public void InitLanes()
     {
-        //initialize struct SideLanes
-        /*friendlyLanes = new SideLanes();
-        hostileLanes = new SideLanes();*/
         maxLanes = 3;
         //initialize creatureList in SideLanes
         //maxLanes contain the number of lanes available in the game

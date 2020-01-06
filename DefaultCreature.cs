@@ -42,7 +42,6 @@ public class DefaultCreature : MonoBehaviour
 		bool detectCheck;
 		currentPosition = transform.position;
 		detectCheck = combatControl.SearchCreature(currentPosition, attackRange, laneNum, side);
-
 		if(detectCheck)
 		{
 			moveFlag = false;
@@ -50,7 +49,6 @@ public class DefaultCreature : MonoBehaviour
 			{
 				combatControl.MeleeAttack(currentPosition, attackRange, attackDamage, laneNum, side);
 				animControl.SetBool("onAttack", true);
-				
 			}
 			else if(creatureAttackType == AttackType.Missile)
 			{
@@ -62,8 +60,6 @@ public class DefaultCreature : MonoBehaviour
 			animControl.SetBool("onAttack", false);
 			moveFlag = true;
 		}
-
-		//Debug.Log("detect");
 	}
 	public void SetCreature(Vector2 st, Vector2 ed, int lane, GameControl.Sides sideCheck)
 	{
@@ -75,7 +71,6 @@ public class DefaultCreature : MonoBehaviour
 			speed.x *= -1;
 			Enemy = true;
 			transform.localScale = new Vector2(transform.localScale.x * -1, transform.localScale.y);
-			Debug.Log(speed.ToString());
 		}
 
 		MoveTo(st, ed);
@@ -88,7 +83,7 @@ public class DefaultCreature : MonoBehaviour
 		InvokeRepeating("DetectEnemy", 0.5f, attackSpeed);
         attackDamage = 3;
         attackRange = 5.0f;
-        hp = 30;
+        hp = 9;
         creatureAttackType = AttackType.Melee;
 	}
 	public void DamageTaken(int damage)
@@ -96,13 +91,15 @@ public class DefaultCreature : MonoBehaviour
 		hp -= damage;
 		if (hp <= 0)
 			Dead();
+		
 	}
 	void Dead()
 	{
 		combatControl.PopCreature(laneNum, side, this);
-		Destroy(this);
+		CancelInvoke("DetectEnemy");
+		Destroy(this.gameObject);
 	}
-  
+
 	// Update is called once per frame
 	void Update()
     {
