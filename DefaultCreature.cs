@@ -14,8 +14,9 @@ public class DefaultCreature : MonoBehaviour
 	private int attackDamage;
 	private float attackSpeed;
 	private float attackRange;
-	private enum attackType { Melee, Missile };
-	private attackType creatureAttackType;
+	public enum AttackType { Melee, Missile };
+
+	private AttackType creatureAttackType;
 	private Vector3 start;
 	private Vector3 end;
 	private Vector3 currentPosition;
@@ -42,19 +43,18 @@ public class DefaultCreature : MonoBehaviour
 		currentPosition = transform.position;
 		detectCheck = combatControl.SearchCreature(currentPosition, attackRange, laneNum, side);
 
-		
-
+        Debug.Log("detecting...");
 		if(detectCheck)
 		{
 			Debug.Log("found");
 			moveFlag = false;
-			if(creatureAttackType == attackType.Melee)
+			if(creatureAttackType == AttackType.Melee)
 			{
 				combatControl.MeleeAttack(currentPosition, attackRange, attackDamage, laneNum, side);
 				animControl.SetBool("onAttack", true);
 				
 			}
-			else if(creatureAttackType == attackType.Missile)
+			else if(creatureAttackType == AttackType.Missile)
 			{
 				
 			}
@@ -89,6 +89,10 @@ public class DefaultCreature : MonoBehaviour
 		speed = new Vector3(0.1f,0,0); //Fixed Value. Should be changed later
 		attackSpeed = 2.0f; //Fixed Value. Should be changed later
 		InvokeRepeating("DetectEnemy", 0.5f, attackSpeed);
+        attackDamage = 3;
+        attackRange = 50.0f;
+        hp = 30;
+        creatureAttackType = AttackType.Melee;
 	}
 	public void DamageTaken(int damage)
 	{

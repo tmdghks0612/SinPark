@@ -11,21 +11,21 @@ public class CombatControl : MonoBehaviour
 
     //structure for sides containing creatureList(lanes)
     //creatureList contains creatures in the lane
-    protected struct SideLanes
+    public struct SideLanes
     {
         public List<DefaultCreature>[] creatureList;
     }
 
-    protected SideLanes friendlyLanes;
-    protected SideLanes hostileLanes;
+    public SideLanes friendlyLanes;
+    public SideLanes hostileLanes;
 
     // Start is called before the first frame update
     void Start()
     {
-        InitLanes();
-
         maxLanes = gameControl.maxLanes;
         maxUnits = gameControl.maxUnits;
+
+        InitLanes();
     }
 
     // Update is called once per frame
@@ -39,7 +39,7 @@ public class CombatControl : MonoBehaviour
     //push creature called when a creature is spawned in a certain lane
     public void PushCreature( int laneNum, GameControl.Sides side, DefaultCreature newCreature )
     {
-        if(side == GameControl.Sides.Friendly)
+        if (side == GameControl.Sides.Friendly)
         {
             //add the newCreature to friendly lanes in current laneNum
             friendlyLanes.creatureList[laneNum].Add(newCreature);
@@ -49,6 +49,7 @@ public class CombatControl : MonoBehaviour
             //add the newCreature to hostile lanes in current laneNum
             hostileLanes.creatureList[laneNum].Add(newCreature);
         }
+        Debug.Log("pushed to lane "+laneNum+ "/count : " + friendlyLanes.creatureList[0].Count);
     }
 
     //pop creature called when a creature died in a certain lane
@@ -70,13 +71,18 @@ public class CombatControl : MonoBehaviour
 
     public bool SearchCreature( Vector3 currentPosition, float attackRange, int laneNum, GameControl.Sides side )
     {
+        Debug.Log("lane num is ? " + laneNum);
+        Debug.Log("current friendly lane" + friendlyLanes.creatureList[0].Count);
+        Debug.Log("current enemy lane" + friendlyLanes.creatureList[0].Count);
         //attack from friendly to hostile
         if (side == GameControl.Sides.Friendly)
         {
+            Debug.Log("hello world");
             //search creatures within attackrange of friendly lanes in current laneNum
-            foreach( DefaultCreature currentCreature in hostileLanes.creatureList[laneNum])
+            foreach( DefaultCreature currentCreature in hostileLanes.creatureList[laneNum] )
             {
-                if( currentCreature.transform.position.x - currentPosition.x < attackRange)
+                Debug.Log("current enemy position" + currentCreature.transform.position.x.ToString());
+                if( currentCreature.transform.position.x - currentPosition.x < attackRange )
                 {
                     return true;
                 }
@@ -86,9 +92,9 @@ public class CombatControl : MonoBehaviour
         else
         {
             //search creatures within attackrange of hostile lanes in current laneNum
-            foreach (DefaultCreature currentCreature in friendlyLanes.creatureList[laneNum])
+            foreach ( DefaultCreature currentCreature in friendlyLanes.creatureList[laneNum] )
             {
-                if ( currentPosition.x - currentCreature.transform.position.x < attackRange)
+                if ( currentPosition.x - currentCreature.transform.position.x < attackRange )
                 {
                     return true;
                 }
@@ -136,12 +142,18 @@ public class CombatControl : MonoBehaviour
     public void InitLanes()
     {
         //initialize struct SideLanes
-        friendlyLanes = new SideLanes();
-        hostileLanes = new SideLanes();
-
+        /*friendlyLanes = new SideLanes();
+        hostileLanes = new SideLanes();*/
+        maxLanes = 3;
         //initialize creatureList in SideLanes
         //maxLanes contain the number of lanes available in the game
         friendlyLanes.creatureList = new List<DefaultCreature>[maxLanes];
         hostileLanes.creatureList = new List<DefaultCreature>[maxLanes];
+
+        for ( int i=0; i < maxLanes; ++i)
+        {
+            friendlyLanes.creatureList[i] = new List<DefaultCreature>();
+            hostileLanes.creatureList[i] = new List<DefaultCreature>();
+        }
     }
 }
