@@ -69,11 +69,11 @@ public class SpawnControl : MonoBehaviour
         newCreature = Instantiate<GameObject>(prefabArray[creatureType]);
         if(side == GameControl.Sides.Friendly)
         {
-            newCreature.GetComponent<DefaultCreature>().SetCreature(startCoord[laneNum], endCoord[laneNum], side);
+            newCreature.GetComponent<DefaultCreature>().SetCreature(startCoord[laneNum], endCoord[laneNum], laneNum, side);
         }
         else
         {
-            newCreature.GetComponent<DefaultCreature>().SetCreature(endCoord[laneNum], startCoord[laneNum], side);
+            newCreature.GetComponent<DefaultCreature>().SetCreature(endCoord[laneNum], startCoord[laneNum], laneNum, side);
         }
     }
 
