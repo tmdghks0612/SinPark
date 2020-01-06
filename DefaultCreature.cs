@@ -23,10 +23,10 @@ public class DefaultCreature : MonoBehaviour
 	private bool Enemy = false;
 	public GameControl gameControl;
 	public CombatControl combatControl;
-	public Animation anim;
+	private Animator animControl;
 	void Start()
     {
-
+		animControl = GetComponent<Animator>();
 	}
 
 	void MoveTo(Vector2 st, Vector2 ed)
@@ -51,6 +51,8 @@ public class DefaultCreature : MonoBehaviour
 			if(creatureAttackType == attackType.Melee)
 			{
 				combatControl.MeleeAttack(currentPosition, attackRange, attackDamage, laneNum, side);
+				animControl.SetBool("onAttack", true);
+				
 			}
 			else if(creatureAttackType == attackType.Missile)
 			{
@@ -60,6 +62,7 @@ public class DefaultCreature : MonoBehaviour
 		}
 		else
 		{
+			animControl.SetBool("onAttack", false);
 			moveFlag = true;
 		}
 
