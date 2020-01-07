@@ -35,12 +35,6 @@ public class SpawnControl : MonoBehaviour
         //default creature
         combatControl.InitLanes();
         currentCreature = prefabArray[0].GetComponent<DefaultCreature>();
-        SpawnCreatureLane(0, GameControl.Sides.Hostile, 0);
-        SpawnCreatureLane(1, GameControl.Sides.Hostile, 0);
-        SpawnCreatureLane(2, GameControl.Sides.Hostile, 0);
-        SpawnCreatureLane(0, GameControl.Sides.Friendly, 0);
-        SpawnCreatureLane(1, GameControl.Sides.Friendly, 0);
-        SpawnCreatureLane(2, GameControl.Sides.Friendly, 0);
         
     }
 
