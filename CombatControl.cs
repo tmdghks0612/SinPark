@@ -143,6 +143,7 @@ public class CombatControl : MonoBehaviour
             lock(lock_friendlyLanes)
             {
                 List<DefaultCreature> currentList = friendlyLanes.creatureList[laneNum];
+                //search creatures within attackrange of hostile lanes in current laneNum
                 for (int i = currentList.Count-1; i >= 0; i--)
                 {
                     if (currentList[i].transform.position.x - currentPosition.x < attackRange)
@@ -164,7 +165,6 @@ public class CombatControl : MonoBehaviour
     //initialize struct of lists
     public void InitLanes()
     {
-        maxLanes = 3;
         //initialize creatureList in SideLanes
         //maxLanes contain the number of lanes available in the game
         friendlyLanes.creatureList = new List<DefaultCreature>[maxLanes];
