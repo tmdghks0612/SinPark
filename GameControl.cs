@@ -9,16 +9,16 @@ public class GameControl : MonoBehaviour
 
     //variables defined overall in game
     public int maxLanes = 3;
-    public int maxUnits = 3;
+    public int maxUnits = 100;
 
-    public enum Sides { Friendly, Hostile };
+    public enum Sides {Friendly, Hostile};
 
     //
 
     // Start is called before the first frame update
     void Start()
     {
-        
+
     }
 
     // Update is called once per frame
