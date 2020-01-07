@@ -16,6 +16,7 @@ public class DefaultCreature : MonoBehaviour
 	private float attackRange;
 	public enum AttackType { Melee, Missile };
 
+    private int creatureType;
 	private AttackType creatureAttackType;
 	private Vector3 start;
 	private Vector3 end;
@@ -52,7 +53,8 @@ public class DefaultCreature : MonoBehaviour
 			}
 			else if(creatureAttackType == AttackType.Missile)
 			{
-				
+                combatControl.MissileAttack(currentPosition, creatureType, attackDamage, laneNum, side);
+                //animation
 			}
 		}
 		else
@@ -61,11 +63,12 @@ public class DefaultCreature : MonoBehaviour
 			moveFlag = true;
 		}
 	}
-	public void SetCreature(Vector2 st, Vector2 ed, int lane, GameControl.Sides sideCheck)
+	public void SetCreature(Vector2 st, Vector2 ed, int creatureType, int lane, GameControl.Sides sideCheck)
 	{
 		InitCreature();
 		laneNum = lane;
 		side = sideCheck;
+        this.creatureType = creatureType;
 		if(side == GameControl.Sides.Hostile)
 		{
 			speed.x *= -1;

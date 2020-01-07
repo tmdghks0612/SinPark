@@ -11,6 +11,7 @@ public class GameControl : MonoBehaviour
     //variables defined overall in game
     public int maxLanes = 3;
     public int maxUnits = 100;
+    public int typeCreature = 2;
 
     //>>> parameters for UI Summon Button may change later
     public GameObject[] lanes;

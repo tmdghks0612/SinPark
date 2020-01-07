@@ -12,7 +12,7 @@ public class SpawnControl : MonoBehaviour
     private int maxUnits;
 
     //number of type of creatures
-    private int typeCreature = 2;
+    private int typeCreature;
 
     private DefaultCreature currentCreature;
 
@@ -28,6 +28,7 @@ public class SpawnControl : MonoBehaviour
     {
         maxLanes = gameControl.maxLanes;
         maxUnits = gameControl.maxUnits;
+        typeCreature = gameControl.typeCreature;
 
         InitLaneCoords();
         InitPrefabs();
@@ -63,6 +64,8 @@ public class SpawnControl : MonoBehaviour
         GameObject newObject;
         DefaultCreature newCreature;
 
+
+        Debug.Log("creature type is " + creatureType.ToString());
         newObject = Instantiate<GameObject>(prefabArray[creatureType]);
         newCreature = newObject.GetComponent<DefaultCreature>();
 
@@ -71,11 +74,11 @@ public class SpawnControl : MonoBehaviour
 
         if(side == GameControl.Sides.Friendly)
         {
-            newCreature.SetCreature(startCoord[laneNum], endCoord[laneNum], laneNum, side);
+            newCreature.SetCreature(startCoord[laneNum], endCoord[laneNum], creatureType, laneNum, side);
         }
         else
         {
-            newCreature.SetCreature(endCoord[laneNum], startCoord[laneNum], laneNum, side);
+            newCreature.SetCreature(endCoord[laneNum], startCoord[laneNum], creatureType, laneNum, side);
         }
 
         combatControl.PushCreature(laneNum, side, newCreature);

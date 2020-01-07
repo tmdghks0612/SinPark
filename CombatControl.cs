@@ -8,8 +8,12 @@ public class CombatControl : MonoBehaviour
     
     private int maxLanes;
     private int maxUnits;
+    private int typeCreature;
+
     private readonly object lock_friendlyLanes = new object();
     private readonly object lock_hostileLanes = new object();
+
+    public GameObject[] missileArray;
 
     //structure for sides containing creatureList(lanes)
     //creatureList contains creatures in the lane
@@ -26,6 +30,7 @@ public class CombatControl : MonoBehaviour
     {
         maxLanes = gameControl.maxLanes;
         maxUnits = gameControl.maxUnits;
+        typeCreature = gameControl.typeCreature;
 
         InitLanes();
     }
@@ -155,9 +160,11 @@ public class CombatControl : MonoBehaviour
         }
     }
 
-    void MissileAttack( Vector3 currentPosition, float attackRange, int attackDamage, int laneNum, GameControl.Sides side)
+    public void MissileAttack( Vector3 currentPosition, int missileType, int attackDamage, int laneNum, GameControl.Sides side)
     {
-
+        GameObject newObject = Instantiate<GameObject>(missileArray[missileType]);
+        DefaultMissile newMissile = newObject.GetComponent<DefaultMissile>();
+        newMissile.SetMissile( currentPosition, side );
     }
 
     //initializing functions
@@ -174,6 +181,16 @@ public class CombatControl : MonoBehaviour
         {
             friendlyLanes.creatureList[i] = new List<DefaultCreature>();
             hostileLanes.creatureList[i] = new List<DefaultCreature>();
+        }
+    }
+
+    public void InitMissiles()
+    {
+        missileArray = new GameObject[typeCreature];
+        //find and load creature prefabs from folder 'creature#'
+        for (int i = 0; i < typeCreature; ++i)
+        {
+            missileArray[i] = Resources.Load("creature" + i.ToString() + "/creature" + i.ToString() + "Prefab") as GameObject;
         }
     }
 }
