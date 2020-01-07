@@ -44,14 +44,21 @@ public class GameControl : MonoBehaviour
     {
         Debug.Log("Lane " + laneNumber);
         spawnControl.SpawnCreatureLane(laneNumber, GameControl.Sides.Friendly, monsterType);
-        
+        spawnControl.SpawnCreatureLane(laneNumber, GameControl.Sides.Hostile, monsterType);
+
     }
 
     void ChooseLane(int type)
     {
-        monsterType = type;
-        Debug.Log("Type " + monsterType);
-        if (buttonFlag)
+        if (type != monsterType)
+        {
+            foreach (GameObject buttons in lanes)
+            {
+                buttons.SetActive(true);
+            }
+            monsterType = type;
+        }
+        else if (buttonFlag)
         {
             foreach (GameObject buttons in lanes)
             {

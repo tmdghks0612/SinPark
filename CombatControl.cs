@@ -33,6 +33,7 @@ public class CombatControl : MonoBehaviour
         typeCreature = gameControl.typeCreature;
 
         InitLanes();
+        InitMissiles();
     }
 
     // Update is called once per frame
@@ -177,7 +178,7 @@ public class CombatControl : MonoBehaviour
         friendlyLanes.creatureList = new List<DefaultCreature>[maxLanes];
         hostileLanes.creatureList = new List<DefaultCreature>[maxLanes];
 
-        for ( int i=0; i < maxLanes; ++i)
+        for ( int i = 0; i < maxLanes; ++i)
         {
             friendlyLanes.creatureList[i] = new List<DefaultCreature>();
             hostileLanes.creatureList[i] = new List<DefaultCreature>();
@@ -188,9 +189,10 @@ public class CombatControl : MonoBehaviour
     {
         missileArray = new GameObject[typeCreature];
         //find and load creature prefabs from folder 'creature#'
-        for (int i = 0; i < typeCreature; ++i)
+        for(int i = 0; i < typeCreature; i++)
         {
-            missileArray[i] = Resources.Load("creature" + i.ToString() + "/creature" + i.ToString() + "Prefab") as GameObject;
+            missileArray[1] = Resources.Load("creature" + 1.ToString() + "/creature" + 1.ToString() + "Projectile") as GameObject;
         }
+
     }
 }

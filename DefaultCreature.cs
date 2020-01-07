@@ -7,17 +7,17 @@ public class DefaultCreature : MonoBehaviour
     // Start is called before the first frame update
     //Transform creatureTransform;
 
-	private GameControl.Sides side;
+	public GameControl.Sides side;
 	private int laneNum;
 	private Vector3 speed;
 	private int hp;
 	private int attackDamage;
-	private float attackSpeed;
-	private float attackRange;
+	public float attackSpeed;
+	public float attackRange;
 	public enum AttackType { Melee, Missile };
 
     private int creatureType;
-	private AttackType creatureAttackType;
+	public AttackType creatureAttackType;
 	private Vector3 start;
 	private Vector3 end;
 	private Vector3 currentPosition;
@@ -81,13 +81,10 @@ public class DefaultCreature : MonoBehaviour
 
 	void InitCreature()
 	{
-		speed = new Vector3(0.1f,0,0); //Fixed Value. Should be changed later
-		attackSpeed = 2.0f; //Fixed Value. Should be changed later
+		speed = new Vector3(0.05f,0,0); //Fixed Value. Should be changed later
 		InvokeRepeating("DetectEnemy", 0.5f, attackSpeed);
         attackDamage = 3;
-        attackRange = 5.0f;
         hp = 9;
-        creatureAttackType = AttackType.Melee;
 	}
 	public void DamageTaken(int damage)
 	{
