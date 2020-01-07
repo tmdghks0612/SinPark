@@ -44,7 +44,7 @@ public class SpawnControl : MonoBehaviour
         
     }
 
-    void SpawnCreatureLane(int laneNum, GameControl.Sides side, int creatureType)
+    public void SpawnCreatureLane(int laneNum, GameControl.Sides side, int creatureType)
     {
         if (playerCreatureNum == maxUnits)
         {
@@ -91,8 +91,8 @@ public class SpawnControl : MonoBehaviour
 
         for(int i=0; i < maxLanes; ++i)
         {
-            startCoord[i] = new Vector2(-20.0f, i * 5.0f);
-            endCoord[i] = new Vector2(20.0f, i * 5.0f);
+            startCoord[i] = new Vector2(-15.0f, i * 2.0f);
+            endCoord[i] = new Vector2(15.0f, i * 2.0f);
         }
     }
 
