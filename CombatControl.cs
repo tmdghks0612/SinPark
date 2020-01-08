@@ -13,7 +13,7 @@ public class CombatControl : MonoBehaviour
     private readonly object lock_friendlyLanes = new object();
     private readonly object lock_hostileLanes = new object();
 
-    public GameObject[] missileArray;
+    private GameObject[] missileArray;
 
     //structure for sides containing creatureList(lanes)
     //creatureList contains creatures in the lane
@@ -22,8 +22,8 @@ public class CombatControl : MonoBehaviour
         public List<DefaultCreature>[] creatureList;
     }
 
-    public SideLanes friendlyLanes;
-    public SideLanes hostileLanes;
+    private SideLanes friendlyLanes;
+    private SideLanes hostileLanes;
 
     // Start is called before the first frame update
     void Start()
@@ -191,7 +191,7 @@ public class CombatControl : MonoBehaviour
         //find and load creature prefabs from folder 'creature#'
         for(int i = 0; i < typeCreature; i++)
         {
-            missileArray[1] = Resources.Load("creature" + 1.ToString() + "/creature" + 1.ToString() + "Projectile") as GameObject;
+            missileArray[i] = Resources.Load("creature" + i.ToString() + "/creature" + i.ToString() + "Projectile") as GameObject;
         }
 
     }
