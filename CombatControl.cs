@@ -8,8 +8,12 @@ public class CombatControl : MonoBehaviour
     
     private int maxLanes;
     private int maxUnits;
+    private int typeCreature;
+
     private readonly object lock_friendlyLanes = new object();
     private readonly object lock_hostileLanes = new object();
+
+    private GameObject[] missileArray;
 
     //structure for sides containing creatureList(lanes)
     //creatureList contains creatures in the lane
@@ -18,16 +22,18 @@ public class CombatControl : MonoBehaviour
         public List<DefaultCreature>[] creatureList;
     }
 
-    public SideLanes friendlyLanes;
-    public SideLanes hostileLanes;
+    private SideLanes friendlyLanes;
+    private SideLanes hostileLanes;
 
     // Start is called before the first frame update
     void Start()
     {
         maxLanes = gameControl.maxLanes;
         maxUnits = gameControl.maxUnits;
+        typeCreature = gameControl.typeCreature;
 
         InitLanes();
+        InitMissiles();
     }
 
     // Update is called once per frame
@@ -155,9 +161,11 @@ public class CombatControl : MonoBehaviour
         }
     }
 
-    void MissileAttack( Vector3 currentPosition, float attackRange, int attackDamage, int laneNum, GameControl.Sides side)
+    public void MissileAttack( Vector3 currentPosition, int missileType, int attackDamage, int laneNum, GameControl.Sides side)
     {
-
+        GameObject newObject = Instantiate<GameObject>(missileArray[missileType]);
+        DefaultMissile newMissile = newObject.GetComponent<DefaultMissile>();
+        newMissile.SetMissile( currentPosition, side );
     }
 
     //initializing functions
@@ -170,10 +178,21 @@ public class CombatControl : MonoBehaviour
         friendlyLanes.creatureList = new List<DefaultCreature>[maxLanes];
         hostileLanes.creatureList = new List<DefaultCreature>[maxLanes];
 
-        for ( int i=0; i < maxLanes; ++i)
+        for ( int i = 0; i < maxLanes; ++i)
         {
             friendlyLanes.creatureList[i] = new List<DefaultCreature>();
             hostileLanes.creatureList[i] = new List<DefaultCreature>();
         }
+    }
+
+    public void InitMissiles()
+    {
+        missileArray = new GameObject[typeCreature];
+        //find and load creature prefabs from folder 'creature#'
+        for(int i = 0; i < typeCreature; i++)
+        {
+            missileArray[i] = Resources.Load("creature" + i.ToString() + "/creature" + i.ToString() + "Projectile") as GameObject;
+        }
+
     }
 }

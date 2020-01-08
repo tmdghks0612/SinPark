@@ -12,7 +12,7 @@ public class SpawnControl : MonoBehaviour
     private int maxUnits;
 
     //number of type of creatures
-    private int typeCreature = 2;
+    private int typeCreature;
 
     private DefaultCreature currentCreature;
 
@@ -28,6 +28,7 @@ public class SpawnControl : MonoBehaviour
     {
         maxLanes = gameControl.maxLanes;
         maxUnits = gameControl.maxUnits;
+        typeCreature = gameControl.typeCreature;
 
         InitLaneCoords();
         InitPrefabs();
@@ -44,7 +45,7 @@ public class SpawnControl : MonoBehaviour
         
     }
 
-    void SpawnCreatureLane(int laneNum, GameControl.Sides side, int creatureType)
+    public void SpawnCreatureLane(int laneNum, GameControl.Sides side, int creatureType)
     {
         if (playerCreatureNum == maxUnits)
         {
@@ -63,19 +64,21 @@ public class SpawnControl : MonoBehaviour
         GameObject newObject;
         DefaultCreature newCreature;
 
+
+        Debug.Log("creature type is " + creatureType.ToString());
         newObject = Instantiate<GameObject>(prefabArray[creatureType]);
         newCreature = newObject.GetComponent<DefaultCreature>();
 
-        newCreature.gameControl = gameControl;
-        newCreature.combatControl = combatControl;
+        newCreature.SetGameControl(gameControl);
+        newCreature.SetCombatControl(combatControl);
 
         if(side == GameControl.Sides.Friendly)
         {
-            newCreature.SetCreature(startCoord[laneNum], endCoord[laneNum], laneNum, side);
+            newCreature.SetCreature(startCoord[laneNum], endCoord[laneNum], creatureType, laneNum, side);
         }
         else
         {
-            newCreature.SetCreature(endCoord[laneNum], startCoord[laneNum], laneNum, side);
+            newCreature.SetCreature(endCoord[laneNum], startCoord[laneNum], creatureType, laneNum, side);
         }
 
         combatControl.PushCreature(laneNum, side, newCreature);
@@ -91,8 +94,8 @@ public class SpawnControl : MonoBehaviour
 
         for(int i=0; i < maxLanes; ++i)
         {
-            startCoord[i] = new Vector2(-20.0f, i * 5.0f);
-            endCoord[i] = new Vector2(20.0f, i * 5.0f);
+            startCoord[i] = new Vector2(-15.0f, i * 2.0f);
+            endCoord[i] = new Vector2(15.0f, i * 2.0f);
         }
     }
 
