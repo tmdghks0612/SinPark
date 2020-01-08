@@ -4,33 +4,41 @@ using UnityEngine;
 
 public class DefaultCreature : MonoBehaviour
 {
-    // Start is called before the first frame update
-    //Transform creatureTransform;
+	// Start is called before the first frame update
+	//Transform creatureTransform;
 
-	public GameControl.Sides side;
-	private int laneNum;
-	private Vector3 speed;
-	private int hp;
-	private int attackDamage;
-	public float attackSpeed;
-	public float attackRange;
 	public enum AttackType { Melee, Missile };
 
-    private int creatureType;
-	public AttackType creatureAttackType;
+	private GameControl.Sides side;
+	private int laneNum;
+	private Vector3 speed;
+
+	[SerializeField]
+	private int hp;
+	[SerializeField]
+	private int attackDamage;
+	[SerializeField]
+	private float attackSpeed;
+	[SerializeField]
+	private float attackRange;
+	[SerializeField]
+	private AttackType creatureAttackType;
+
+	private int creatureType;
 	private Vector3 start;
 	private Vector3 end;
 	private Vector3 currentPosition;
 	private bool moveFlag = true;
 	private bool Enemy = false;
-	public GameControl gameControl;
-	public CombatControl combatControl;
+	private GameControl gameControl;
+	private CombatControl combatControl;
 	private Animator animControl;
 	void Start()
     {
 		animControl = GetComponent<Animator>();
 	}
 
+	
 	void MoveTo(Vector2 st, Vector2 ed)
 	{
 		start = st;
@@ -83,8 +91,8 @@ public class DefaultCreature : MonoBehaviour
 	{
 		speed = new Vector3(0.05f,0,0); //Fixed Value. Should be changed later
 		InvokeRepeating("DetectEnemy", 0.5f, attackSpeed);
-        attackDamage = 3;
-        hp = 9;
+        //attackDamage = 3;
+        //hp = 9;
 	}
 	public void DamageTaken(int damage)
 	{
@@ -122,4 +130,17 @@ public class DefaultCreature : MonoBehaviour
 			}
 		}
     }
+	public GameControl.Sides getSide()
+	{
+		return side;
+	}
+	public void SetGameControl(GameControl GameControl)
+	{
+		gameControl = GameControl;
+	}
+	public void SetCombatControl(CombatControl CombatControl)
+	{
+		combatControl = CombatControl;
+	}
+
 }

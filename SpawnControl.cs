@@ -69,8 +69,8 @@ public class SpawnControl : MonoBehaviour
         newObject = Instantiate<GameObject>(prefabArray[creatureType]);
         newCreature = newObject.GetComponent<DefaultCreature>();
 
-        newCreature.gameControl = gameControl;
-        newCreature.combatControl = combatControl;
+        newCreature.SetGameControl(gameControl);
+        newCreature.SetCombatControl(combatControl);
 
         if(side == GameControl.Sides.Friendly)
         {

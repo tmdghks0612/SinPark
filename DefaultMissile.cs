@@ -33,7 +33,7 @@ public class DefaultMissile : MonoBehaviour
     private void OnTriggerEnter2D(Collider2D collision)
     {
         Debug.Log("Enter");
-        if (collision.gameObject.GetComponent<DefaultCreature>().side != this.side)
+        if (collision.gameObject.GetComponent<DefaultCreature>().getSide() != this.side)
         {
             collision.gameObject.GetComponent<DefaultCreature>().DamageTaken(attackDamage);
             Destroy(this.gameObject);
