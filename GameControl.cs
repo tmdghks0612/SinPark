@@ -9,9 +9,14 @@ public class GameControl : MonoBehaviour
     public SpawnControl spawnControl;
 
     //variables defined overall in game
-    public int maxLanes = 3;
-    public int maxUnits = 100;
+    private int maxLanes = 3;
+    private int maxUnits = 100;
     public int typeCreature = 2;
+    private Vector3 cameraSpeed;
+    private float smoothSpeed;
+    private GameObject mainCamera;
+    private Vector3 targetPosition;
+    private Vector3 smoothPosition;
 
     //>>> parameters for UI Summon Button may change later
     public GameObject[] lanes;
@@ -22,10 +27,14 @@ public class GameControl : MonoBehaviour
     public enum Sides {Friendly, Hostile};
 
     //
+    
 
     // Start is called before the first frame update
     void Start()
     {
+        cameraSpeed = new Vector3(2.0f, 0, 0);
+        mainCamera = GameObject.FindWithTag("MainCamera");
+        targetPosition = mainCamera.transform.position;
         for(int i=0; i<SummonButton.Length; i++)
         {
             int temp = i;
@@ -80,5 +89,29 @@ public class GameControl : MonoBehaviour
     void Update()
     {
         
+    }
+
+    private void LateUpdate()
+    {
+        if (Input.GetKey("right"))
+        {
+            targetPosition = mainCamera.transform.position + cameraSpeed;
+        }
+        else if (Input.GetKey("left"))
+        {
+            targetPosition = mainCamera.transform.position - cameraSpeed;
+        }
+
+        smoothPosition = Vector3.Lerp(mainCamera.transform.position, targetPosition, 0.05f);
+        mainCamera.transform.position = smoothPosition;
+    }
+
+    public int GetMaxLanes()
+    {
+        return maxLanes;
+    }
+    public int GetMaxUnits()
+    {
+        return maxUnits;
     }
 }

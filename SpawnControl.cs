@@ -26,8 +26,8 @@ public class SpawnControl : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        maxLanes = gameControl.maxLanes;
-        maxUnits = gameControl.maxUnits;
+        maxLanes = gameControl.GetMaxLanes();
+        maxUnits = gameControl.GetMaxUnits();
         typeCreature = gameControl.typeCreature;
 
         InitLaneCoords();
