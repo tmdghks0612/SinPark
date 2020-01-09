@@ -23,6 +23,8 @@ public class DefaultCreature : MonoBehaviour
 	private float attackRange;
 	[SerializeField]
 	private AttackType creatureAttackType;
+    [SerializeField]
+    private int manaCost;
 
 	private int creatureType;
 	private Vector3 start;
@@ -30,6 +32,8 @@ public class DefaultCreature : MonoBehaviour
 	private Vector3 currentPosition;
 	private bool moveFlag = true;
 	private bool Enemy = false;
+
+    //script instances
 	private GameControl gameControl;
 	private CombatControl combatControl;
 	private Animator animControl;
