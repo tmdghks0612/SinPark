@@ -7,6 +7,8 @@ public class SpawnControl : MonoBehaviour
     public GameControl gameControl;
     public CombatControl combatControl;
 
+    public GameObject manaBar;
+
     // maxLanes according to CombatControl
     private int maxLanes;
     private int maxUnits;
@@ -24,6 +26,14 @@ public class SpawnControl : MonoBehaviour
 
     public GameObject[,] prefabArray;
 
+    //mana related variables
+    private int maxMana = 100;
+    private int regenAmount = 5;
+    private float regenTime = 0.5f;
+    [SerializeField]
+    private int baseMana;
+
+
     // Start is called before the first frame update
     void Start()
     {
@@ -37,7 +47,10 @@ public class SpawnControl : MonoBehaviour
         //default creature
         combatControl.InitLanes();
         currentCreature = prefabArray[0,0].GetComponent<DefaultCreature>();
-        
+        SpawnCreatureLane( 0, GameControl.Sides.Friendly, 0) ;
+
+        this.manaBar = GameObject.Find("/GameControl/ManaContainerPrefab/Bar");
+        InvokeRepeating("GainMana", 0.5f, regenTime);
     }
 
     // Update is called once per frame
@@ -85,6 +98,39 @@ public class SpawnControl : MonoBehaviour
         combatControl.PushCreature(laneNum, side, newCreature);
     }
 
+    //mana related functions
+    bool UseMana(int cost)
+    {
+        if (cost < baseMana)
+        {
+            baseMana -= cost;
+            ScaleManaBar();
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    void GainMana()
+    {
+        if (baseMana + regenAmount > maxMana)
+        {
+            baseMana = maxMana;
+        }
+        else
+        {
+            baseMana += 5;
+        }
+        ScaleManaBar();
+    }
+
+    void ScaleManaBar()
+    {
+        manaBar.transform.localScale = new Vector3((float)baseMana / maxMana, 1.0f, 1.0f);
+    }
+
     //initialization functions
 
     //initialize coordinates of start, end of lanes
@@ -104,7 +150,7 @@ public class SpawnControl : MonoBehaviour
     {
         prefabArray = new GameObject[typeCreature,typeUpgrade];
         //find and load creature prefabs from folder 'creature#'
-        for(int i=0; i < typeCreature; ++i)
+        for (int i = 0; i < typeCreature; ++i)
         {
             for(int k=0; k < typeUpgrade; ++k)
             {
