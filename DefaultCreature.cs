@@ -28,9 +28,8 @@ public class DefaultCreature : MonoBehaviour
 	protected int creatureType;
     [SerializeField]
     protected Vector3 speed = new Vector3( 0.05f, 0, 0 );
-
-	private int creatureType;
-	private int upgradeType;
+	[SerializeField]
+	protected int upgradeType;
   
 	private Vector3 start;
 	private Vector3 end;
@@ -67,7 +66,8 @@ public class DefaultCreature : MonoBehaviour
 			if(creatureAttackType == AttackType.Melee)
 			{
 				combatControl.MeleeAttack(currentPosition, attackRange, attackDamage, laneNum, side);
-				//animControl.SetBool("onAttack", true);
+				if (animControl != null)
+					animControl.SetBool("onAttack", true);
 			}
 			else if(creatureAttackType == AttackType.Missile)
 			{
@@ -77,7 +77,8 @@ public class DefaultCreature : MonoBehaviour
 		}
 		else
 		{
-            //animControl.SetBool("onAttack", false);
+			if(animControl != null)
+				animControl.SetBool("onAttack", false);
 			moveFlag = true;
 		}
 	}

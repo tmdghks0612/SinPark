@@ -11,7 +11,7 @@ public class GameControl : MonoBehaviour
     //variables defined overall in game
     private int maxLanes = 3;
     private int maxUnits = 100;
-    public int typeCreature = 2;
+    public int typeCreature = 3;
     public int typeUpgrade = 2;
     private Vector3 cameraSpeed;
     private float smoothSpeed;
@@ -40,7 +40,7 @@ public class GameControl : MonoBehaviour
         for(int i=0; i<SummonButton.Length; i++)
         {
             int temp = i;
-            SummonButton[i].GetComponent<Button>().onClick.AddListener(delegate { ChooseLane(temp); });
+            SummonButton[i].GetComponent<Button>().onClick.AddListener(delegate { ChooseCreature(temp); });
         }
         monsterType = 0;
         for(int i=0; i<lanes.Length; i++)
@@ -56,13 +56,13 @@ public class GameControl : MonoBehaviour
 
     void SummonProcedure(int laneNumber)
     {
-        Debug.Log("Lane " + laneNumber);
+        Debug.Log("monsterType " + monsterType + "typeCreature" + typeCreature);
         spawnControl.SpawnCreatureLane(laneNumber, GameControl.Sides.Friendly, monsterType, upgradeType[monsterType]);
         spawnControl.SpawnCreatureLane(laneNumber, GameControl.Sides.Hostile, monsterType, upgradeType[monsterType]);
 
     }
 
-    void ChooseLane(int type)
+    void ChooseCreature(int type)
     {
         if (type != monsterType)
         {

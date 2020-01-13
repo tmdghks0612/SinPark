@@ -15,13 +15,14 @@ public class PlayerBase : DefaultCreature
         
     }
 
-    public override void SetCreature( Vector2 st, Vector2 ed, int creatureType, int lane, GameControl.Sides sideCheck )
+    public override void SetCreature( Vector2 st, Vector2 ed, int creatureType, int upgradeType, int lane, GameControl.Sides sideCheck )
     {
         
-        base.SetCreature(st, ed, creatureType, lane, sideCheck);
+        base.SetCreature(st, ed, creatureType, upgradeType, lane, sideCheck);
         this.hp = maxHealth;
         this.creatureAttackType = AttackType.Missile;
         this.creatureType = 0;
+        this.upgradeType = 0;
     }
 
     public override void DamageTaken(int damage)

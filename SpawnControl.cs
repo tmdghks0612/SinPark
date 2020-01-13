@@ -47,7 +47,6 @@ public class SpawnControl : MonoBehaviour
         //default creature
         combatControl.InitLanes();
         currentCreature = prefabArray[0,0].GetComponent<DefaultCreature>();
-        SpawnCreatureLane( 0, GameControl.Sides.Friendly, 0) ;
 
         this.manaBar = GameObject.Find("/GameControl/ManaContainerPrefab/Bar");
         InvokeRepeating("GainMana", 0.5f, regenTime);
@@ -152,9 +151,8 @@ public class SpawnControl : MonoBehaviour
         //find and load creature prefabs from folder 'creature#'
         for (int i = 0; i < typeCreature; ++i)
         {
-            for(int k=0; k < typeUpgrade; ++k)
+            for(int k = 0; k < typeUpgrade; ++k)
             {
-                //prefabArray[i] = Resources.Load("creature" + i.ToString() + "/creature" + i.ToString() + "Prefab") as GameObject;
                 prefabArray[i, k] = Resources.Load("creature" + i.ToString() + "/creature" + i.ToString() + "_" + k.ToString() + "/creature" + i.ToString() + "_" + k.ToString() + "Prefab") as GameObject;
             }
         }
