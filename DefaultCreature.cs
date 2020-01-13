@@ -30,12 +30,14 @@ public class DefaultCreature : MonoBehaviour
     protected Vector3 speed = new Vector3( 0.05f, 0, 0 );
 	[SerializeField]
 	protected int upgradeType;
-  
+
+	private float deathDelay = 0.05f;
 	private Vector3 start;
 	private Vector3 end;
   
 	private Vector3 currentPosition;
 	private bool moveFlag = true;
+	private bool attackFlag = false;
 	private bool Enemy = false;
 
     //script instances
@@ -55,30 +57,22 @@ public class DefaultCreature : MonoBehaviour
 		transform.position = start;
 		moveFlag = true;
 	}
+
+
 	void DetectEnemy()
 	{
 		bool detectCheck;
 		currentPosition = transform.position;
 		detectCheck = combatControl.SearchCreature(currentPosition, attackRange, laneNum, side);
+		
 		if(detectCheck)
 		{
 			moveFlag = false;
-			if(creatureAttackType == AttackType.Melee)
-			{
-				combatControl.MeleeAttack(currentPosition, attackRange, attackDamage, laneNum, side);
-				if (animControl != null)
-					animControl.SetBool("onAttack", true);
-			}
-			else if(creatureAttackType == AttackType.Missile)
-			{
-                combatControl.MissileAttack(currentPosition, creatureType, upgradeType, attackDamage, laneNum, side);
-                //animation
-			}
+			attackFlag = true;
 		}
 		else
 		{
-			if(animControl != null)
-				animControl.SetBool("onAttack", false);
+			attackFlag = false;
 			moveFlag = true;
 		}
 	}
@@ -99,9 +93,33 @@ public class DefaultCreature : MonoBehaviour
 		MoveTo(st, ed);
 	}
 
+	void Attack()
+	{
+		if (attackFlag)
+		{
+
+			if (creatureAttackType == AttackType.Melee)
+			{
+				combatControl.MeleeAttack(currentPosition, attackRange, attackDamage, laneNum, side);
+				if (animControl != null)
+					animControl.SetBool("onAttack", true);
+			}
+			else if (creatureAttackType == AttackType.Missile)
+			{
+				combatControl.MissileAttack(currentPosition, creatureType, upgradeType, attackDamage, laneNum, side);
+				//animation
+			}
+		}
+		else
+		{
+			if (animControl != null)
+				animControl.SetBool("onAttack", false);
+		}
+	}
 	void InitCreature()
     { 
-		InvokeRepeating("DetectEnemy", 0.5f, attackSpeed);
+		InvokeRepeating("DetectEnemy", 0.1f, 0.1f);
+		InvokeRepeating("Attack",0.1f,attackSpeed);
         //attackDamage = 3;
         //hp = 9;
 	}
@@ -109,12 +127,16 @@ public class DefaultCreature : MonoBehaviour
 	{
 		hp -= damage;
 		if (hp <= 0)
-			Dead();
-		
+		{
+			InvokeRepeating("Dead", deathDelay, attackSpeed);
+		}
+			
+
 	}
 	protected void Dead()
 	{
 		combatControl.PopCreature(laneNum, side, this);
+		CancelInvoke("Dead");
 		CancelInvoke("DetectEnemy");
 		Destroy(this.gameObject);
 	}
