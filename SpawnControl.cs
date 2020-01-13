@@ -13,6 +13,7 @@ public class SpawnControl : MonoBehaviour
 
     //number of type of creatures
     private int typeCreature;
+    private int typeUpgrade;
 
     private DefaultCreature currentCreature;
 
@@ -21,7 +22,7 @@ public class SpawnControl : MonoBehaviour
     Vector2[] startCoord;
     Vector2[] endCoord;
 
-    public GameObject[] prefabArray;
+    public GameObject[,] prefabArray;
 
     // Start is called before the first frame update
     void Start()
@@ -29,13 +30,13 @@ public class SpawnControl : MonoBehaviour
         maxLanes = gameControl.GetMaxLanes();
         maxUnits = gameControl.GetMaxUnits();
         typeCreature = gameControl.typeCreature;
-
+        typeUpgrade = gameControl.typeUpgrade;
         InitLaneCoords();
         InitPrefabs();
 
         //default creature
         combatControl.InitLanes();
-        currentCreature = prefabArray[0].GetComponent<DefaultCreature>();
+        currentCreature = prefabArray[0,0].GetComponent<DefaultCreature>();
         
     }
 
@@ -45,7 +46,7 @@ public class SpawnControl : MonoBehaviour
         
     }
 
-    public void SpawnCreatureLane(int laneNum, GameControl.Sides side, int creatureType)
+    public void SpawnCreatureLane(int laneNum, GameControl.Sides side, int creatureType, int upgradeType)
     {
         if (playerCreatureNum == maxUnits)
         {
@@ -55,10 +56,10 @@ public class SpawnControl : MonoBehaviour
         playerCreatureNum++;
 
         //summon a certaine creature in lane
-        SummonCreature(laneNum, side, creatureType);
+        SummonCreature(laneNum, side, creatureType, upgradeType);
     }
 
-    void SummonCreature(int laneNum, GameControl.Sides side, int creatureType)
+    void SummonCreature(int laneNum, GameControl.Sides side, int creatureType, int upgradeType)
     {
         //spawn an actor through instantiate
         GameObject newObject;
@@ -66,7 +67,7 @@ public class SpawnControl : MonoBehaviour
 
 
         Debug.Log("creature type is " + creatureType.ToString());
-        newObject = Instantiate<GameObject>(prefabArray[creatureType]);
+        newObject = Instantiate<GameObject>(prefabArray[creatureType,upgradeType]); // 일단 0으로 설정 후에 변수 upgradeType으로 바꿔줘야한다. 함수 자체를 바꿔야 하기에 일단은 0 넣음
         newCreature = newObject.GetComponent<DefaultCreature>();
 
         newCreature.SetGameControl(gameControl);
@@ -74,11 +75,11 @@ public class SpawnControl : MonoBehaviour
 
         if(side == GameControl.Sides.Friendly)
         {
-            newCreature.SetCreature(startCoord[laneNum], endCoord[laneNum], creatureType, laneNum, side);
+            newCreature.SetCreature(startCoord[laneNum], endCoord[laneNum], creatureType, upgradeType, laneNum, side); //수정중
         }
         else
         {
-            newCreature.SetCreature(endCoord[laneNum], startCoord[laneNum], creatureType, laneNum, side);
+            newCreature.SetCreature(endCoord[laneNum], startCoord[laneNum], creatureType, upgradeType, laneNum, side); //수정중
         }
 
         combatControl.PushCreature(laneNum, side, newCreature);
@@ -101,11 +102,15 @@ public class SpawnControl : MonoBehaviour
 
     void InitPrefabs()
     {
-        prefabArray = new GameObject[typeCreature];
+        prefabArray = new GameObject[typeCreature,typeUpgrade];
         //find and load creature prefabs from folder 'creature#'
         for(int i=0; i < typeCreature; ++i)
         {
-            prefabArray[i] = Resources.Load("creature" + i.ToString() + "/creature" + i.ToString() + "Prefab") as GameObject;
+            for(int k=0; k < typeUpgrade; ++k)
+            {
+                //prefabArray[i] = Resources.Load("creature" + i.ToString() + "/creature" + i.ToString() + "Prefab") as GameObject;
+                prefabArray[i, k] = Resources.Load("creature" + i.ToString() + "/creature" + i.ToString() + "_" + k.ToString() + "/creature" + i.ToString() + "_" + k.ToString() + "Prefab") as GameObject;
+            }
         }
     }
 }

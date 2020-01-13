@@ -12,6 +12,7 @@ public class GameControl : MonoBehaviour
     private int maxLanes = 3;
     private int maxUnits = 100;
     public int typeCreature = 2;
+    public int typeUpgrade = 2;
     private Vector3 cameraSpeed;
     private float smoothSpeed;
     private GameObject mainCamera;
@@ -21,6 +22,7 @@ public class GameControl : MonoBehaviour
     //>>> parameters for UI Summon Button may change later
     public GameObject[] lanes;
     private int monsterType;
+    private int[] upgradeType;
     public GameObject[] SummonButton;
     private bool buttonFlag = true;
     //<<<
@@ -47,13 +49,16 @@ public class GameControl : MonoBehaviour
             lanes[i].GetComponent<Button>().onClick.AddListener(delegate { SummonProcedure(temp); });
             lanes[i].SetActive(false);
         }
+
+        upgradeType = new int[typeCreature];
+        setUpgrade();
     }
 
     void SummonProcedure(int laneNumber)
     {
         Debug.Log("Lane " + laneNumber);
-        spawnControl.SpawnCreatureLane(laneNumber, GameControl.Sides.Friendly, monsterType);
-        spawnControl.SpawnCreatureLane(laneNumber, GameControl.Sides.Hostile, monsterType);
+        spawnControl.SpawnCreatureLane(laneNumber, GameControl.Sides.Friendly, monsterType, upgradeType[monsterType]);
+        spawnControl.SpawnCreatureLane(laneNumber, GameControl.Sides.Hostile, monsterType, upgradeType[monsterType]);
 
     }
 
@@ -85,6 +90,13 @@ public class GameControl : MonoBehaviour
         }
     }
 
+    void setUpgrade() //임시적으로 해둔것, 나중에는 type을 받아와서 버튼에 저장할수 있도록 해줘야 한다.
+    {
+        for(int i=0; i<typeCreature; i++)
+        {
+            upgradeType[i] = 0;
+        }
+    }
     // Update is called once per frame
     void Update()
     {

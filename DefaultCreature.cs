@@ -27,6 +27,7 @@ public class DefaultCreature : MonoBehaviour
     private int manaCost;
 
 	private int creatureType;
+	private int upgradeType;
 	private Vector3 start;
 	private Vector3 end;
 	private Vector3 currentPosition;
@@ -65,7 +66,7 @@ public class DefaultCreature : MonoBehaviour
 			}
 			else if(creatureAttackType == AttackType.Missile)
 			{
-                combatControl.MissileAttack(currentPosition, creatureType, attackDamage, laneNum, side);
+                combatControl.MissileAttack(currentPosition, creatureType, upgradeType, attackDamage, laneNum, side);
                 //animation
 			}
 		}
@@ -75,12 +76,13 @@ public class DefaultCreature : MonoBehaviour
 			moveFlag = true;
 		}
 	}
-	public void SetCreature(Vector2 st, Vector2 ed, int creatureType, int lane, GameControl.Sides sideCheck)
+	public void SetCreature(Vector2 st, Vector2 ed, int creatureType, int upgradeType, int lane, GameControl.Sides sideCheck)
 	{
 		InitCreature();
 		laneNum = lane;
 		side = sideCheck;
         this.creatureType = creatureType;
+		this.upgradeType = upgradeType;
 		if(side == GameControl.Sides.Hostile)
 		{
 			speed.x *= -1;

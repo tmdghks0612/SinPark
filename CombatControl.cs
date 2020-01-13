@@ -9,11 +9,12 @@ public class CombatControl : MonoBehaviour
     private int maxLanes;
     private int maxUnits;
     private int typeCreature;
+    private int typeUpgrade;
 
     private readonly object lock_friendlyLanes = new object();
     private readonly object lock_hostileLanes = new object();
 
-    private GameObject[] missileArray;
+    private GameObject[,] missileArray;
 
     //structure for sides containing creatureList(lanes)
     //creatureList contains creatures in the lane
@@ -31,6 +32,7 @@ public class CombatControl : MonoBehaviour
         maxLanes = gameControl.GetMaxLanes();
         maxUnits = gameControl.GetMaxUnits();
         typeCreature = gameControl.typeCreature;
+        typeUpgrade = gameControl.typeUpgrade;
 
         InitLanes();
         InitMissiles();
@@ -161,9 +163,9 @@ public class CombatControl : MonoBehaviour
         }
     }
 
-    public void MissileAttack( Vector3 currentPosition, int missileType, int attackDamage, int laneNum, GameControl.Sides side)
+    public void MissileAttack( Vector3 currentPosition, int missileType, int upgradeType, int attackDamage, int laneNum, GameControl.Sides side)
     {
-        GameObject newObject = Instantiate<GameObject>(missileArray[missileType]);
+        GameObject newObject = Instantiate<GameObject>(missileArray[missileType,upgradeType]); 
         DefaultMissile newMissile = newObject.GetComponent<DefaultMissile>();
         newMissile.SetMissile( currentPosition, side );
     }
@@ -187,11 +189,14 @@ public class CombatControl : MonoBehaviour
 
     public void InitMissiles()
     {
-        missileArray = new GameObject[typeCreature];
+        missileArray = new GameObject[typeCreature,typeUpgrade]; 
         //find and load creature prefabs from folder 'creature#'
         for(int i = 0; i < typeCreature; i++)
         {
-            missileArray[i] = Resources.Load("creature" + i.ToString() + "/creature" + i.ToString() + "Projectile") as GameObject;
+            for (int k = 0; k < typeUpgrade; k++)
+            {
+                missileArray[i, k] = Resources.Load("creature" + i.ToString() + "/creature" + i.ToString() + "_" + k.ToString() + "/creature" + i.ToString() + "_" + k.ToString() + "Projectile") as GameObject;
+            }
         }
 
     }
