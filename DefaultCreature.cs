@@ -11,23 +11,25 @@ public class DefaultCreature : MonoBehaviour
 
 	private GameControl.Sides side;
 	private int laneNum;
-	private Vector3 speed;
 
 	[SerializeField]
-	private int hp;
+	protected int hp;
 	[SerializeField]
-	private int attackDamage;
+	protected int attackDamage;
 	[SerializeField]
-	private float attackSpeed;
+	protected float attackSpeed;
 	[SerializeField]
-	private float attackRange;
+	protected float attackRange;
 	[SerializeField]
-	private AttackType creatureAttackType;
+	protected AttackType creatureAttackType;
     [SerializeField]
-    private int manaCost;
+    protected int manaCost;
+    [SerializeField]
+	protected int creatureType;
+    [SerializeField]
+    protected Vector3 speed = new Vector3( 0.05f, 0, 0 );
 
-	private int creatureType;
-	private Vector3 start;
+    private Vector3 start;
 	private Vector3 end;
 	private Vector3 currentPosition;
 	private bool moveFlag = true;
@@ -61,7 +63,7 @@ public class DefaultCreature : MonoBehaviour
 			if(creatureAttackType == AttackType.Melee)
 			{
 				combatControl.MeleeAttack(currentPosition, attackRange, attackDamage, laneNum, side);
-				animControl.SetBool("onAttack", true);
+				//animControl.SetBool("onAttack", true);
 			}
 			else if(creatureAttackType == AttackType.Missile)
 			{
@@ -71,11 +73,11 @@ public class DefaultCreature : MonoBehaviour
 		}
 		else
 		{
-			animControl.SetBool("onAttack", false);
+            //animControl.SetBool("onAttack", false);
 			moveFlag = true;
 		}
 	}
-	public void SetCreature(Vector2 st, Vector2 ed, int creatureType, int lane, GameControl.Sides sideCheck)
+	public virtual void SetCreature(Vector2 st, Vector2 ed, int creatureType, int lane, GameControl.Sides sideCheck)
 	{
 		InitCreature();
 		laneNum = lane;
@@ -92,20 +94,19 @@ public class DefaultCreature : MonoBehaviour
 	}
 
 	void InitCreature()
-	{
-		speed = new Vector3(0.05f,0,0); //Fixed Value. Should be changed later
+    { 
 		InvokeRepeating("DetectEnemy", 0.5f, attackSpeed);
         //attackDamage = 3;
         //hp = 9;
 	}
-	public void DamageTaken(int damage)
+	public virtual void DamageTaken(int damage)
 	{
 		hp -= damage;
 		if (hp <= 0)
 			Dead();
 		
 	}
-	void Dead()
+	protected void Dead()
 	{
 		combatControl.PopCreature(laneNum, side, this);
 		CancelInvoke("DetectEnemy");
