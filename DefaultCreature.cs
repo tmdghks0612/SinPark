@@ -11,25 +11,34 @@ public class DefaultCreature : MonoBehaviour
 
 	private GameControl.Sides side;
 	private int laneNum;
-	private Vector3 speed;
 
 	[SerializeField]
-	private int hp;
+	protected int hp;
 	[SerializeField]
-	private int attackDamage;
+	protected int attackDamage;
 	[SerializeField]
-	private float attackSpeed;
+	protected float attackSpeed;
 	[SerializeField]
-	private float attackRange;
+	protected float attackRange;
 	[SerializeField]
-	private AttackType creatureAttackType;
-
-	private int creatureType;
+	protected AttackType creatureAttackType;
+    [SerializeField]
+    protected int manaCost;
+    [SerializeField]
+	protected int creatureType;
+    [SerializeField]
+    protected Vector3 speed = new Vector3( 0.05f, 0, 0 );
+	[SerializeField]
+	protected int upgradeType;
+  
 	private Vector3 start;
 	private Vector3 end;
+  
 	private Vector3 currentPosition;
 	private bool moveFlag = true;
 	private bool Enemy = false;
+
+    //script instances
 	private GameControl gameControl;
 	private CombatControl combatControl;
 	private Animator animControl;
@@ -57,26 +66,29 @@ public class DefaultCreature : MonoBehaviour
 			if(creatureAttackType == AttackType.Melee)
 			{
 				combatControl.MeleeAttack(currentPosition, attackRange, attackDamage, laneNum, side);
-				animControl.SetBool("onAttack", true);
+				if (animControl != null)
+					animControl.SetBool("onAttack", true);
 			}
 			else if(creatureAttackType == AttackType.Missile)
 			{
-                combatControl.MissileAttack(currentPosition, creatureType, attackDamage, laneNum, side);
+                combatControl.MissileAttack(currentPosition, creatureType, upgradeType, attackDamage, laneNum, side);
                 //animation
 			}
 		}
 		else
 		{
-			animControl.SetBool("onAttack", false);
+			if(animControl != null)
+				animControl.SetBool("onAttack", false);
 			moveFlag = true;
 		}
 	}
-	public void SetCreature(Vector2 st, Vector2 ed, int creatureType, int lane, GameControl.Sides sideCheck)
+	public virtual void SetCreature(Vector2 st, Vector2 ed, int creatureType, int upgradeType, int lane, GameControl.Sides sideCheck)
 	{
 		InitCreature();
 		laneNum = lane;
 		side = sideCheck;
         this.creatureType = creatureType;
+		this.upgradeType = upgradeType;
 		if(side == GameControl.Sides.Hostile)
 		{
 			speed.x *= -1;
@@ -88,20 +100,19 @@ public class DefaultCreature : MonoBehaviour
 	}
 
 	void InitCreature()
-	{
-		speed = new Vector3(0.05f,0,0); //Fixed Value. Should be changed later
+    { 
 		InvokeRepeating("DetectEnemy", 0.5f, attackSpeed);
         //attackDamage = 3;
         //hp = 9;
 	}
-	public void DamageTaken(int damage)
+	public virtual void DamageTaken(int damage)
 	{
 		hp -= damage;
 		if (hp <= 0)
 			Dead();
 		
 	}
-	void Dead()
+	protected void Dead()
 	{
 		combatControl.PopCreature(laneNum, side, this);
 		CancelInvoke("DetectEnemy");
