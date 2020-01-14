@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Text;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Networking;
@@ -41,6 +42,8 @@ public class GameControl : MonoBehaviour
         cameraSpeed = new Vector3(2.0f, 0, 0);
         mainCamera = GameObject.FindWithTag("MainCamera");
         targetPosition = mainCamera.transform.position;
+        upgradeType = new int[typeCreature];
+        creatureType = new int[typeCreature];
         //initializing creature and its upgrade type later changes will remove this 2 lines @@@@@@@@
         InitUpgradeType();
         InitCreatureType();
@@ -57,12 +60,12 @@ public class GameControl : MonoBehaviour
             lanes[i].SetActive(false);
         }
 
-        upgradeType = new int[typeCreature];   
+           
     }
 
     void SummonProcedure(int laneNumber)
     {
-        StartCoroutine(SendSpawnRequest(laneNumber, GameControl.Sides.Friendly, monsterType, upgradeType));
+        StartCoroutine(SendSpawnRequest(laneNumber, GameControl.Sides.Friendly, monsterType, upgradeType[monsterType]));
         Debug.Log("monsterType " + monsterType + "typeCreature" + typeCreature);
         spawnControl.SpawnCreatureLane(laneNumber, GameControl.Sides.Friendly, monsterType, upgradeType[monsterType]);
         spawnControl.SpawnCreatureLane(laneNumber, GameControl.Sides.Hostile, monsterType, upgradeType[monsterType]);
@@ -101,9 +104,8 @@ public class GameControl : MonoBehaviour
     IEnumerator SendSpawnRequest(int laneNumber, GameControl.Sides side, int creatureType, int upgradeType)
     {
         WWWForm form = new WWWForm();
-        form.headers.Add("Content-Type", "application/json");
-
-        form.AddField("laneNumber", laneNumber);
+        
+        /*form.AddField("laneNumber", laneNumber);
         if(side == GameControl.Sides.Friendly)
         {
             form.AddField("side", 0);
@@ -114,17 +116,22 @@ public class GameControl : MonoBehaviour
         }
 
         form.AddField("creatureType", creatureType);
-        form.AddField("upgradeType", upgradeType);
-        /*
+        form.AddField("upgradeType", upgradeType);*/
+        
         SpawnRequestForm newRequestForm = new SpawnRequestForm();
         newRequestForm.laneNumber = laneNumber;
         newRequestForm.side = side;
         newRequestForm.creatureType = creatureType;
         newRequestForm.upgradeType = upgradeType;
-        string newJson = JsonUtility.ToJson(newRequestForm);*/
+        string newJson = JsonUtility.ToJson(newRequestForm);
 
-        UnityWebRequest www = UnityWebRequest.Post(SpawnRequestForm.getUrl(), form);
-        yield return 1;
+        //UnityWebRequest newRequest = UnityWebRequest.Post(SpawnRequestForm.getUrl(), newJson);
+        UnityWebRequest newRequest = new UnityWebRequest(SpawnRequestForm.getUrl(), "POST");
+        byte[] bodyByte = Encoding.UTF8.GetBytes(newJson);
+        newRequest.uploadHandler = (UploadHandler)new UploadHandlerRaw(bodyByte);
+        newRequest.downloadHandler = (DownloadHandler)new DownloadHandlerBuffer();
+        newRequest.SetRequestHeader("Content-Type", "application/json");
+        yield return newRequest.SendWebRequest();
 
     }
 
