@@ -87,11 +87,11 @@ public class SpawnControl : MonoBehaviour
 
         if(side == GameControl.Sides.Friendly)
         {
-            newCreature.SetCreature(startCoord[laneNum], endCoord[laneNum], creatureType, upgradeType, laneNum, side); //수정중
+            newCreature.SetCreature(startCoord[laneNum], endCoord[laneNum], creatureType, upgradeType, laneNum, side);
         }
         else
         {
-            newCreature.SetCreature(endCoord[laneNum], startCoord[laneNum], creatureType, upgradeType, laneNum, side); //수정중
+            newCreature.SetCreature(endCoord[laneNum], startCoord[laneNum], creatureType, upgradeType, laneNum, side);
         }
 
         combatControl.PushCreature(laneNum, side, newCreature);
