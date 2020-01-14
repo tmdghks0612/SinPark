@@ -1,7 +1,9 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Text;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.Networking;
 
 public class GameControl : MonoBehaviour
 {
@@ -20,16 +22,19 @@ public class GameControl : MonoBehaviour
     private Vector3 smoothPosition;
 
     //>>> parameters for UI Summon Button may change later
+
+    protected int[] creatureType;
+    protected int[] upgradeType;
+
     public GameObject[] lanes;
     private int monsterType;
-    private int[] upgradeType;
     public GameObject[] SummonButton;
     private bool buttonFlag = true;
     //<<<
-    public enum Sides {Friendly, Hostile};
+    public enum Sides { Friendly, Hostile };
 
     //
-    
+
 
     // Start is called before the first frame update
     void Start()
@@ -37,25 +42,30 @@ public class GameControl : MonoBehaviour
         cameraSpeed = new Vector3(2.0f, 0, 0);
         mainCamera = GameObject.FindWithTag("MainCamera");
         targetPosition = mainCamera.transform.position;
-        for(int i=0; i<SummonButton.Length; i++)
+        upgradeType = new int[typeCreature];
+        creatureType = new int[typeCreature];
+        //initializing creature and its upgrade type later changes will remove this 2 lines @@@@@@@@
+        InitUpgradeType();
+        InitCreatureType();
+        for (int i = 0; i < SummonButton.Length; i++)
         {
-            int temp = i;
+            int temp = creatureType[i];
             SummonButton[i].GetComponent<Button>().onClick.AddListener(delegate { ChooseCreature(temp); });
         }
         monsterType = 0;
-        for(int i=0; i<lanes.Length; i++)
+        for (int i = 0; i < lanes.Length; i++)
         {
-            int temp = i;
+            int temp = creatureType[i];
             lanes[i].GetComponent<Button>().onClick.AddListener(delegate { SummonProcedure(temp); });
             lanes[i].SetActive(false);
         }
 
-        upgradeType = new int[typeCreature];
-        setUpgrade();
+           
     }
 
     void SummonProcedure(int laneNumber)
     {
+        StartCoroutine(SendSpawnRequest(laneNumber, GameControl.Sides.Friendly, monsterType, upgradeType[monsterType]));
         Debug.Log("monsterType " + monsterType + "typeCreature" + typeCreature);
         spawnControl.SpawnCreatureLane(laneNumber, GameControl.Sides.Friendly, monsterType, upgradeType[monsterType]);
         spawnControl.SpawnCreatureLane(laneNumber, GameControl.Sides.Hostile, monsterType, upgradeType[monsterType]);
@@ -90,17 +100,45 @@ public class GameControl : MonoBehaviour
         }
     }
 
-    void setUpgrade() //임시적으로 해둔것, 나중에는 type을 받아와서 버튼에 저장할수 있도록 해줘야 한다.
+
+    IEnumerator SendSpawnRequest(int laneNumber, GameControl.Sides side, int creatureType, int upgradeType)
     {
-        for(int i=0; i<typeCreature; i++)
+        WWWForm form = new WWWForm();
+        
+        /*form.AddField("laneNumber", laneNumber);
+        if(side == GameControl.Sides.Friendly)
         {
-            upgradeType[i] = 0;
+            form.AddField("side", 0);
         }
+        else
+        {
+            form.AddField("side", 1);
+        }
+
+        form.AddField("creatureType", creatureType);
+        form.AddField("upgradeType", upgradeType);*/
+        
+        SpawnRequestForm newRequestForm = new SpawnRequestForm();
+        newRequestForm.laneNumber = laneNumber;
+        newRequestForm.side = side;
+        newRequestForm.creatureType = creatureType;
+        newRequestForm.upgradeType = upgradeType;
+        string newJson = JsonUtility.ToJson(newRequestForm);
+
+        //UnityWebRequest newRequest = UnityWebRequest.Post(SpawnRequestForm.getUrl(), newJson);
+        UnityWebRequest newRequest = new UnityWebRequest(SpawnRequestForm.getUrl(), "POST");
+        byte[] bodyByte = Encoding.UTF8.GetBytes(newJson);
+        newRequest.uploadHandler = (UploadHandler)new UploadHandlerRaw(bodyByte);
+        newRequest.downloadHandler = (DownloadHandler)new DownloadHandlerBuffer();
+        newRequest.SetRequestHeader("Content-Type", "application/json");
+        yield return newRequest.SendWebRequest();
+
     }
+
     // Update is called once per frame
     void Update()
     {
-        
+
     }
 
     private void LateUpdate()
@@ -127,4 +165,19 @@ public class GameControl : MonoBehaviour
         return maxUnits;
     }
 
+    void InitUpgradeType() //임시적으로 해둔것, 나중에는 type을 받아와서 버튼에 저장할수 있도록 해줘야 한다.
+    {
+        for (int i = 0; i < typeCreature; i++)
+        {
+            upgradeType[i] = 0;
+        }
+    }
+
+    private void InitCreatureType()
+    {
+        for(int i=0; i< typeCreature; ++i)
+        {
+            creatureType[i] = i;
+        }
+    }
 }
