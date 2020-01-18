@@ -102,22 +102,7 @@ public class GameControl : MonoBehaviour
 
 
     IEnumerator SendSpawnRequest(int laneNumber, GameControl.Sides side, int creatureType, int upgradeType)
-    {
-        WWWForm form = new WWWForm();
-        
-        /*form.AddField("laneNumber", laneNumber);
-        if(side == GameControl.Sides.Friendly)
-        {
-            form.AddField("side", 0);
-        }
-        else
-        {
-            form.AddField("side", 1);
-        }
-
-        form.AddField("creatureType", creatureType);
-        form.AddField("upgradeType", upgradeType);*/
-        
+    {        
         SpawnRequestForm newRequestForm = new SpawnRequestForm();
         newRequestForm.laneNumber = laneNumber;
         newRequestForm.side = side;
@@ -125,14 +110,12 @@ public class GameControl : MonoBehaviour
         newRequestForm.upgradeType = upgradeType;
         string newJson = JsonUtility.ToJson(newRequestForm);
 
-        //UnityWebRequest newRequest = UnityWebRequest.Post(SpawnRequestForm.getUrl(), newJson);
         UnityWebRequest newRequest = new UnityWebRequest(SpawnRequestForm.getUrl(), "POST");
         byte[] bodyByte = Encoding.UTF8.GetBytes(newJson);
         newRequest.uploadHandler = (UploadHandler)new UploadHandlerRaw(bodyByte);
         newRequest.downloadHandler = (DownloadHandler)new DownloadHandlerBuffer();
         newRequest.SetRequestHeader("Content-Type", "application/json");
         yield return newRequest.SendWebRequest();
-
     }
 
     // Update is called once per frame
