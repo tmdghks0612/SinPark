@@ -154,7 +154,43 @@ public class CombatControl : MonoBehaviour
                 //search creatures within attackrange of hostile lanes in current laneNum
                 for (int i = currentList.Count-1; i >= 0; i--)
                 {
-                    if (currentList[i].transform.position.x - currentPosition.x < attackRange)
+                    if (currentPosition.x - currentList[i].transform.position.x < attackRange)
+                    {
+                        currentList[i].DamageTaken(attackDamage);
+                    }
+                }
+            }
+        }
+    }
+
+    public void Heal(Vector3 currentPosition, float attackRange, int attackDamage, int laneNum, GameControl.Sides side)
+    {
+        Debug.Log("Healing");
+        if (side == GameControl.Sides.Friendly)
+        {
+            lock (lock_friendlyLanes)
+            {
+                List<DefaultCreature> currentList = friendlyLanes.creatureList[laneNum];
+                
+                for (int i = currentList.Count - 1; i >= 0; i--)
+                {
+                    if (Mathf.Abs(currentList[i].transform.position.x - currentPosition.x) < attackRange)
+                    {
+                        currentList[i].DamageTaken(attackDamage);
+                    }
+                }
+            }
+        }
+        //attack from hostile to friendly
+        else
+        {
+            lock (lock_hostileLanes)
+            {
+                List<DefaultCreature> currentList = hostileLanes.creatureList[laneNum];
+                
+                for (int i = currentList.Count - 1; i >= 0; i--)
+                {
+                    if (Mathf.Abs(currentList[i].transform.position.x - currentPosition.x) < attackRange)
                     {
                         currentList[i].DamageTaken(attackDamage);
                     }

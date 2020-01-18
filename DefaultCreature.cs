@@ -7,11 +7,12 @@ public class DefaultCreature : MonoBehaviour
 	// Start is called before the first frame update
 	//Transform creatureTransform;
 
-	public enum AttackType { Melee, Missile };
+	public enum AttackType { Melee, Missile, Heal };
 
-	private GameControl.Sides side;
-	private int laneNum;
+	protected GameControl.Sides side;
+	protected int laneNum;
 
+	private int maxHp;
 	[SerializeField]
 	protected int hp;
 	[SerializeField]
@@ -22,7 +23,9 @@ public class DefaultCreature : MonoBehaviour
 	protected float attackRange;
 	[SerializeField]
 	protected AttackType creatureAttackType;
-    [SerializeField]
+	[SerializeField]
+	protected float detectRange;
+	[SerializeField]
     protected int manaCost;
     [SerializeField]
 	protected int creatureType;
@@ -38,7 +41,7 @@ public class DefaultCreature : MonoBehaviour
 	private Vector3 currentPosition;
 	private bool moveFlag = true;
 	private bool attackFlag = false;
-	private bool Enemy = false;
+	protected bool Enemy = false;
 
     //script instances
 	private GameControl gameControl;
@@ -50,7 +53,7 @@ public class DefaultCreature : MonoBehaviour
 	}
 
 	
-	void MoveTo(Vector2 st, Vector2 ed)
+	protected void MoveTo(Vector2 st, Vector2 ed)
 	{
 		start = st;
 		end = ed;
@@ -59,11 +62,11 @@ public class DefaultCreature : MonoBehaviour
 	}
 
 
-	void DetectEnemy()
+	public virtual void DetectEnemy()
 	{
 		bool detectCheck;
 		currentPosition = transform.position;
-		detectCheck = combatControl.SearchCreature(currentPosition, attackRange, laneNum, side);
+		detectCheck = combatControl.SearchCreature(currentPosition, detectRange, laneNum, side);
 		
 		if(detectCheck)
 		{
@@ -81,6 +84,8 @@ public class DefaultCreature : MonoBehaviour
 		InitCreature();
 		laneNum = lane;
 		side = sideCheck;
+		detectRange = attackRange;
+		maxHp = hp;
         this.creatureType = creatureType;
 		this.upgradeType = upgradeType;
 		if(side == GameControl.Sides.Hostile)
@@ -109,6 +114,12 @@ public class DefaultCreature : MonoBehaviour
 				combatControl.MissileAttack(currentPosition, creatureType, upgradeType, attackDamage, laneNum, side);
 				//animation
 			}
+			else if(creatureAttackType == AttackType.Heal)
+			{
+				combatControl.Heal(currentPosition, attackRange, attackDamage, laneNum, side);
+				if (animControl != null)
+					animControl.SetBool("onAttack", true);
+			}
 		}
 		else
 		{
@@ -116,7 +127,7 @@ public class DefaultCreature : MonoBehaviour
 				animControl.SetBool("onAttack", false);
 		}
 	}
-	void InitCreature()
+	protected void InitCreature()
     { 
 		InvokeRepeating("DetectEnemy", 0.1f, 0.1f);
 		InvokeRepeating("Attack",0.1f,attackSpeed);
@@ -125,10 +136,18 @@ public class DefaultCreature : MonoBehaviour
 	}
 	public virtual void DamageTaken(int damage)
 	{
+		if(damage <0)
+		{
+			Debug.Log("Healed");
+		}
 		hp -= damage;
 		if (hp <= 0)
 		{
 			InvokeRepeating("Dead", deathDelay, attackSpeed);
+		}
+		else if(hp > maxHp)
+		{
+			hp = maxHp;
 		}
 			
 
