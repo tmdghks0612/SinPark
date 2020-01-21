@@ -5,25 +5,15 @@ using UnityEngine;
 public class BoomerCreature : DefaultCreature
 {
     public GameObject explosion;
-    // Start is called before the first frame update
-    void Start()
-    {
-
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-
-    }
 
     protected override void Attack()
     {
+        Debug.Log(attackFlag);
         if (attackFlag)
         {
             if (animControl != null)
                 animControl.SetBool("onAttack", true);
-            this.Dead();
+            Dead();
         }
         else
         {

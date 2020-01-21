@@ -68,7 +68,6 @@ public class DefaultCreature : MonoBehaviour
 		bool detectCheck;
 		currentPosition = transform.position;
 		detectCheck = combatControl.SearchCreature(currentPosition, detectRange, laneNum, side);
-		
 		if(detectCheck)
 		{
 			moveFlag = false;
