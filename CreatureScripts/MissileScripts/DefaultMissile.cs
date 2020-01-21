@@ -37,7 +37,7 @@ public class DefaultMissile : MonoBehaviour
         {
             if (collided.CompareTag(gameObject.tag))
             {
-                collision.gameObject.GetComponent<DefaultCreature>().DamageTaken(attackDamage);
+                collision.gameObject.GetComponent<DefaultCreature>().DamageTaken(attackDamage,0);
                 Destroy(this.gameObject);
             }
         }
@@ -48,7 +48,8 @@ public class DefaultMissile : MonoBehaviour
         this.gameObject.transform.position = currentPosition;
         this.side = side;
         gameObject.tag = "Lane" + laneNum;
-        if(this.side == GameControl.Sides.Hostile)
+        gameObject.layer = 15 - laneNum;
+        if (this.side == GameControl.Sides.Hostile)
         {
             direction = new Vector3(direction.x * -1, direction.y, direction.z);
             transform.localScale = new Vector3(-1.0f * transform.localScale.x, 1.0f * transform.localScale.y, 1.0f);

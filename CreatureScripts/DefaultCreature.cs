@@ -87,6 +87,7 @@ public class DefaultCreature : MonoBehaviour
 		InitCreature();
 		laneNum = lane;
 		gameObject.tag = "Lane" + lane;
+		gameObject.layer = 15 - lane;
 		side = sideCheck;
 		detectRange = attackRange;
 		maxHp = hp;
@@ -145,15 +146,21 @@ public class DefaultCreature : MonoBehaviour
 		if (hp <= 0)
 		{
 			InvokeRepeating("Dead", deathDelay, attackSpeed);
+			return;
+		}
+
+		if (damage > 0)
+		{
+			if (size > this.size)
+			{
+				OnPushed();
+			}
 		}
 		else if(hp > maxHp)
 		{
-            if(size > this.size)
-            {
-                OnPushed();
-            }
 			hp = maxHp;
 		}
+		
 		
 	}
 
