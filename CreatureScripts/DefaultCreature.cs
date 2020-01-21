@@ -38,15 +38,15 @@ public class DefaultCreature : MonoBehaviour
 	private Vector3 start;
 	private Vector3 end;
   
-	private Vector3 currentPosition;
-	private bool moveFlag = true;
-	private bool attackFlag = false;
+	protected Vector3 currentPosition;
+	protected bool moveFlag = true;
+	protected bool attackFlag = false;
 	protected bool Enemy = false;
 
     //script instances
 	private GameControl gameControl;
-	private CombatControl combatControl;
-	private Animator animControl;
+	protected CombatControl combatControl;
+	protected Animator animControl;
 	void Start()
     {
 		animControl = GetComponent<Animator>();
@@ -62,7 +62,7 @@ public class DefaultCreature : MonoBehaviour
 	}
 
 
-	public virtual void DetectEnemy()
+	protected virtual void DetectEnemy()
 	{
 		bool detectCheck;
 		currentPosition = transform.position;
@@ -98,7 +98,7 @@ public class DefaultCreature : MonoBehaviour
 		MoveTo(st, ed);
 	}
 
-	void Attack()
+	protected virtual void Attack()
 	{
 		if (attackFlag)
 		{
@@ -112,7 +112,8 @@ public class DefaultCreature : MonoBehaviour
 			else if (creatureAttackType == AttackType.Missile)
 			{
 				combatControl.MissileAttack(currentPosition, creatureType, upgradeType, attackDamage, laneNum, side);
-				//animation
+				if (animControl != null)
+					animControl.SetBool("onAttack", true);
 			}
 			else if(creatureAttackType == AttackType.Heal)
 			{
@@ -152,7 +153,7 @@ public class DefaultCreature : MonoBehaviour
 			
 
 	}
-	protected void Dead()
+	protected virtual void Dead()
 	{
 		combatControl.PopCreature(laneNum, side, this);
 		CancelInvoke("Dead");
