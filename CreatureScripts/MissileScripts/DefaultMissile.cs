@@ -25,7 +25,7 @@ public class DefaultMissile : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
+    protected virtual void Update()
     {
         this.gameObject.transform.position += direction;
     }
@@ -46,7 +46,7 @@ public class DefaultMissile : MonoBehaviour
         this.side = side;
         if(this.side == GameControl.Sides.Hostile)
         {
-            direction *= -1;
+            direction = new Vector3(direction.x * -1, direction.y, direction.z);
             transform.localScale = new Vector3(-1.0f * transform.localScale.x, 1.0f * transform.localScale.y, 1.0f);
         }
     }
