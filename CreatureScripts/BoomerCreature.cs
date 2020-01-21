@@ -27,7 +27,7 @@ public class BoomerCreature : DefaultCreature
         combatControl.PopCreature(laneNum, side, this);
         CancelInvoke("Dead");
         CancelInvoke("DetectEnemy");
-        combatControl.MeleeAttack(currentPosition, attackRange, attackDamage, laneNum, side);
+        combatControl.MeleeAttack(currentPosition, attackRange, attackDamage, size + 1, laneNum, side);
         Instantiate(explosion, currentPosition, transform.rotation = Quaternion.identity);
         Destroy(this.gameObject);
     }

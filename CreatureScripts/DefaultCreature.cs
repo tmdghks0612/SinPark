@@ -23,7 +23,9 @@ public class DefaultCreature : MonoBehaviour
 	protected float attackRange;
 	[SerializeField]
 	protected AttackType creatureAttackType;
-	[SerializeField]
+    [SerializeField]
+    protected int size;
+    [SerializeField]
 	protected float detectRange;
 	[SerializeField]
     protected int manaCost;
@@ -34,6 +36,7 @@ public class DefaultCreature : MonoBehaviour
 	[SerializeField]
 	protected int upgradeType;
 
+    private float pushDistance = 1.0f;
 	private float deathDelay = 0.05f;
 	private Vector3 start;
 	private Vector3 end;
@@ -106,7 +109,7 @@ public class DefaultCreature : MonoBehaviour
 
 			if (creatureAttackType == AttackType.Melee)
 			{
-				combatControl.MeleeAttack(currentPosition, attackRange, attackDamage, laneNum, side);
+				combatControl.MeleeAttack(currentPosition, attackRange, attackDamage, size, laneNum, side);
 				if (animControl != null)
 					animControl.SetBool("onAttack", true);
 			}
@@ -135,12 +138,9 @@ public class DefaultCreature : MonoBehaviour
         //attackDamage = 3;
         //hp = 9;
 	}
-	public virtual void DamageTaken(int damage)
+
+	public virtual void DamageTaken(int damage, int size)
 	{
-		if(damage <0)
-		{
-			Debug.Log("Healed");
-		}
 		hp -= damage;
 		if (hp <= 0)
 		{
@@ -148,11 +148,28 @@ public class DefaultCreature : MonoBehaviour
 		}
 		else if(hp > maxHp)
 		{
+            if(size > this.size)
+            {
+                OnPushed();
+            }
 			hp = maxHp;
 		}
-			
-
+		
 	}
+
+    protected virtual void OnPushed()
+    {
+        if(side == GameControl.Sides.Friendly)
+        {
+            gameObject.transform.position -= new Vector3(pushDistance, 0, 0);
+        }
+        else
+        {
+            gameObject.transform.position += new Vector3(pushDistance, 0, 0);
+        }
+        
+    }
+
 	protected virtual void Dead()
 	{
 		combatControl.PopCreature(laneNum, side, this);
