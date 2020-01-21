@@ -83,6 +83,7 @@ public class DefaultCreature : MonoBehaviour
 	{
 		InitCreature();
 		laneNum = lane;
+		gameObject.tag = "Lane" + lane;
 		side = sideCheck;
 		detectRange = attackRange;
 		maxHp = hp;

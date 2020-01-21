@@ -32,18 +32,22 @@ public class DefaultMissile : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        Debug.Log("Enter");
-        if (collision.gameObject.GetComponent<DefaultCreature>().getSide() != this.side)
+        GameObject collided = collision.gameObject;
+        if (collided.GetComponent<DefaultCreature>().getSide() != this.side)
         {
-            collision.gameObject.GetComponent<DefaultCreature>().DamageTaken(attackDamage);
-            Destroy(this.gameObject);
+            if (collided.CompareTag(gameObject.tag))
+            {
+                collision.gameObject.GetComponent<DefaultCreature>().DamageTaken(attackDamage);
+                Destroy(this.gameObject);
+            }
         }
     }
 
-    public void SetMissile(Vector3 currentPosition, GameControl.Sides side)
+    public void SetMissile(Vector3 currentPosition, GameControl.Sides side, int laneNum)
     {
         this.gameObject.transform.position = currentPosition;
         this.side = side;
+        gameObject.tag = "Lane" + laneNum;
         if(this.side == GameControl.Sides.Hostile)
         {
             direction = new Vector3(direction.x * -1, direction.y, direction.z);

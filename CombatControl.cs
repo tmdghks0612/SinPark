@@ -203,7 +203,7 @@ public class CombatControl : MonoBehaviour
     {
         GameObject newObject = Instantiate<GameObject>(missileArray[missileType,upgradeType]); 
         DefaultMissile newMissile = newObject.GetComponent<DefaultMissile>();
-        newMissile.SetMissile( currentPosition, side );
+        newMissile.SetMissile( currentPosition, side, laneNum );
     }
 
     //initializing functions

@@ -14,7 +14,7 @@ public class GameControl : MonoBehaviour
     //variables defined overall in game
     private int maxLanes = 3;
     private int maxUnits = 100;
-    public int typeCreature = 6;
+    public int typeCreature = 7;
     public int typeUpgrade = 2;
     private Vector3 cameraSpeed;
     private float smoothSpeed;
