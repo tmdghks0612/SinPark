@@ -59,6 +59,7 @@ ExportedObj/
 sysinfo.txt
 SpawnRequestForm.cs
 SpawnRequestForm.cs.meta
+*.meta
 
 # Builds
 *.apk

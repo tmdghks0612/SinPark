@@ -127,7 +127,7 @@ public class CombatControl : MonoBehaviour
         return false;
     }
 
-    public void MeleeAttack(Vector3 currentPosition, float attackRange, int attackDamage, int laneNum, GameControl.Sides side)
+    public void MeleeAttack(Vector3 currentPosition, float attackRange, int attackDamage, int size, int laneNum, GameControl.Sides side)
     {
         //attack from friendly to hostile
         if (side == GameControl.Sides.Friendly)
@@ -140,7 +140,7 @@ public class CombatControl : MonoBehaviour
                 {
                     if (currentList[i].transform.position.x - currentPosition.x < attackRange)
                     {
-                        currentList[i].DamageTaken(attackDamage);
+                        currentList[i].DamageTaken(attackDamage, size);
                     }
                 }
             }
@@ -156,7 +156,7 @@ public class CombatControl : MonoBehaviour
                 {
                     if (currentPosition.x - currentList[i].transform.position.x < attackRange)
                     {
-                        currentList[i].DamageTaken(attackDamage);
+                        currentList[i].DamageTaken(attackDamage, size);
                     }
                 }
             }
@@ -176,7 +176,7 @@ public class CombatControl : MonoBehaviour
                 {
                     if (Mathf.Abs(currentList[i].transform.position.x - currentPosition.x) < attackRange)
                     {
-                        currentList[i].DamageTaken(attackDamage);
+                        currentList[i].DamageTaken(attackDamage, 0);
                     }
                 }
             }
@@ -192,7 +192,7 @@ public class CombatControl : MonoBehaviour
                 {
                     if (Mathf.Abs(currentList[i].transform.position.x - currentPosition.x) < attackRange)
                     {
-                        currentList[i].DamageTaken(attackDamage);
+                        currentList[i].DamageTaken(attackDamage, 0);
                     }
                 }
             }
