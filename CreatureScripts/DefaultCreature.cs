@@ -39,8 +39,9 @@ public class DefaultCreature : MonoBehaviour
 	private Vector3 end;
   
 	protected Vector3 currentPosition;
-	protected bool moveFlag = true;
-	protected bool attackFlag = false;
+    protected bool attackFlag = false;
+    protected bool moveFlag = true;
+	
 	protected bool Enemy = false;
 
     //script instances
@@ -112,8 +113,7 @@ public class DefaultCreature : MonoBehaviour
 			else if (creatureAttackType == AttackType.Missile)
 			{
 				combatControl.MissileAttack(currentPosition, creatureType, upgradeType, attackDamage, laneNum, side);
-				if (animControl != null)
-					animControl.SetBool("onAttack", true);
+				//animation
 			}
 			else if(creatureAttackType == AttackType.Heal)
 			{

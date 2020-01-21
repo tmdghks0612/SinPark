@@ -12,6 +12,8 @@ public class ClientListener : MonoBehaviour
     public static int dataBufferSize = 4096;
     protected String url = SpawnRequestForm.getUrl();
     protected int port = SpawnRequestForm.getPort();
+
+    //indicates the number of current user in the game
     public int id;
     public TCP tcp;
 
