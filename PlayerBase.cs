@@ -12,7 +12,7 @@ public class PlayerBase : DefaultCreature
     // Start is called before the first frame update
     void Start()
     {
-        
+        size = 99; // To prevent base from pushed
     }
 
     public override void SetCreature( Vector2 st, Vector2 ed, int creatureType, int upgradeType, int lane, GameControl.Sides sideCheck )
@@ -25,10 +25,13 @@ public class PlayerBase : DefaultCreature
         this.upgradeType = 0;
     }
 
-    public override void DamageTaken(int damage)
+    public override void DamageTaken(int damage, int size)
     {
-        hp -= damage;
-        CalculateHealth();
+        if (damage > 0)
+        {
+            hp -= damage;
+            CalculateHealth();
+        }
     }
 
     void CalculateHealth()

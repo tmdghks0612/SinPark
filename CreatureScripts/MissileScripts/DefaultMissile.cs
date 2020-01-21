@@ -25,28 +25,33 @@ public class DefaultMissile : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
+    protected virtual void Update()
     {
         this.gameObject.transform.position += direction;
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        Debug.Log("Enter");
-        if (collision.gameObject.GetComponent<DefaultCreature>().getSide() != this.side)
+        GameObject collided = collision.gameObject;
+        if (collided.GetComponent<DefaultCreature>().getSide() != this.side)
         {
-            collision.gameObject.GetComponent<DefaultCreature>().DamageTaken(attackDamage);
-            Destroy(this.gameObject);
+            if (collided.CompareTag(gameObject.tag))
+            {
+                collision.gameObject.GetComponent<DefaultCreature>().DamageTaken(attackDamage,0);
+                Destroy(this.gameObject);
+            }
         }
     }
 
-    public void SetMissile(Vector3 currentPosition, GameControl.Sides side)
+    public void SetMissile(Vector3 currentPosition, GameControl.Sides side, int laneNum)
     {
         this.gameObject.transform.position = currentPosition;
         this.side = side;
-        if(this.side == GameControl.Sides.Hostile)
+        gameObject.tag = "Lane" + laneNum;
+        gameObject.layer = 15 - laneNum;
+        if (this.side == GameControl.Sides.Hostile)
         {
-            direction *= -1;
+            direction = new Vector3(direction.x * -1, direction.y, direction.z);
             transform.localScale = new Vector3(-1.0f * transform.localScale.x, 1.0f * transform.localScale.y, 1.0f);
         }
     }
