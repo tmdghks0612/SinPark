@@ -9,6 +9,7 @@ public class GameControl : MonoBehaviour
 {
     public CombatControl combatControl;
     public SpawnControl spawnControl;
+    public ClientListener clientListener;
 
     //variables defined overall in game
     private int maxLanes = 3;
@@ -60,6 +61,8 @@ public class GameControl : MonoBehaviour
             lanes[i].SetActive(false);
         }
 
+        //connect to tcp server
+        clientListener.ConnectToServer();
            
     }
 
