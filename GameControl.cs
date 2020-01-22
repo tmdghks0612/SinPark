@@ -1,9 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using System.Text;
 using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.Networking;
 
 public class GameControl : MonoBehaviour
 {
@@ -28,17 +26,14 @@ public class GameControl : MonoBehaviour
     protected int[] upgradeType;
 
     public GameObject[] lanes;
-    private int monsterType;
+    protected int monsterType;
     public GameObject[] SummonButton;
     private bool buttonFlag = true;
     //<<<
     public enum Sides { Friendly, Hostile };
 
-    //
-
-
     // Start is called before the first frame update
-    void Start()
+    protected virtual void Start()
     {
         cameraSpeed = new Vector3(2.0f, 0, 0);
         mainCamera = GameObject.FindWithTag("MainCamera");
@@ -60,18 +55,13 @@ public class GameControl : MonoBehaviour
             lanes[i].GetComponent<Button>().onClick.AddListener(delegate { SummonProcedure(temp); });
             lanes[i].SetActive(false);
         }
-
-        //connect to tcp server
-        clientListener.ConnectToServer();
-           
     }
 
-    void SummonProcedure(int laneNumber)
+    protected virtual void SummonProcedure(int laneNumber)
     {
-        StartCoroutine(SendSpawnRequest(laneNumber, GameControl.Sides.Friendly, monsterType, upgradeType[monsterType]));
         Debug.Log("monsterType " + monsterType + "typeCreature" + typeCreature);
         spawnControl.SpawnCreatureLane(laneNumber, GameControl.Sides.Friendly, monsterType, upgradeType[monsterType]);
-        spawnControl.SpawnCreatureLane(laneNumber, GameControl.Sides.Hostile, monsterType, upgradeType[monsterType]);
+        //spawnControl.SpawnCreatureLane(laneNumber, GameControl.Sides.Hostile, monsterType, upgradeType[monsterType]);
 
     }
 
@@ -104,22 +94,7 @@ public class GameControl : MonoBehaviour
     }
 
 
-    IEnumerator SendSpawnRequest(int laneNumber, GameControl.Sides side, int creatureType, int upgradeType)
-    {        
-        SpawnRequestForm newRequestForm = new SpawnRequestForm();
-        newRequestForm.laneNumber = laneNumber;
-        newRequestForm.side = side;
-        newRequestForm.creatureType = creatureType;
-        newRequestForm.upgradeType = upgradeType;
-        string newJson = JsonUtility.ToJson(newRequestForm);
-
-        UnityWebRequest newRequest = new UnityWebRequest(SpawnRequestForm.getUrl(), "POST");
-        byte[] bodyByte = Encoding.UTF8.GetBytes(newJson);
-        newRequest.uploadHandler = (UploadHandler)new UploadHandlerRaw(bodyByte);
-        newRequest.downloadHandler = (DownloadHandler)new DownloadHandlerBuffer();
-        newRequest.SetRequestHeader("Content-Type", "application/json");
-        yield return newRequest.SendWebRequest();
-    }
+    
 
     // Update is called once per frame
     void Update()
