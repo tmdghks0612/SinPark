@@ -78,6 +78,7 @@ public class AIplayer : MonoBehaviour
             {
                 currentLane = Random.Range(0, 3);
                 UseMana(creatureArray[currentIndex].GetManaCost());
+                creatureFlag[currentIndex]--;
                 spawnControl.SpawnCreatureLane(currentLane, GameControl.Sides.Hostile, creatureType[currentIndex], upgradeType[currentIndex]);
             }
         }
@@ -85,23 +86,17 @@ public class AIplayer : MonoBehaviour
 
     void SetCreatureRatio()
     {
-        int totalCreature = 0;
         for (int i = 0; i < 5; ++i)
         {
             creatureRatio[i] = Mathf.RoundToInt((manaAmount / manaRegenTime) / (creatureArray[i].GetManaCost() / creatureSpawnTime));
-            totalCreature += creatureFlag[i];
-        }
-        for (int i = 0; i < 5; ++i)
-        {
-            creatureRatio[i] /= totalCreature;
         }
     }
 
-        void SetCreatureFlag()
+    void SetCreatureFlag()
     {
         for (int i = 0; i < 5; ++i)
         {
-            creatureFlag[i] = Mathf.RoundToInt( creatureRatio[i] );
+            creatureFlag[i] = Mathf.RoundToInt( creatureRatio[i] * manaRegenTime / creatureSpawnTime );
         }
     }
 
