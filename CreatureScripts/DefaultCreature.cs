@@ -207,6 +207,12 @@ public class DefaultCreature : MonoBehaviour
 			}
 		}
     }
+
+    public int GetManaCost()
+    {
+        return manaCost;
+    }
+
 	public GameControl.Sides getSide()
 	{
 		return side;
