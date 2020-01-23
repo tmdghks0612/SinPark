@@ -88,9 +88,15 @@ public class AIplayer : MonoBehaviour
 
     void SetCreatureRatio()
     {
+        float totalRatio = 0.0f;
         for (int i = 0; i < 5; ++i)
         {
             creatureRatio[i] = (float)Math.Round( (manaAmount / manaRegenTime) / (creatureArray[i].GetManaCost() / creatureSpawnTime), 2 );
+            totalRatio += creatureRatio[i];
+        }
+        for (int i = 0; i < 5; ++i)
+        {
+            creatureRatio[i] = (float)Math.Round( creatureRatio[i] / totalRatio, 2);
         }
     }
 
