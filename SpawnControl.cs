@@ -43,12 +43,12 @@ public class SpawnControl : MonoBehaviour
         typeUpgrade = gameControl.typeUpgrade;
         InitLaneCoords();
         InitPrefabs();
-
+        ScaleManaBar();
         //default creature
         combatControl.InitLanes();
         currentCreature = prefabArray[0,0].GetComponent<DefaultCreature>();
 
-        this.manaBar = GameObject.Find("/GameControl/ManaContainerPrefab/Bar");
+        //this.manaBar = GameObject.Find("/GameControl/ManaContainerPrefab/Bar");
         InvokeRepeating("GainMana", 0.5f, regenTime);
     }
 
