@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System;
 using UnityEngine;
 
 public class AIplayer : MonoBehaviour
@@ -29,7 +30,7 @@ public class AIplayer : MonoBehaviour
     private int minimumCost;
 
     // Start is called before the first frame update
-    void Start()
+    public void AIplayerStart()
     {
         InitAI();
         InvokeRepeating("GainMana", manaRegenTime, manaRegenTime);
@@ -69,17 +70,18 @@ public class AIplayer : MonoBehaviour
 
         while (true)
         {
-            currentIndex = Random.Range(0, 5);
+            currentIndex = UnityEngine.Random.Range(0, 5);
             if (creatureFlag[currentIndex]  == 0)
             {
                 continue;
             }
             else
             {
-                currentLane = Random.Range(0, 3);
+                currentLane = UnityEngine.Random.Range(0, 3);
                 UseMana(creatureArray[currentIndex].GetManaCost());
                 creatureFlag[currentIndex]--;
                 spawnControl.SpawnCreatureLane(currentLane, GameControl.Sides.Hostile, creatureType[currentIndex], upgradeType[currentIndex]);
+                break;
             }
         }
     }
@@ -88,7 +90,7 @@ public class AIplayer : MonoBehaviour
     {
         for (int i = 0; i < 5; ++i)
         {
-            creatureRatio[i] = Mathf.RoundToInt((manaAmount / manaRegenTime) / (creatureArray[i].GetManaCost() / creatureSpawnTime));
+            creatureRatio[i] = (float)Math.Round( (manaAmount / manaRegenTime) / (creatureArray[i].GetManaCost() / creatureSpawnTime), 2 );
         }
     }
 
@@ -113,7 +115,8 @@ public class AIplayer : MonoBehaviour
 
     void SetCreatureArray()
     {
-        for(int i = 0; i < 5; ++i)
+        Debug.Log("prefab using!");
+        for (int i = 0; i < 5; ++i)
         {
             creatureArray[i] = spawnControl.prefabArray[creatureType[i], upgradeType[i]].GetComponent<DefaultCreature>();
         }

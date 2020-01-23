@@ -35,7 +35,7 @@ public class SpawnControl : MonoBehaviour
 
 
     // Start is called before the first frame update
-    void Start()
+    public void SpawnControlStart()
     {
         maxLanes = gameControl.GetMaxLanes();
         maxUnits = gameControl.GetMaxUnits();
@@ -127,7 +127,7 @@ public class SpawnControl : MonoBehaviour
 
     void ScaleManaBar()
     {
-        manaBar.transform.localScale = new Vector3((float)baseMana / maxMana, 1.0f, 1.0f);
+        //manaBar.transform.localScale = new Vector3((float)baseMana / maxMana, 1.0f, 1.0f);
     }
 
     //initialization functions
@@ -156,5 +156,6 @@ public class SpawnControl : MonoBehaviour
                 prefabArray[i, k] = Resources.Load("creature" + i.ToString() + "/creature" + i.ToString() + "_" + k.ToString() + "/creature" + i.ToString() + "_" + k.ToString() + "Prefab") as GameObject;
             }
         }
+        Debug.Log("prefab ready!");
     }
 }
