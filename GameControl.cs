@@ -14,7 +14,7 @@ public class GameControl : MonoBehaviour
     private int maxLanes = 3;
     private int maxUnits = 100;
     public int typeCreature = 7;
-    public int typeUpgrade = 2;
+    public int typeUpgrade = 1;
     private Vector3 cameraSpeed;
     private float smoothSpeed;
     private GameObject mainCamera;

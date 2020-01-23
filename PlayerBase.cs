@@ -15,7 +15,7 @@ public class PlayerBase : DefaultCreature
         size = 99; // To prevent base from pushed
     }
 
-    public override void SetCreature( Vector2 st, Vector2 ed, int creatureType, int upgradeType, int lane, GameControl.Sides sideCheck )
+    public override void SetCreature( Vector3 st, Vector3 ed, int creatureType, int upgradeType, int lane, GameControl.Sides sideCheck )
     {
         
         base.SetCreature(st, ed, creatureType, upgradeType, lane, sideCheck);

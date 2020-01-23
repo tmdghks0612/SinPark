@@ -5,6 +5,7 @@ using UnityEngine;
 public class CombatControl : MonoBehaviour
 {
     public GameControl gameControl;
+    public SpawnControl spawnControl;
     
     private int maxLanes;
     private int maxUnits;
@@ -70,6 +71,7 @@ public class CombatControl : MonoBehaviour
     //pop creature called when a creature died in a certain lane
     public void PopCreature( int laneNum, GameControl.Sides side, DefaultCreature deadCreature )
     {
+        spawnControl.OnUnitDeath();
         if (side == GameControl.Sides.Friendly)
         {
             //remove the deadCreature to friendly lanes in current laneNum

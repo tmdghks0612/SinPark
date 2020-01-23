@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class SpawnControl : MonoBehaviour
 {
+    private readonly object lock_mana = new object();
+    private bool manaFlag;
+
     public GameControl gameControl;
     public CombatControl combatControl;
 
@@ -12,6 +15,7 @@ public class SpawnControl : MonoBehaviour
     // maxLanes according to CombatControl
     private int maxLanes;
     private int maxUnits;
+   
 
     //number of type of creatures
     private int typeCreature;
@@ -20,11 +24,15 @@ public class SpawnControl : MonoBehaviour
     private DefaultCreature currentCreature;
 
     private int playerCreatureNum = 0;
+    private float layerOffset = 0.01f;
 
-    Vector2[] startCoord;
-    Vector2[] endCoord;
+    Vector3[] startCoord;
+    Vector3[] endCoord;
 
     public GameObject[,] prefabArray;
+
+    [SerializeField]
+    private int[,] creatureManaCost;
 
     //mana related variables
     private int maxMana = 100;
@@ -48,7 +56,6 @@ public class SpawnControl : MonoBehaviour
         combatControl.InitLanes();
         currentCreature = prefabArray[0,0].GetComponent<DefaultCreature>();
 
-        //this.manaBar = GameObject.Find("/GameControl/ManaContainerPrefab/Bar");
         InvokeRepeating("GainMana", 0.5f, regenTime);
     }
 
@@ -58,6 +65,7 @@ public class SpawnControl : MonoBehaviour
         
     }
 
+
     public void SpawnCreatureLane(int laneNum, GameControl.Sides side, int creatureType, int upgradeType)
     {
         if (playerCreatureNum == maxUnits)
@@ -65,13 +73,17 @@ public class SpawnControl : MonoBehaviour
             //when unit is full
             return;
         }
+        else if(!UseMana(creatureManaCost[creatureType, upgradeType]))
+        {
+            return;
+        }
         playerCreatureNum++;
-
+        //UseMana(creatureManaCost[creatureType, upgradeType]);
         //summon a certaine creature in lane
         SummonCreature(laneNum, side, creatureType, upgradeType);
     }
 
-    void SummonCreature(int laneNum, GameControl.Sides side, int creatureType, int upgradeType)
+    public void SummonCreature(int laneNum, GameControl.Sides side, int creatureType, int upgradeType)
     {
         //spawn an actor through instantiate
         GameObject newObject;
@@ -81,12 +93,13 @@ public class SpawnControl : MonoBehaviour
         Debug.Log("creature type is " + creatureType.ToString());
         newObject = Instantiate<GameObject>(prefabArray[creatureType,upgradeType]); // 일단 0으로 설정 후에 변수 upgradeType으로 바꿔줘야한다. 함수 자체를 바꿔야 하기에 일단은 0 넣음
         newCreature = newObject.GetComponent<DefaultCreature>();
-
         newCreature.SetGameControl(gameControl);
         newCreature.SetCombatControl(combatControl);
 
         if(side == GameControl.Sides.Friendly)
         {
+            startCoord[laneNum] -= new Vector3(0, 0, layerOffset);
+            endCoord[laneNum] -= new Vector3(0, 0, layerOffset);
             newCreature.SetCreature(startCoord[laneNum], endCoord[laneNum], creatureType, upgradeType, laneNum, side);
         }
         else
@@ -100,16 +113,23 @@ public class SpawnControl : MonoBehaviour
     //mana related functions
     bool UseMana(int cost)
     {
-        if (cost < baseMana)
+        lock (lock_mana)
         {
-            baseMana -= cost;
+            if (cost < baseMana)
+            {
+                baseMana -= cost;
+                manaFlag = true;
+            }
+            else
+            {
+                manaFlag = false;
+            }
+        }
+        if(manaFlag == true)
+        {
             ScaleManaBar();
-            return true;
         }
-        else
-        {
-            return false;
-        }
+        return manaFlag;
     }
 
     void GainMana()
@@ -127,7 +147,7 @@ public class SpawnControl : MonoBehaviour
 
     void ScaleManaBar()
     {
-        //manaBar.transform.localScale = new Vector3((float)baseMana / maxMana, 1.0f, 1.0f);
+        manaBar.transform.localScale = new Vector3((float)baseMana / maxMana, 1.0f, 1.0f);
     }
 
     //initialization functions
@@ -135,25 +155,33 @@ public class SpawnControl : MonoBehaviour
     //initialize coordinates of start, end of lanes
     void InitLaneCoords()
     {
-        startCoord = new Vector2[maxLanes];
-        endCoord = new Vector2[maxLanes];
+        startCoord = new Vector3[maxLanes];
+        endCoord = new Vector3[maxLanes];
 
         for(int i=0; i < maxLanes; ++i)
         {
-            startCoord[i] = new Vector2(-15.0f, i * 2.0f);
-            endCoord[i] = new Vector2(15.0f, i * 2.0f);
+            startCoord[i] = new Vector3(-15.0f, i * 2.5f -1, 0);
+            endCoord[i] = new Vector3(15.0f, i * 2.5f -1, 0 );
         }
     }
 
+    public void OnUnitDeath()
+    {
+        playerCreatureNum--;
+    }
     void InitPrefabs()
     {
         prefabArray = new GameObject[typeCreature,typeUpgrade];
+        creatureManaCost = new int[typeCreature, typeUpgrade];
         //find and load creature prefabs from folder 'creature#'
         for (int i = 0; i < typeCreature; ++i)
         {
             for(int k = 0; k < typeUpgrade; ++k)
             {
                 prefabArray[i, k] = Resources.Load("creature" + i.ToString() + "/creature" + i.ToString() + "_" + k.ToString() + "/creature" + i.ToString() + "_" + k.ToString() + "Prefab") as GameObject;
+                //GameObject temporary = Instantiate<GameObject>(prefabArray[i, k]);
+                creatureManaCost[i, k] = prefabArray[i, k].GetComponent<DefaultCreature>().GetManaCost();
+
             }
         }
         Debug.Log("prefab ready!");

@@ -57,7 +57,7 @@ public class DefaultCreature : MonoBehaviour
 	}
 
 	
-	protected void MoveTo(Vector2 st, Vector2 ed)
+	protected void MoveTo(Vector3 st, Vector3 ed)
 	{
 		start = st;
 		end = ed;
@@ -82,7 +82,7 @@ public class DefaultCreature : MonoBehaviour
 			moveFlag = true;
 		}
 	}
-	public virtual void SetCreature(Vector2 st, Vector2 ed, int creatureType, int upgradeType, int lane, GameControl.Sides sideCheck)
+	public virtual void SetCreature(Vector3 st, Vector3 ed, int creatureType, int upgradeType, int lane, GameControl.Sides sideCheck)
 	{
 		InitCreature();
 		laneNum = lane;
