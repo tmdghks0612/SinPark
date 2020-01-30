@@ -177,6 +177,7 @@ public class SpawnControl : MonoBehaviour
         hostileCreatureManaCost = new int[typeCreature];
 
         PublicLevel.PlayerStageSetting(friendlyCreatureList,hostileCreatureList);
+        
         for(int i=0; i<typeCreature;i++)
         {
             //friendlyCreatureManaCost[i] = friendlyCreatureList[i].GetComponent<DefaultCreature>().GetManaCost();
