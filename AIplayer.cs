@@ -25,6 +25,8 @@ public class AIplayer : MonoBehaviour
     private int[] creatureFlag = new int[5];
     [SerializeField]
     private float[] creatureRatio = new float[5];
+    [SerializeField]
+    private GameObject[] hostileCreatureList = new GameObject[5];
 
     private int minimumCost;
 
@@ -48,6 +50,7 @@ public class AIplayer : MonoBehaviour
         this.manaAmount = PublicLevel.GetManaAmount();
         this.manaRegenTime = PublicLevel.GetManaRegenTime();
         this.creatureSpawnTime = PublicLevel.GetCreatureSpawnTime();
+        PublicLevel.getHostileCreatureList(hostileCreatureList);
         PublicLevel.GetCreatureType(creatureType);
         PublicLevel.GetUpgradeType(upgradeType);
 
@@ -123,7 +126,8 @@ public class AIplayer : MonoBehaviour
         Debug.Log("prefab using!");
         for (int i = 0; i < 5; ++i)
         {
-            creatureArray[i] = spawnControl.prefabArray[creatureType[i], upgradeType[i]].GetComponent<DefaultCreature>();
+            Debug.Log(hostileCreatureList[i]);
+            creatureArray[i] = hostileCreatureList[i].GetComponent<DefaultCreature>();
         }
     }
 

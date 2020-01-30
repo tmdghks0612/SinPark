@@ -15,6 +15,8 @@ public class LevelButton : MonoBehaviour
     private int[] creatureType = new int[5];
     [SerializeField]
     private int[] upgradeType = new int[5];
+    [SerializeField]
+    private Vector2Int[] hostileType = new Vector2Int[5];
     // Start is called before the first frame update
     void Start()
     {
@@ -29,7 +31,7 @@ public class LevelButton : MonoBehaviour
 
     public void InitLevel()
     {
-        PublicLevel.SetLevel(creatureType, upgradeType, manaAmount, manaRegenTime, creatureSpawnTime);
+        PublicLevel.SetLevel(hostileType, manaAmount, manaRegenTime, creatureSpawnTime);
         SceneManager.LoadScene("DefaultIngame");
     }
 }
