@@ -9,7 +9,6 @@ public class AIplayer : MonoBehaviour
 
     [SerializeField]
     private int currentMana;
-
     [SerializeField]
     private int manaAmount;
     [SerializeField]
@@ -49,8 +48,8 @@ public class AIplayer : MonoBehaviour
         this.manaAmount = PublicLevel.GetManaAmount();
         this.manaRegenTime = PublicLevel.GetManaRegenTime();
         this.creatureSpawnTime = PublicLevel.GetCreatureSpawnTime();
-        PublicLevel.SetCreatureType(creatureType);
-        PublicLevel.SetUpgradeType(upgradeType);
+        PublicLevel.GetCreatureType(creatureType);
+        PublicLevel.GetUpgradeType(upgradeType);
 
         SetCreatureArray();
         minimumCost = GetMinimumCost();

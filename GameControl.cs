@@ -58,29 +58,9 @@ public class GameControl : MonoBehaviour
         }
 
         spawnControl.SpawnControlStart();
-        SetPublicLevel();
         aiplayer.AIplayerStart();
     }
-
-    //for test until stage select system is complete
-    private void SetPublicLevel()
-    {
-        PublicLevel.manaAmount = 30;
-        PublicLevel.manaRegenTime = 2.0f;
-        PublicLevel.creatureSpawnTime = 0.1f;
-
-        PublicLevel.creatureType[0] = 0;
-        PublicLevel.creatureType[1] = 1;
-        PublicLevel.creatureType[2] = 2;
-        PublicLevel.creatureType[3] = 3;
-        PublicLevel.creatureType[4] = 4;
-
-        PublicLevel.upgradeType[0] = 0;
-        PublicLevel.upgradeType[1] = 0;
-        PublicLevel.upgradeType[2] = 0;
-        PublicLevel.upgradeType[3] = 0;
-        PublicLevel.upgradeType[4] = 0;
-    }
+    
 
     protected virtual void SummonProcedure(int laneNumber)
     {
