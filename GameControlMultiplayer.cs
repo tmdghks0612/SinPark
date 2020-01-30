@@ -7,18 +7,18 @@ using UnityEngine.Networking;
 
 public class GameControlMultiplayer : GameControl
 {
+
     protected override void Start()
     {
         base.Start();
-        
         //connect to tcp server
-        clientListener.ConnectToServer();
+        //clientListener.ConnectToServer();
     }
 
     protected override void SummonProcedure(int laneNumber)
     {
         StartCoroutine(SendSpawnRequest(laneNumber, GameControl.Sides.Friendly, monsterType, upgradeType[monsterType]));
-        Debug.Log("monsterType " + monsterType + "typeCreature" + typeCreature);
+        //Debug.Log("monsterType " + monsterType + "typeCreature" + typeCreature);
         spawnControl.SpawnCreatureLane(laneNumber, GameControl.Sides.Friendly, monsterType, upgradeType[monsterType]);
         spawnControl.SpawnCreatureLane(laneNumber, GameControl.Sides.Hostile, monsterType, upgradeType[monsterType]);
 

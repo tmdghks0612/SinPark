@@ -8,6 +8,7 @@ public class GameControl : MonoBehaviour
     public CombatControl combatControl;
     public SpawnControl spawnControl;
     public ClientListener clientListener;
+    public ServerControl serverControl;
     public AIplayer aiplayer;
 
     //variables defined overall in game
@@ -59,7 +60,12 @@ public class GameControl : MonoBehaviour
 
         spawnControl.SpawnControlStart();
         SetPublicLevel();
-        aiplayer.AIplayerStart();
+
+        if(aiplayer != null)
+        {
+            Debug.Log("aiplayer not null!");
+            aiplayer.AIplayerStart();
+        }
     }
 
     //for test until stage select system is complete
