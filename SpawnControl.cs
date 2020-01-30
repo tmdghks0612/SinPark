@@ -29,13 +29,11 @@ public class SpawnControl : MonoBehaviour
     Vector3[] startCoord;
     Vector3[] endCoord;
 
-    public GameObject[,] friendlyArray;
-    public GameObject[,] hostileArray;
+    public GameObject[] friendlyCreatureList;// = new GameObject[5];
+    public GameObject[] hostileCreatureList;// = new GameObject[5];
 
-    [SerializeField]
-    private int[,] friendlyCreatureManaCost;
-    
-    private int[,] hostileCreatureManaCost;
+    private int[] friendlyCreatureManaCost;
+    private int[] hostileCreatureManaCost;
 
     //mana related variables
     private int maxMana = 100;
@@ -57,7 +55,7 @@ public class SpawnControl : MonoBehaviour
         ScaleManaBar();
         //default creature
         combatControl.InitLanes();
-        currentCreature = friendlyArray[0,0].GetComponent<DefaultCreature>();
+        currentCreature = friendlyCreatureList[0].GetComponent<DefaultCreature>();
 
         InvokeRepeating("GainMana", 0.5f, regenTime);
     }
@@ -69,30 +67,30 @@ public class SpawnControl : MonoBehaviour
     }
 
 
-    public void SpawnCreatureLane(int laneNum, GameControl.Sides side, int creatureType, int upgradeType)
+    public void SpawnCreatureLane(int laneNum, GameControl.Sides side, int buttonNum)
     {
         if (playerCreatureNum == maxUnits)
         {
             //when unit is full
             return;
         }
-        else if(!UseMana(friendlyCreatureManaCost[creatureType, upgradeType]))
+        else if(!UseMana(friendlyCreatureManaCost[buttonNum]))
         {
             return;
         }
         playerCreatureNum++;
         //UseMana(creatureManaCost[creatureType, upgradeType]);
         //summon a certaine creature in lane
-        SummonCreature(laneNum, side, creatureType, upgradeType);
+        SummonCreature(laneNum, side, buttonNum);
     }
 
-    public void SummonCreature(int laneNum, GameControl.Sides side, int creatureType, int upgradeType)
+    public void SummonCreature(int laneNum, GameControl.Sides side, int buttonNum)
     {
         //spawn an actor through instantiate
         GameObject newObject;
         DefaultCreature newCreature;
 
-        newObject = Instantiate<GameObject>(friendlyArray[creatureType,upgradeType]); 
+        newObject = Instantiate<GameObject>(friendlyCreatureList[buttonNum]); 
         newCreature = newObject.GetComponent<DefaultCreature>();
         newCreature.SetGameControl(gameControl);
         newCreature.SetCombatControl(combatControl);
@@ -101,11 +99,11 @@ public class SpawnControl : MonoBehaviour
         {
             startCoord[laneNum] -= new Vector3(0, 0, layerOffset);
             endCoord[laneNum] -= new Vector3(0, 0, layerOffset);
-            newCreature.SetCreature(startCoord[laneNum], endCoord[laneNum], creatureType, upgradeType, laneNum, side);
+            newCreature.SetCreature(startCoord[laneNum], endCoord[laneNum], buttonNum, laneNum, side);
         }
         else
         {
-            newCreature.SetCreature(endCoord[laneNum], startCoord[laneNum], creatureType, upgradeType, laneNum, side);
+            newCreature.SetCreature(endCoord[laneNum], startCoord[laneNum], buttonNum, laneNum, side);
         }
 
         combatControl.PushCreature(laneNum, side, newCreature);
@@ -172,23 +170,17 @@ public class SpawnControl : MonoBehaviour
     }
     void InitPrefabs()
     {
-        friendlyArray = new GameObject[typeCreature,typeUpgrade];
-        hostileArray = new GameObject[typeCreature, typeUpgrade];
+        friendlyCreatureList = new GameObject[typeCreature];
+        hostileCreatureList = new GameObject[typeCreature];
 
-        friendlyCreatureManaCost = new int[typeCreature, typeUpgrade];
-        hostileCreatureManaCost = new int[typeCreature, typeUpgrade];
-        //find and load creature prefabs from folder 'creature#'
-        for (int i = 0; i < typeCreature; ++i)
+        friendlyCreatureManaCost = new int[typeCreature];
+        hostileCreatureManaCost = new int[typeCreature];
+
+        PublicLevel.PlayerStageSetting(friendlyCreatureList,hostileCreatureList);
+        for(int i=0; i<typeCreature;i++)
         {
-            for(int k = 0; k < typeUpgrade; ++k)
-            {
-                friendlyArray[i, k] = Resources.Load("creature" + i.ToString() + "/creature" + i.ToString() + "_" + k.ToString() + "/creature" + i.ToString() + "_" + k.ToString() + "Prefab") as GameObject;
-                hostileArray[i, k] = Resources.Load("creature" + i.ToString() + "/creature" + i.ToString() + "_" + k.ToString() + "/creature" + i.ToString() + "_" + k.ToString() + "Prefab") as GameObject;
-                friendlyCreatureManaCost[i, k] = friendlyArray[i, k].GetComponent<DefaultCreature>().GetManaCost();
-                hostileCreatureManaCost[i, k] = hostileArray[i, k].GetComponent<DefaultCreature>().GetManaCost();
-
-            }
+            //friendlyCreatureManaCost[i] = friendlyCreatureList[i].GetComponent<DefaultCreature>().GetManaCost();
         }
-        Debug.Log("prefab ready!");
+
     }
 }

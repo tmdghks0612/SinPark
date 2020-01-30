@@ -10,25 +10,21 @@ public static class PublicLevel
     public static float manaRegenTime = 1.0f;
     [SerializeField]
     public static float creatureSpawnTime = 0.1f;
-    [SerializeField]
-    public static int[] hostileCreatureType = new int[5];
-    [SerializeField]
-    public static int[] hostileUpgradeType = new int[5];
 
     public static GameObject[,] friendlyPrefab;
     public static GameObject[,] hostilePrefab;
     
-    private static int friendlyTypeCreature = 7;
-    private static int friendlyTypeUpgrade = 1;
+    private static int friendlyTypeCreatureNum = 7;
+    private static int friendlyTypeUpgradeNum = 1;
 
-    private static int hostileTypeCreature = 7;
-    private static int hostileTypeUpgrade = 1;
+    private static int hostileTypeCreatureNum = 7;
+    private static int hostileTypeUpgradeNum = 1;
 
-    public static Vector2Int[] friendlyType = new Vector2Int[5];
-    public static Vector2Int[] hostileType = new Vector2Int[5];
+    public static Vector2Int[] friendlyType;
+    public static Vector2Int[] hostileType;
 
-    static GameObject[] hostileCreatureList = new GameObject[5];
-    static GameObject[] friendlyCreatureList = new GameObject[5];
+    static GameObject[] hostileCreatureList;
+    static GameObject[] friendlyCreatureList;
 
     public static int GetManaAmount()
     {
@@ -85,20 +81,24 @@ public static class PublicLevel
 
     public static void InitSetting()
     {
-        friendlyPrefab = new GameObject[friendlyTypeCreature, friendlyTypeUpgrade];
-        hostilePrefab = new GameObject[hostileTypeCreature, hostileTypeUpgrade];
+        friendlyPrefab = new GameObject[friendlyTypeCreatureNum, friendlyTypeUpgradeNum];
+        hostilePrefab = new GameObject[hostileTypeCreatureNum, hostileTypeUpgradeNum];
         //find and load creature prefabs from folder 'creature#'
-        for (int i = 0; i < friendlyTypeCreature; ++i)
+        friendlyType = new Vector2Int[friendlyTypeCreatureNum];
+        hostileType = new Vector2Int[hostileTypeCreatureNum];
+        friendlyCreatureList = new GameObject[friendlyTypeCreatureNum];
+        hostileCreatureList = new GameObject[hostileTypeCreatureNum];
+        for (int i = 0; i < friendlyTypeCreatureNum; ++i)
         {
-            for (int k = 0; k < friendlyTypeUpgrade; ++k)
+            for (int k = 0; k < friendlyTypeUpgradeNum; ++k)
             {
                 friendlyPrefab[i, k] = Resources.Load("creature" + i.ToString() + "/creature" + i.ToString() + "_" + k.ToString() + "/creature" + i.ToString() + "_" + k.ToString() + "Prefab") as GameObject;
             }
         }
 
-        for (int i = 0; i < hostileTypeCreature; ++i)
+        for (int i = 0; i < hostileTypeCreatureNum; ++i)
         {
-            for (int k = 0; k < hostileTypeUpgrade; ++k)
+            for (int k = 0; k < hostileTypeUpgradeNum; ++k)
             {
                 hostilePrefab[i, k] = Resources.Load("creature" + i.ToString() + "/creature" + i.ToString() + "_" + k.ToString() + "/creature" + i.ToString() + "_" + k.ToString() + "Prefab") as GameObject;
             }
@@ -117,11 +117,12 @@ public static class PublicLevel
         Debug.Log("prefab ready!");
     }
 
-    public static void PlayerStageSetting(GameObject[] friendlyArray)
+    public static void PlayerStageSetting(GameObject[] friendlyArray, GameObject[] hostileArray)
     {
-        for(int i=0; i<5; i++)
+        for(int i=0; i<friendlyTypeCreatureNum; i++)
         {
             friendlyArray[i] = friendlyCreatureList[i];
+            hostileArray[i] = hostileCreatureList[i];
         }
     }
 }

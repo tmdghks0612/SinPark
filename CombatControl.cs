@@ -36,7 +36,6 @@ public class CombatControl : MonoBehaviour
         typeUpgrade = gameControl.typeUpgrade;
 
         InitLanes();
-        InitMissiles();
     }
 
     // Update is called once per frame
@@ -201,9 +200,9 @@ public class CombatControl : MonoBehaviour
         }
     }
 
-    public void MissileAttack( Vector3 currentPosition, int missileType, int upgradeType, int attackDamage, int laneNum, GameControl.Sides side)
+    public void MissileAttack( Vector3 currentPosition, GameObject projectile, int attackDamage, int laneNum, GameControl.Sides side)
     {
-        GameObject newObject = Instantiate<GameObject>(missileArray[missileType,upgradeType]); 
+        GameObject newObject = Instantiate<GameObject>(projectile); 
         DefaultMissile newMissile = newObject.GetComponent<DefaultMissile>();
         newMissile.SetMissile( currentPosition, side, laneNum );
     }
@@ -223,19 +222,5 @@ public class CombatControl : MonoBehaviour
             friendlyLanes.creatureList[i] = new List<DefaultCreature>();
             hostileLanes.creatureList[i] = new List<DefaultCreature>();
         }
-    }
-
-    public void InitMissiles()
-    {
-        missileArray = new GameObject[typeCreature,typeUpgrade]; 
-        //find and load creature prefabs from folder 'creature#'
-        for(int i = 0; i < typeCreature; i++)
-        {
-            for (int k = 0; k < typeUpgrade; k++)
-            {
-                missileArray[i, k] = Resources.Load("creature" + i.ToString() + "/creature" + i.ToString() + "_" + k.ToString() + "/creature" + i.ToString() + "_" + k.ToString() + "Projectile") as GameObject;
-            }
-        }
-
     }
 }

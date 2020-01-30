@@ -15,14 +15,14 @@ public class PlayerBase : DefaultCreature
         size = 99; // To prevent base from pushed
     }
 
-    public override void SetCreature( Vector3 st, Vector3 ed, int creatureType, int upgradeType, int lane, GameControl.Sides sideCheck )
+    public override void SetCreature( Vector3 st, Vector3 ed, int buttonNum, int lane, GameControl.Sides sideCheck )
     {
         
-        base.SetCreature(st, ed, creatureType, upgradeType, lane, sideCheck);
+        base.SetCreature(st, ed, buttonNum, lane, sideCheck);
         this.hp = maxHealth;
         this.creatureAttackType = AttackType.Missile;
-        this.creatureType = 0;
-        this.upgradeType = 0;
+        //this.creatureType = 0;
+        //this.upgradeType = 0;
     }
 
     public override void DamageTaken(int damage, int size)

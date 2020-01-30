@@ -82,7 +82,7 @@ public class AIplayer : MonoBehaviour
                 currentLane = UnityEngine.Random.Range(0, 3);
                 UseMana(creatureArray[currentIndex].GetManaCost());
                 creatureFlag[currentIndex]--;
-                spawnControl.SummonCreature(currentLane, GameControl.Sides.Hostile, creatureType[currentIndex], upgradeType[currentIndex]);
+                spawnControl.SummonCreature(currentLane, GameControl.Sides.Hostile, currentIndex);
                 break;
             }
         }
