@@ -12,7 +12,7 @@ public class GameControlMultiplayer : GameControl
         base.Start();
         
         //connect to tcp server
-        clientListener.ConnectToServer();
+        //clientListener.ConnectToServer();
     }
 
     protected override void SummonProcedure(int laneNumber)
