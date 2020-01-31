@@ -11,7 +11,7 @@ using UnityEngine.Networking;
 
 public class ServerControl : MonoBehaviour
 {
-    private SpawnControl spawnControl;
+    public SpawnControl spawnControl;
     private TcpClient socketConnection;
     private Thread tcpListenerThread;
     private TcpClient connectedTcpClient;
