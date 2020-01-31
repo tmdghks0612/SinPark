@@ -7,7 +7,6 @@ public class GameControl : MonoBehaviour
 {
     public CombatControl combatControl;
     public SpawnControl spawnControl;
-    public ClientListener clientListener;
     public AIplayer aiplayer;
 
     //variables defined overall in game
