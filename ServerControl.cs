@@ -11,21 +11,12 @@ using UnityEngine.Networking;
 
 public class ServerControl : MonoBehaviour
 {
-    #region private members 	
-    /// <summary> 	
-    /// TCPListener to listen for incomming TCP connection 	
-    /// requests. 	
-    /// </summary> 	
+    private SpawnControl spawnControl;
     private TcpClient socketConnection;
-    /// <summary> 
-    /// Background thread for TcpServer workload. 	
-    /// </summary> 	
     private Thread tcpListenerThread;
-    /// <summary> 	
-    /// Create handle to connected tcp client. 	
-    /// </summary> 	
     private TcpClient connectedTcpClient;
-    #endregion
+    
+    private int bufferSize = 1024;
 
     // Use this for initialization
     void Start()
@@ -36,63 +27,46 @@ public class ServerControl : MonoBehaviour
         tcpListenerThread.Start();
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            SendMessage();
-        }
-    }
-
-    /// <summary> 	
-    /// Runs in background TcpServerThread; Handles incomming TcpClient requests 	
-    /// </summary> 	
+    // Runs in background TcpServerThread; Handles incomming TcpClient requests
     private void ListenForIncommingRequests()
     {
         try
         {
-            Byte[] bytes = new Byte[1024];
-            socketConnection = new TcpClient("dev.jimjeon.me", 8080);
+            Byte[] buffer = new Byte[bufferSize];
+            socketConnection = new TcpClient(ServerControlForm.GetUrl() , ServerControlForm.GetPort());
             NetworkStream stream = socketConnection.GetStream();
-            string serverMessage = "This is a message from your server.";
-            // Convert string message to byte array.
-            bytes = Encoding.ASCII.GetBytes(serverMessage);
-            stream.Write(bytes, 0, bytes.Length);
 
+            //server connection message
+            string serverMessage = "server connection stream constructed";
+            buffer = Encoding.ASCII.GetBytes(serverMessage);
+            stream.Write(buffer, 0, buffer.Length);
+
+            ClearBuffer(buffer);
+            while (true)
+            {
+                if(stream.Read(buffer, 0, buffer.Length) != 0)
+                {
+                    Debug.Log(buffer.ToString());
+                    
+                    //process data saved in bytes
+                    //call spawnControl.SummonCreature accordingly
+
+                    ClearBuffer(buffer);
+                }
+            }
         }
         catch (SocketException socketException)
         {
             Debug.Log("SocketException " + socketException.ToString());
         }
     }
-    /// <summary> 	
-    /// Send message to client using socket connection. 	
-    /// </summary> 	
-    private void SendMessage()
-    {
-        if (connectedTcpClient == null)
-        {
-            return;
-        }
 
-        try
+
+    private void ClearBuffer(byte[] buffer)
+    {
+        for(int i=0; i < buffer.Length; ++i)
         {
-            // Get a stream object for writing. 			
-            NetworkStream stream = connectedTcpClient.GetStream();
-            if (stream.CanWrite)
-            {
-                string serverMessage = "This is a message from your server.";
-                // Convert string message to byte array.                 
-                byte[] serverMessageAsByteArray = Encoding.ASCII.GetBytes(serverMessage);
-                // Write byte array to socketConnection stream.               
-                stream.Write(serverMessageAsByteArray, 0, serverMessageAsByteArray.Length);
-                Debug.Log("Server sent his message - should be received by client");
-            }
-        }
-        catch (SocketException socketException)
-        {
-            Debug.Log("Socket exception: " + socketException);
+            buffer[i] = 0;
         }
     }
 }
