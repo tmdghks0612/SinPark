@@ -53,6 +53,7 @@ public class CombatControl : MonoBehaviour
         {
             lock (lock_friendlyLanes)
             {
+                Debug.Log("pushed1 " + laneNum);
                 //add the newCreature to friendly lanes in current laneNum
                 friendlyLanes.creatureList[laneNum].Add(newCreature);
             }
@@ -61,6 +62,7 @@ public class CombatControl : MonoBehaviour
         {
             lock (lock_hostileLanes)
             {
+                //Debug.Log("pushed2" + laneNum);
                 //add the newCreature to hostile lanes in current laneNum
                 hostileLanes.creatureList[laneNum].Add(newCreature);
             }
@@ -102,7 +104,6 @@ public class CombatControl : MonoBehaviour
                 //search creatures within attackrange of friendly lanes in current laneNum
                 foreach (DefaultCreature currentCreature in hostileLanes.creatureList[laneNum])
                 {
-
                     if (currentCreature.transform.position.x - currentPosition.x < attackRange)
                     {
                         return true;

@@ -51,7 +51,7 @@ public class SpawnControl : MonoBehaviour
         typeCreature = gameControl.typeCreature;
         typeUpgrade = gameControl.typeUpgrade;
         InitLaneCoords();
-        InitPrefabs();
+        InitStage();
         ScaleManaBar();
         //default creature
         combatControl.InitLanes();
@@ -90,7 +90,14 @@ public class SpawnControl : MonoBehaviour
         GameObject newObject;
         DefaultCreature newCreature;
 
-        newObject = Instantiate<GameObject>(friendlyCreatureList[buttonNum]); 
+        if (side == GameControl.Sides.Friendly)
+        {
+            newObject = Instantiate<GameObject>(friendlyCreatureList[buttonNum]);
+        }
+        else
+        {
+            newObject = Instantiate<GameObject>(hostileCreatureList[buttonNum]);
+        }
         newCreature = newObject.GetComponent<DefaultCreature>();
         newCreature.SetGameControl(gameControl);
         newCreature.SetCombatControl(combatControl);
@@ -103,6 +110,8 @@ public class SpawnControl : MonoBehaviour
         }
         else
         {
+            startCoord[laneNum] -= new Vector3(0, 0, layerOffset);
+            endCoord[laneNum] -= new Vector3(0, 0, layerOffset);
             newCreature.SetCreature(endCoord[laneNum], startCoord[laneNum], buttonNum, laneNum, side);
         }
 
@@ -149,8 +158,6 @@ public class SpawnControl : MonoBehaviour
         manaBar.transform.localScale = new Vector3((float)baseMana / maxMana, 1.0f, 1.0f);
     }
 
-    //initialization functions
-
     //initialize coordinates of start, end of lanes
     void InitLaneCoords()
     {
@@ -168,7 +175,7 @@ public class SpawnControl : MonoBehaviour
     {
         playerCreatureNum--;
     }
-    void InitPrefabs()
+    void InitStage()
     {
         friendlyCreatureList = new GameObject[typeCreature];
         hostileCreatureList = new GameObject[typeCreature];
@@ -182,6 +189,16 @@ public class SpawnControl : MonoBehaviour
         {
             friendlyCreatureManaCost[i] = friendlyCreatureList[i].GetComponent<DefaultCreature>().GetManaCost();
         }
+    }
+
+    public void SummonBase()
+    {
+        for(int i=0; i<3; i++)
+        {
+            SummonCreature(i, GameControl.Sides.Friendly, 0);
+            SummonCreature(i, GameControl.Sides.Hostile, 0);
+        }
 
     }
 }
+

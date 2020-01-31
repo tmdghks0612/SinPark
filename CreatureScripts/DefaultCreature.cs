@@ -8,7 +8,7 @@ public class DefaultCreature : MonoBehaviour
 	//Transform creatureTransform;
 
 	public enum AttackType { Melee, Missile, Heal };
-
+	[SerializeField]
 	protected GameControl.Sides side;
 	protected int laneNum;
 

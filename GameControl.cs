@@ -29,7 +29,7 @@ public class GameControl : MonoBehaviour
     protected int monsterType;
     public GameObject[] SummonButton;
     private bool buttonFlag = true;
-    
+
     public enum Sides { Friendly, Hostile };
 
     // Start is called before the first frame update
@@ -38,10 +38,8 @@ public class GameControl : MonoBehaviour
         cameraSpeed = new Vector3(2.0f, 0, 0);
         mainCamera = GameObject.FindWithTag("MainCamera");
         targetPosition = mainCamera.transform.position;
-        upgradeType = new int[typeCreature];
         creatureType = new int[typeCreature];
         //initializing creature and its upgrade type later changes will remove this 2 lines @@@@@@@@
-        InitUpgradeType();
         InitCreatureType();
         for (int i = 0; i < SummonButton.Length; i++)
         {
@@ -63,6 +61,7 @@ public class GameControl : MonoBehaviour
             Debug.Log("aiplayer not null!");
             aiplayer.AIplayerStart();
         }
+        spawnControl.SummonBase();
     }
     
 
@@ -70,7 +69,6 @@ public class GameControl : MonoBehaviour
     {
         Debug.Log("monsterType " + monsterType + "typeCreature" + typeCreature);
         spawnControl.SpawnCreatureLane(laneNumber, GameControl.Sides.Friendly, monsterType);
-        //spawnControl.SpawnCreatureLane(laneNumber, GameControl.Sides.Hostile, monsterType, upgradeType[monsterType]);
 
     }
 
@@ -130,14 +128,6 @@ public class GameControl : MonoBehaviour
     public int GetMaxUnits()
     {
         return maxUnits;
-    }
-
-    void InitUpgradeType() //임시적으로 해둔것, 나중에는 type을 받아와서 버튼에 저장할수 있도록 해줘야 한다.
-    {
-        for (int i = 0; i < typeCreature; i++)
-        {
-            upgradeType[i] = 0;
-        }
     }
 
     private void InitCreatureType()

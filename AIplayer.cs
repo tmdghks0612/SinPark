@@ -67,7 +67,7 @@ public class AIplayer : MonoBehaviour
 
         while (true)
         {
-            currentIndex = UnityEngine.Random.Range(0, 5);
+            currentIndex = UnityEngine.Random.Range(1, 5);
             if (creatureFlag[currentIndex]  == 0)
             {
                 continue;
