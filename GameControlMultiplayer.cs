@@ -17,11 +17,11 @@ public class GameControlMultiplayer : GameControl
 
     protected override void SummonProcedure(int laneNumber)
     {
-        StartCoroutine(SendSpawnRequest(laneNumber, GameControl.Sides.Friendly, monsterType, upgradeType[monsterType]));
-        //Debug.Log("monsterType " + monsterType + "typeCreature" + typeCreature);
-        spawnControl.SpawnCreatureLane(laneNumber, GameControl.Sides.Friendly, monsterType, upgradeType[monsterType]);
-        spawnControl.SpawnCreatureLane(laneNumber, GameControl.Sides.Hostile, monsterType, upgradeType[monsterType]);
-
+        StartCoroutine(SendSpawnRequest(laneNumber, GameControl.Sides.Friendly, monsterType, upgradeType[monsterType
+        
+        Debug.Log("monsterType " + monsterType + "typeCreature" + typeCreature);
+        spawnControl.SpawnCreatureLane(laneNumber, GameControl.Sides.Friendly, monsterType);
+        spawnControl.SpawnCreatureLane(laneNumber, GameControl.Sides.Hostile, monsterType);
     }
 
     IEnumerator SendSpawnRequest(int laneNumber, GameControl.Sides side, int creatureType, int upgradeType)

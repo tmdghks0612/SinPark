@@ -9,7 +9,6 @@ public class AIplayer : MonoBehaviour
 
     [SerializeField]
     private int currentMana;
-
     [SerializeField]
     private int manaAmount;
     [SerializeField]
@@ -17,21 +16,20 @@ public class AIplayer : MonoBehaviour
     [SerializeField]
     private float creatureSpawnTime;
     [SerializeField]
-    private DefaultCreature[] creatureArray = new DefaultCreature[5];
+    private DefaultCreature[] creatureArray = new DefaultCreature[7];
     [SerializeField]
-    private int[] creatureType = new int[5];
+    private int[] creatureFlag = new int[7];
     [SerializeField]
-    private int[] upgradeType = new int[5];
+    private float[] creatureRatio = new float[7];
     [SerializeField]
-    private int[] creatureFlag = new int[5];
-    [SerializeField]
-    private float[] creatureRatio = new float[5];
+    private GameObject[] hostileCreatureList = new GameObject[7];
 
     private int minimumCost;
 
     // Start is called before the first frame update
     public void AIplayerStart()
     {
+        creatureArray = new DefaultCreature[PublicLevel.friendlyTypeCreatureNum];
         InitAI();
         InvokeRepeating("GainMana", manaRegenTime, manaRegenTime);
         InvokeRepeating("ChooseCreature", creatureSpawnTime, creatureSpawnTime);
@@ -49,8 +47,7 @@ public class AIplayer : MonoBehaviour
         this.manaAmount = PublicLevel.GetManaAmount();
         this.manaRegenTime = PublicLevel.GetManaRegenTime();
         this.creatureSpawnTime = PublicLevel.GetCreatureSpawnTime();
-        PublicLevel.SetCreatureType(creatureType);
-        PublicLevel.SetUpgradeType(upgradeType);
+        PublicLevel.getHostileCreatureList(hostileCreatureList);
 
         SetCreatureArray();
         minimumCost = GetMinimumCost();
@@ -80,7 +77,7 @@ public class AIplayer : MonoBehaviour
                 currentLane = UnityEngine.Random.Range(0, 3);
                 UseMana(creatureArray[currentIndex].GetManaCost());
                 creatureFlag[currentIndex]--;
-                spawnControl.SummonCreature(currentLane, GameControl.Sides.Hostile, creatureType[currentIndex], upgradeType[currentIndex]);
+                spawnControl.SummonCreature(currentLane, GameControl.Sides.Hostile, currentIndex);
                 break;
             }
         }
@@ -124,7 +121,8 @@ public class AIplayer : MonoBehaviour
         Debug.Log("prefab using!");
         for (int i = 0; i < 5; ++i)
         {
-            creatureArray[i] = spawnControl.prefabArray[creatureType[i], upgradeType[i]].GetComponent<DefaultCreature>();
+            Debug.Log(hostileCreatureList[i]);
+            creatureArray[i] = hostileCreatureList[i].GetComponent<DefaultCreature>();
         }
     }
 

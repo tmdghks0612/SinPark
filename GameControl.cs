@@ -7,8 +7,8 @@ public class GameControl : MonoBehaviour
 {
     public CombatControl combatControl;
     public SpawnControl spawnControl;
-    public ClientListener clientListener;
     public ServerControl serverControl;
+
     public AIplayer aiplayer;
 
     //variables defined overall in game
@@ -22,8 +22,6 @@ public class GameControl : MonoBehaviour
     private Vector3 targetPosition;
     private Vector3 smoothPosition;
 
-    //>>> parameters for UI Summon Button may change later
-
     protected int[] creatureType;
     protected int[] upgradeType;
 
@@ -31,7 +29,7 @@ public class GameControl : MonoBehaviour
     protected int monsterType;
     public GameObject[] SummonButton;
     private bool buttonFlag = true;
-    //<<<
+    
     public enum Sides { Friendly, Hostile };
 
     // Start is called before the first frame update
@@ -59,7 +57,6 @@ public class GameControl : MonoBehaviour
         }
 
         spawnControl.SpawnControlStart();
-        SetPublicLevel();
 
         if(aiplayer != null)
         {
@@ -67,31 +64,12 @@ public class GameControl : MonoBehaviour
             aiplayer.AIplayerStart();
         }
     }
-
-    //for test until stage select system is complete
-    private void SetPublicLevel()
-    {
-        PublicLevel.manaAmount = 30;
-        PublicLevel.manaRegenTime = 2.0f;
-        PublicLevel.creatureSpawnTime = 0.1f;
-
-        PublicLevel.creatureType[0] = 0;
-        PublicLevel.creatureType[1] = 1;
-        PublicLevel.creatureType[2] = 2;
-        PublicLevel.creatureType[3] = 3;
-        PublicLevel.creatureType[4] = 4;
-
-        PublicLevel.upgradeType[0] = 0;
-        PublicLevel.upgradeType[1] = 0;
-        PublicLevel.upgradeType[2] = 0;
-        PublicLevel.upgradeType[3] = 0;
-        PublicLevel.upgradeType[4] = 0;
-    }
+    
 
     protected virtual void SummonProcedure(int laneNumber)
     {
         Debug.Log("monsterType " + monsterType + "typeCreature" + typeCreature);
-        spawnControl.SpawnCreatureLane(laneNumber, GameControl.Sides.Friendly, monsterType, upgradeType[monsterType]);
+        spawnControl.SpawnCreatureLane(laneNumber, GameControl.Sides.Friendly, monsterType);
         //spawnControl.SpawnCreatureLane(laneNumber, GameControl.Sides.Hostile, monsterType, upgradeType[monsterType]);
 
     }
@@ -123,9 +101,6 @@ public class GameControl : MonoBehaviour
             buttonFlag = true;
         }
     }
-
-
-    
 
     // Update is called once per frame
     void Update()
