@@ -7,6 +7,8 @@ public class GameControl : MonoBehaviour
 {
     public CombatControl combatControl;
     public SpawnControl spawnControl;
+    public ServerControl serverControl;
+
     public AIplayer aiplayer;
 
     //variables defined overall in game
@@ -20,8 +22,6 @@ public class GameControl : MonoBehaviour
     private Vector3 targetPosition;
     private Vector3 smoothPosition;
 
-    //>>> parameters for UI Summon Button may change later
-
     protected int[] creatureType;
     protected int[] upgradeType;
 
@@ -29,7 +29,7 @@ public class GameControl : MonoBehaviour
     protected int monsterType;
     public GameObject[] SummonButton;
     private bool buttonFlag = true;
-    //<<<
+    
     public enum Sides { Friendly, Hostile };
 
     // Start is called before the first frame update
@@ -57,7 +57,12 @@ public class GameControl : MonoBehaviour
         }
 
         spawnControl.SpawnControlStart();
-        aiplayer.AIplayerStart();
+
+        if(aiplayer != null)
+        {
+            Debug.Log("aiplayer not null!");
+            aiplayer.AIplayerStart();
+        }
     }
     
 
@@ -96,9 +101,6 @@ public class GameControl : MonoBehaviour
             buttonFlag = true;
         }
     }
-
-
-    
 
     // Update is called once per frame
     void Update()

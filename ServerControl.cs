@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using System;
 using System.IO;
@@ -11,84 +11,62 @@ using UnityEngine.Networking;
 
 public class ServerControl : MonoBehaviour
 {
-    //the name of the connection, not required but better for overview if you have more than 1 connections running
-    public string conName = "Localhost";
+    private SpawnControl spawnControl;
+    private TcpClient socketConnection;
+    private Thread tcpListenerThread;
+    private TcpClient connectedTcpClient;
+    
+    private int bufferSize = 1024;
 
-    //ip/address of the server, 127.0.0.1 is for your own computer
-    public string conHost = "127.0.0.1";
+    // Use this for initialization
+    void Start()
+    {
+        // Start TcpServer background thread 		
+        tcpListenerThread = new Thread(new ThreadStart(ListenForIncommingRequests));
+        tcpListenerThread.IsBackground = true;
+        tcpListenerThread.Start();
+    }
 
-    //port for the server, make sure to unblock this in your router firewall if you want to allow external connections
-    public int conPort = 8080;
-
-    //a true/false variable for connection status
-    public bool socketReady = false;
-
-    TcpClient mySocket;
-    NetworkStream theStream;
-    StreamWriter theWriter;
-    StreamReader theReader;
-
-    //try to initiate connection
-    public void setupSocket()
+    // Runs in background TcpServerThread; Handles incomming TcpClient requests
+    private void ListenForIncommingRequests()
     {
         try
         {
-            mySocket = new TcpClient(conHost, conPort);
-            theStream = mySocket.GetStream();
-            theWriter = new StreamWriter(theStream);
-            theReader = new StreamReader(theStream);
-            socketReady = true;
-            if (socketReady)
+            Byte[] buffer = new Byte[bufferSize];
+            socketConnection = new TcpClient(ServerControlForm.GetUrl() , ServerControlForm.GetPort());
+            NetworkStream stream = socketConnection.GetStream();
+
+            //server connection message
+            string serverMessage = "server connection stream constructed";
+            buffer = Encoding.ASCII.GetBytes(serverMessage);
+            stream.Write(buffer, 0, buffer.Length);
+
+            ClearBuffer(buffer);
+            while (true)
             {
-                Debug.Log("socket ready!");
+                if(stream.Read(buffer, 0, buffer.Length) != 0)
+                {
+                    Debug.Log(buffer.ToString());
+                    
+                    //process data saved in bytes
+                    //call spawnControl.SummonCreature accordingly
+
+                    ClearBuffer(buffer);
+                }
             }
         }
-        catch (Exception e)
+        catch (SocketException socketException)
         {
-            Debug.Log("Socket error:" + e);
+            Debug.Log("SocketException " + socketException.ToString());
         }
     }
 
-    //send message to server
-    public void writeSocket(string theLine)
-    {
-        if (!socketReady)
-            return;
-        String tmpString = theLine + "\r\n";
-        theWriter.Write(tmpString);
-        theWriter.Flush();
-    }
 
-    //read message from server
-    public string readSocket()
+    private void ClearBuffer(byte[] buffer)
     {
-        String result = "";
-        if (theStream.DataAvailable)
+        for(int i=0; i < buffer.Length; ++i)
         {
-            Byte[] inStream = new Byte[mySocket.SendBufferSize];
-            theStream.Read(inStream, 0, inStream.Length);
-            result += System.Text.Encoding.UTF8.GetString(inStream);
-        }
-        return result;
-    }
-
-    //disconnect from the socket
-    public void closeSocket()
-    {
-        if (!socketReady)
-            return;
-        theWriter.Close();
-        theReader.Close();
-        mySocket.Close();
-        socketReady = false;
-    }
-
-    //keep connection alive, reconnect if connection lost
-    public void maintainConnection()
-    {
-        if (!theStream.CanRead)
-        {
-            setupSocket();
+            buffer[i] = 0;
         }
     }
 }
