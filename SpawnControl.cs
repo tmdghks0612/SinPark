@@ -180,7 +180,7 @@ public class SpawnControl : MonoBehaviour
         
         for(int i=0; i<typeCreature;i++)
         {
-            //friendlyCreatureManaCost[i] = friendlyCreatureList[i].GetComponent<DefaultCreature>().GetManaCost();
+            friendlyCreatureManaCost[i] = friendlyCreatureList[i].GetComponent<DefaultCreature>().GetManaCost();
         }
 
     }

@@ -16,23 +16,20 @@ public class AIplayer : MonoBehaviour
     [SerializeField]
     private float creatureSpawnTime;
     [SerializeField]
-    private DefaultCreature[] creatureArray = new DefaultCreature[5];
+    private DefaultCreature[] creatureArray = new DefaultCreature[7];
     [SerializeField]
-    private int[] creatureType = new int[5];
+    private int[] creatureFlag = new int[7];
     [SerializeField]
-    private int[] upgradeType = new int[5];
+    private float[] creatureRatio = new float[7];
     [SerializeField]
-    private int[] creatureFlag = new int[5];
-    [SerializeField]
-    private float[] creatureRatio = new float[5];
-    [SerializeField]
-    private GameObject[] hostileCreatureList = new GameObject[5];
+    private GameObject[] hostileCreatureList = new GameObject[7];
 
     private int minimumCost;
 
     // Start is called before the first frame update
     public void AIplayerStart()
     {
+        creatureArray = new DefaultCreature[PublicLevel.friendlyTypeCreatureNum];
         InitAI();
         InvokeRepeating("GainMana", manaRegenTime, manaRegenTime);
         InvokeRepeating("ChooseCreature", creatureSpawnTime, creatureSpawnTime);
@@ -51,8 +48,6 @@ public class AIplayer : MonoBehaviour
         this.manaRegenTime = PublicLevel.GetManaRegenTime();
         this.creatureSpawnTime = PublicLevel.GetCreatureSpawnTime();
         PublicLevel.getHostileCreatureList(hostileCreatureList);
-        PublicLevel.GetCreatureType(creatureType);
-        PublicLevel.GetUpgradeType(upgradeType);
 
         SetCreatureArray();
         minimumCost = GetMinimumCost();

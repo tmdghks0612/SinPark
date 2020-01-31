@@ -12,11 +12,7 @@ public class LevelButton : MonoBehaviour
     [SerializeField]
     private float creatureSpawnTime;
     [SerializeField]
-    private int[] creatureType = new int[5];
-    [SerializeField]
-    private int[] upgradeType = new int[5];
-    [SerializeField]
-    private Vector2Int[] hostileType = new Vector2Int[5];
+    private Vector2Int[] hostileType = new Vector2Int[7];
     // Start is called before the first frame update
     void Start()
     {
