@@ -7,8 +7,6 @@ public class PlayerBase : DefaultCreature
     private GameObject friendlyHealthBar;
     private GameObject hostileHealthBar;
 
-    private GameControl gameControl;
-
     [SerializeField]
     private int friendlyMaxHealth;
     [SerializeField]
