@@ -19,12 +19,14 @@ public static class PublicLevel
 
     public static GameObject[,] friendlyPrefab;
     public static GameObject[,] hostilePrefab;
+    public static Sprite[,] friendlyImage;
 
     public static Vector2Int[] friendlyType;
     public static Vector2Int[] hostileType;
 
     static GameObject[] hostileCreatureList;
-    static GameObject[] friendlyCreatureList;
+    public static GameObject[] friendlyCreatureList;
+    public static Sprite[] friendlyImageList;
 
     public static int GetManaAmount()
     {
@@ -68,6 +70,8 @@ public static class PublicLevel
     {
         friendlyPrefab = new GameObject[friendlyTypeCreatureNum, friendlyTypeUpgradeNum];
         friendlyCreatureList = new GameObject[friendlyTypeCreatureNum];
+        friendlyImage = new Sprite[friendlyTypeCreatureNum, friendlyTypeUpgradeNum];
+        friendlyImageList = new Sprite[friendlyTypeCreatureNum];
         friendlyType = new Vector2Int[friendlyTypeCreatureNum];
 
         hostilePrefab = new GameObject[hostileTypeCreatureNum, hostileTypeUpgradeNum];
@@ -80,6 +84,7 @@ public static class PublicLevel
             for (int k = 0; k < friendlyTypeUpgradeNum; ++k)
             {
                 friendlyPrefab[i, k] = Resources.Load("creature" + i.ToString() + "/creature" + i.ToString() + "_" + k.ToString() + "/creature" + i.ToString() + "_" + k.ToString() + "Prefab") as GameObject;
+                friendlyImage[i,k] = Resources.Load<Sprite>("creature" + i.ToString() + "/creature" + i.ToString() + "_" + k.ToString() + "/creature" + i.ToString() + "_" + k.ToString() + "Image") as Sprite;
             }
         }
 
@@ -100,6 +105,9 @@ public static class PublicLevel
         for (int i= 0; i < friendlyTypeCreatureNum; i ++)
         {
             friendlyCreatureList[i] = friendlyPrefab[friendlyType[i].x, friendlyType[i].y];
+            
+            friendlyImageList[i] = friendlyImage[friendlyType[i].x, friendlyType[i].y];
+            Debug.Log(friendlyImageList[i]);
         }
     }
 
