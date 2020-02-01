@@ -59,6 +59,7 @@ ExportedObj/
 sysinfo.txt
 SpawnRequestForm.cs
 ServerControlForm.cs
+GameDataForm.cs
 *.meta
 
 # Builds
