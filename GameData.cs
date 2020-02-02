@@ -9,21 +9,22 @@ public class GameData : GameDataForm
 {
     #region save/load functions
 
-    public void SaveGameData(int _playerLevel, long _playerWin, Vector2Int[] _friendlyType)
+    public void SaveGameData()
     {
-        GameDataForm currentGameData = new GameData();
+        GameDataForm currentGameData = GameObject.Find("GameDataControl").GetComponent<GameData>();
 
-        currentGameData.SetGameData(_playerLevel, _playerWin, _friendlyType);
+        currentGameData.SetGameData(PublicLevel.playerLevel, PublicLevel.playerWin, PublicLevel.friendlyType);
 
         SaveGame(currentGameData, GetFileName());
     }
 
-    public void LoadGameData(int _playerLevel, long _playerWin, Vector2Int[] _friendlyType)
+    public GameDataForm LoadGameData()//int _playerLevel, long _playerWin, Vector2Int[] _friendlyType)
     {
         GameDataForm currentGameData = LoadGame(GetFileName());
         //when local save does not exist
         if (currentGameData == null)
         {
+            /*
             //initialize player info
             _playerLevel = 1;
             _playerWin = 0;
@@ -31,10 +32,13 @@ public class GameData : GameDataForm
             for (int i = 0; i < 5; ++i)
             {
                 _friendlyType[i] = new Vector2Int(i, 0);
-            }
+            }*/
+            return null;
         }
         else
         {
+            return currentGameData;
+            /*
             //load player info from local save
             _playerLevel = currentGameData.GetPlayerLevel();
             _playerWin = currentGameData.GetPlayerWin();
@@ -42,6 +46,7 @@ public class GameData : GameDataForm
             {
                 _friendlyType[i] = new Vector2Int(currentGameData.GetFriendlyType()[i].x, currentGameData.GetFriendlyType()[i].y);
             }
+            */
         }
     }
 

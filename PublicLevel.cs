@@ -28,6 +28,13 @@ public static class PublicLevel
     public static GameObject[] friendlyCreatureList;
     public static Sprite[] friendlyImageList;
 
+    public static int playerLevel;
+    public static int playerWin;
+
+    public static int usingCreatureNum;
+
+    private static GameData gameData;
+
     public static int GetManaAmount()
     {
         Debug.Log(manaAmount);
@@ -66,7 +73,7 @@ public static class PublicLevel
         hostileType = _hostileType;
     }
 
-    public static void InitSetting()
+    public static void InitReady()
     {
         friendlyPrefab = new GameObject[friendlyTypeCreatureNum, friendlyTypeUpgradeNum];
         friendlyCreatureList = new GameObject[friendlyTypeCreatureNum];
@@ -77,7 +84,10 @@ public static class PublicLevel
         hostilePrefab = new GameObject[hostileTypeCreatureNum, hostileTypeUpgradeNum];
         hostileCreatureList = new GameObject[hostileTypeCreatureNum];
         hostileType = new Vector2Int[hostileTypeCreatureNum];
-                          
+    }
+
+    public static void InitSetting()
+    {
         //find and load creature prefabs from folder 'creature#'
         for (int i = 0; i < friendlyTypeCreatureNum; ++i)
         {
@@ -94,12 +104,6 @@ public static class PublicLevel
             {
                 hostilePrefab[i, k] = Resources.Load("creature" + i.ToString() + "/creature" + i.ToString() + "_" + k.ToString() + "/creature" + i.ToString() + "_" + k.ToString() + "Prefab") as GameObject;
             }
-        }
-
-        for (int i = 0; i < friendlyTypeCreatureNum; i++)
-        {
-            friendlyType[i] = new Vector2Int(i, 0);
-            hostileType[i] = new Vector2Int(i, 0);
         }
 
         for (int i= 0; i < friendlyTypeCreatureNum; i ++)
