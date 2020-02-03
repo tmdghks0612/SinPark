@@ -31,6 +31,7 @@ public static class PublicLevel
     private static readonly int playerMaxLevel = 10;
     private static int playerLevel;
     private static int playerWin;
+    private static int stageLevel;
 
     public static int usingCreatureNum;
 
@@ -150,6 +151,12 @@ public static class PublicLevel
         }
     }
 
+    public static void SetStageLevel(int newStageLevel)
+    {
+        stageLevel = newStageLevel;
+    }
+
+
     public static int GetPlayerLevel()
     {
         return playerLevel;
@@ -157,5 +164,9 @@ public static class PublicLevel
     public static int GetPlayerWin()
     {
         return playerWin;
+    }
+    public static int GetStageLevel()
+    {
+        return stageLevel;
     }
 }

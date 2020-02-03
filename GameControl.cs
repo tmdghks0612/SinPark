@@ -109,7 +109,7 @@ public class GameControl : MonoBehaviour
     {
         if (isWin && gameOverFlag == false)
         {
-            PublicLevel.SetPlayerLevel(PublicLevel.GetPlayerLevel() + 1);
+            PublicLevel.SetPlayerLevel(PublicLevel.GetStageLevel());
         }
         gameOverFlag = true;
         aiplayer.AIplayerStop();

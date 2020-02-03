@@ -6,6 +6,8 @@ using UnityEngine.UI;
 public class LevelButton : MonoBehaviour
 {
     [SerializeField]
+    private int stageLevel;
+    [SerializeField]
     private int manaAmount;
     [SerializeField]
     private float manaRegenTime;
