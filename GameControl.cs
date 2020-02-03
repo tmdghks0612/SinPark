@@ -29,6 +29,8 @@ public class GameControl : MonoBehaviour
     protected int monsterType;
     public GameObject[] SummonButton;
     private bool buttonFlag = true;
+    
+    private Text[] costText;
     private bool gameOverFlag = false;
 
     public enum Sides { Friendly, Hostile };
@@ -40,8 +42,9 @@ public class GameControl : MonoBehaviour
         mainCamera = GameObject.FindWithTag("MainCamera");
         targetPosition = mainCamera.transform.position;
         creatureType = new int[typeCreature];
-        //initializing creature and its upgrade type later changes will remove this 2 lines @@@@@@@@
+        //initializing creature and its upgrade type later changes will remove this 2 lines
         InitCreatureType();
+        InitButtonImage();
         for (int i = 0; i < SummonButton.Length; i++)
         {
             int temp = creatureType[i];
@@ -141,6 +144,17 @@ public class GameControl : MonoBehaviour
         for(int i=0; i< typeCreature; ++i)
         {
             creatureType[i] = i;
+        }
+    }
+
+    private void InitButtonImage()
+    {
+        costText = new Text[PublicLevel.usingCreatureNum];
+        for (int i = 0; i < PublicLevel.usingCreatureNum; i++)
+        {
+            SummonButton[i].GetComponent<Image>().sprite = PublicLevel.friendlyImageList[i];
+            costText[i] = SummonButton[i].transform.GetChild(0).gameObject.GetComponent<Text>();
+            costText[i].text = PublicLevel.friendlyCreatureList[i].GetComponent<DefaultCreature>().GetManaCost().ToString();
         }
     }
 }
