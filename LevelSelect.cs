@@ -7,6 +7,9 @@ using UnityEngine.UI;
 public class LevelSelect : MonoBehaviour
 {
     [SerializeField]
+    private GameObject gameDataControl;
+
+    [SerializeField]
     private GameObject upgradeShop;
     [SerializeField]
     private GameObject stageMap;
@@ -21,53 +24,6 @@ public class LevelSelect : MonoBehaviour
     private Sprite Image;
     private GameData gameData;
     private GameDataForm loadedData;
-
-    void Start()
-    {
-        PublicLevel.usingCreatureNum = 5;
-
-        Debug.Log("Creature Num " + PublicLevel.friendlyTypeCreatureNum);
-
-        for(int i = 0; i<PublicLevel.friendlyTypeCreatureNum; i++)
-        {
-            int temp = i;
-            upgradeButton[i].GetComponent<Button>().onClick.AddListener(delegate { TargetCreature(upgradeOption[temp]); });
-
-        }
-
-        for(int i = 0; i<PublicLevel.usingCreatureNum; i++)
-        {
-            int temp = i;
-            locationButton[temp].onClick.AddListener(delegate { ChangeCreature(temp); });
-        }
-        upgradeShop.SetActive(false);
-        gameData = GameObject.Find("GameDataControl").GetComponent<GameData>();
-
-        PublicLevel.InitReady();
-
-        loadedData = gameData.LoadGameData();
-                
-        if(loadedData == null)
-        {
-            PublicLevel.playerLevel = 1;
-            PublicLevel.playerWin = 0;
-            for(int i=0; i<PublicLevel.friendlyTypeCreatureNum; i++)
-            {
-                PublicLevel.friendlyType[i] = new Vector2Int(i, 0);
-            }
-        }
-        else
-        {
-            PublicLevel.playerLevel = loadedData.GetPlayerLevel();
-            PublicLevel.playerWin = loadedData.GetPlayerWin();
-            for(int i=0; i<PublicLevel.friendlyTypeCreatureNum;i++)
-            {
-                PublicLevel.friendlyType[i] = new Vector2Int(loadedData.GetFriendlyType()[i].x, loadedData.GetFriendlyType()[i].y);
-            }
-        }
-
-        PublicLevel.InitSetting();
-    }
 
     // Update is called once per frame
     void Update()
@@ -101,8 +57,8 @@ public class LevelSelect : MonoBehaviour
     }
     public void LoadUpgrade()
     {
-        Debug.Log("Level " + PublicLevel.playerLevel);
-        Debug.Log("Win " + PublicLevel.playerWin);
+        Debug.Log("Level " + PublicLevel.GetPlayerLevel());
+        Debug.Log("Win " + PublicLevel.GetPlayerWin());
         upgradeShop.SetActive(true);
 
         for(int i=0; i<PublicLevel.friendlyTypeCreatureNum;i++)
@@ -127,5 +83,71 @@ public class LevelSelect : MonoBehaviour
         gameData.SaveGameData();
         stageMap.SetActive(true);
         upgradeShop.SetActive(false);
+        Debug.Log("saved exitting upgradeshop");
+    }
+
+    void OnEnable()
+    {
+        SceneManager.sceneLoaded += OnSceneLoaded;
+    }
+
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        PublicLevel.usingCreatureNum = 5;
+
+        Debug.Log("Creature Num " + PublicLevel.friendlyTypeCreatureNum);
+
+        for (int i = 0; i < PublicLevel.friendlyTypeCreatureNum; i++)
+        {
+            int temp = i;
+            upgradeButton[i].GetComponent<Button>().onClick.AddListener(delegate { TargetCreature(upgradeOption[temp]); });
+
+        }
+
+        for (int i = 0; i < PublicLevel.usingCreatureNum; i++)
+        {
+            int temp = i;
+            locationButton[temp].onClick.AddListener(delegate { ChangeCreature(temp); });
+        }
+        upgradeShop.SetActive(false);
+
+        gameDataControl = GameObject.Find("GameDataControl");
+        //if no gameDataControl exists, instantiate one new gameDataControl
+        if (gameDataControl == null)
+        {
+            gameDataControl = Instantiate(new GameObject(), transform.position, Quaternion.identity);
+            gameDataControl.name = "GameDataControl";
+            gameData = gameDataControl.AddComponent<GameData>();
+
+            loadedData = gameData.LoadGameData();
+
+            PublicLevel.InitReady();
+            //load when game was levelselect scene was first loaded
+            if (loadedData == null)
+            {
+
+                PublicLevel.SetPlayerLevel(1);
+                PublicLevel.SetPlayerWin(0);
+                for (int i = 0; i < PublicLevel.friendlyTypeCreatureNum; i++)
+                {
+                    PublicLevel.friendlyType[i] = new Vector2Int(i, 0);
+                }
+            }
+            else
+            {
+                PublicLevel.SetPlayerLevel(loadedData.GetPlayerLevel());
+                PublicLevel.SetPlayerWin(loadedData.GetPlayerWin());
+                for (int i = 0; i < PublicLevel.friendlyTypeCreatureNum; i++)
+                {
+                    PublicLevel.friendlyType[i] = new Vector2Int(loadedData.GetFriendlyType()[i].x, loadedData.GetFriendlyType()[i].y);
+                }
+            }
+            PublicLevel.InitSetting();
+            Debug.Log("loaded!");
+        }
+
+        gameData.SaveGameData();
+        Debug.Log("saved!");
+
     }
 }

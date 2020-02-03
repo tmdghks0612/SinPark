@@ -28,8 +28,9 @@ public static class PublicLevel
     public static GameObject[] friendlyCreatureList;
     public static Sprite[] friendlyImageList;
 
-    public static int playerLevel;
-    public static int playerWin;
+    private static readonly int playerMaxLevel = 10;
+    private static int playerLevel;
+    private static int playerWin;
 
     public static int usingCreatureNum;
 
@@ -125,5 +126,36 @@ public static class PublicLevel
         {
             hostileArray[i] = hostileCreatureList[i];
         }
+    }
+
+    public static void SetPlayerLevel(int newLevel)
+    {
+        if(newLevel > playerMaxLevel)
+        {
+            playerLevel = playerMaxLevel;
+        }
+        else
+        {
+            playerLevel = newLevel;
+
+            Debug.Log("playerlevel set to " + newLevel.ToString());
+        }
+    }
+
+    public static void SetPlayerWin(int newWin)
+    {
+        if (newWin < int.MaxValue)
+        {
+            playerLevel = newWin;
+        }
+    }
+
+    public static int GetPlayerLevel()
+    {
+        return playerLevel;
+    }
+    public static int GetPlayerWin()
+    {
+        return playerWin;
     }
 }

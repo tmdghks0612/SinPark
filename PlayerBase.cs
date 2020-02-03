@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class PlayerBase : DefaultCreature
 {
+    [SerializeField]
+    private GameControl gameControl;
+
     private GameObject friendlyHealthBar;
     private GameObject hostileHealthBar;
 
@@ -25,6 +28,7 @@ public class PlayerBase : DefaultCreature
         friendlyHealthBar = GameObject.Find("friendlyBaseHealthBar");
         hostileHealthBar = GameObject.Find("hostileBaseHealthBar");
         size = 99; // To prevent base from pushed
+        gameControl = GameObject.Find("GameControl").GetComponent<GameControl>();
     }
 
     public override void SetCreature( Vector3 st, Vector3 ed, int buttonNum, int lane, GameControl.Sides sideCheck )
@@ -82,11 +86,13 @@ public class PlayerBase : DefaultCreature
     private void PlayerLose()
     {
         friendlyHealthBar.transform.localScale = new Vector3(0,1,1);
+        gameControl.GameOver(false);
         this.Dead();
     }
     private void PlayerWin()
     {
         hostileHealthBar.transform.localScale = new Vector3(0, 1, 1);
+        gameControl.GameOver(true);
         this.Dead();
     }
 }

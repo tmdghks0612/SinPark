@@ -35,10 +35,10 @@ public class AIplayer : MonoBehaviour
         InvokeRepeating("ChooseCreature", creatureSpawnTime, creatureSpawnTime);
     }
 
-    // Update is called once per frame
-    void Update()
+    public void AIplayerStop()
     {
-        
+        CancelInvoke("GainMana");
+        CancelInvoke("ChooseCreature");
     }
 
     void InitAI()

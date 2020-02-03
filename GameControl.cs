@@ -29,7 +29,9 @@ public class GameControl : MonoBehaviour
     protected int monsterType;
     public GameObject[] SummonButton;
     private bool buttonFlag = true;
+    
     private Text[] costText;
+    private bool gameOverFlag = false;
 
     public enum Sides { Friendly, Hostile };
 
@@ -102,10 +104,15 @@ public class GameControl : MonoBehaviour
         }
     }
 
-    // Update is called once per frame
-    void Update()
+    //called from PlayerBase when one of the player died
+    public virtual void GameOver(bool isWin)
     {
-
+        if (isWin && gameOverFlag == false)
+        {
+            PublicLevel.SetPlayerLevel(PublicLevel.GetPlayerLevel() + 1);
+        }
+        gameOverFlag = true;
+        aiplayer.AIplayerStop();
     }
 
     private void LateUpdate()
