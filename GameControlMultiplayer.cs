@@ -40,4 +40,12 @@ public class GameControlMultiplayer : GameControl
         newRequest.SetRequestHeader("Content-Type", "application/json");
         yield return newRequest.SendWebRequest();
     }
+
+    public override void GameOver(bool isWin)
+    {
+        if (isWin)
+        {
+            PublicLevel.SetPlayerWin(PublicLevel.GetPlayerWin() + 1);
+        }
+    }
 }

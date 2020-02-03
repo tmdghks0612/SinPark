@@ -13,7 +13,7 @@ public class GameData : GameDataForm
     {
         GameDataForm currentGameData = GameObject.Find("GameDataControl").GetComponent<GameData>();
 
-        currentGameData.SetGameData(PublicLevel.playerLevel, PublicLevel.playerWin, PublicLevel.friendlyType);
+        currentGameData.SetGameData(PublicLevel.GetPlayerLevel(), PublicLevel.GetPlayerWin(), PublicLevel.friendlyType);
 
         SaveGame(currentGameData, GetFileName());
     }
