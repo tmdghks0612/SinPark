@@ -4,9 +4,6 @@ using UnityEngine;
 
 public class PlayerBase : DefaultCreature
 {
-    [SerializeField]
-    private GameControl gameControl;
-
     private GameObject friendlyHealthBar;
     private GameObject hostileHealthBar;
 

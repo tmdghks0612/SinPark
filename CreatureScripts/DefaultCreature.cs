@@ -48,7 +48,7 @@ public class DefaultCreature : MonoBehaviour
 	protected bool Enemy = false;
 
     //script instances
-	private GameControl gameControl;
+	protected GameControl gameControl;
 	protected CombatControl combatControl;
 	protected Animator animControl;
 	void Start()

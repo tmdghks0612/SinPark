@@ -93,61 +93,64 @@ public class LevelSelect : MonoBehaviour
 
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        PublicLevel.usingCreatureNum = 5;
-
-        Debug.Log("Creature Num " + PublicLevel.friendlyTypeCreatureNum);
-
-        for (int i = 0; i < PublicLevel.friendlyTypeCreatureNum; i++)
+        if(scene.name == "LevelSelect")
         {
-            int temp = i;
-            upgradeButton[i].GetComponent<Button>().onClick.AddListener(delegate { TargetCreature(upgradeOption[temp]); });
+            Debug.Log("I'm in now");
+            PublicLevel.usingCreatureNum = 5;
 
-        }
+            Debug.Log("Creature Num " + PublicLevel.friendlyTypeCreatureNum);
 
-        for (int i = 0; i < PublicLevel.usingCreatureNum; i++)
-        {
-            int temp = i;
-            locationButton[temp].onClick.AddListener(delegate { ChangeCreature(temp); });
-        }
-        upgradeShop.SetActive(false);
-
-        gameDataControl = GameObject.Find("GameDataControl");
-        //if no gameDataControl exists, instantiate one new gameDataControl
-        if (gameDataControl == null)
-        {
-            gameDataControl = Instantiate(new GameObject(), transform.position, Quaternion.identity);
-            gameDataControl.name = "GameDataControl";
-            gameData = gameDataControl.AddComponent<GameData>();
-
-            loadedData = gameData.LoadGameData();
-
-            PublicLevel.InitReady();
-            //load when game was levelselect scene was first loaded
-            if (loadedData == null)
+            for (int i = 0; i < PublicLevel.friendlyTypeCreatureNum; i++)
             {
+                int temp = i;
+                upgradeButton[i].GetComponent<Button>().onClick.AddListener(delegate { TargetCreature(upgradeOption[temp]); });
 
-                PublicLevel.SetPlayerLevel(1);
-                PublicLevel.SetPlayerWin(0);
-                for (int i = 0; i < PublicLevel.friendlyTypeCreatureNum; i++)
-                {
-                    PublicLevel.friendlyType[i] = new Vector2Int(i, 0);
-                }
             }
-            else
+
+            for (int i = 0; i < PublicLevel.usingCreatureNum; i++)
             {
-                PublicLevel.SetPlayerLevel(loadedData.GetPlayerLevel());
-                PublicLevel.SetPlayerWin(loadedData.GetPlayerWin());
-                for (int i = 0; i < PublicLevel.friendlyTypeCreatureNum; i++)
-                {
-                    PublicLevel.friendlyType[i] = new Vector2Int(loadedData.GetFriendlyType()[i].x, loadedData.GetFriendlyType()[i].y);
-                }
+                int temp = i;
+                locationButton[temp].onClick.AddListener(delegate { ChangeCreature(temp); });
             }
-            PublicLevel.InitSetting();
-            Debug.Log("loaded!");
+            upgradeShop.SetActive(false);
+
+            gameDataControl = GameObject.Find("GameDataControl");
+            //if no gameDataControl exists, instantiate one new gameDataControl
+            if (gameDataControl == null)
+            {
+                gameDataControl = Instantiate(new GameObject(), transform.position, Quaternion.identity);
+                gameDataControl.name = "GameDataControl";
+                gameData = gameDataControl.AddComponent<GameData>();
+
+                loadedData = gameData.LoadGameData();
+
+                PublicLevel.InitReady();
+                //load when game was levelselect scene was first loaded
+                if (loadedData == null)
+                {
+
+                    PublicLevel.SetPlayerLevel(1);
+                    PublicLevel.SetPlayerWin(0);
+                    for (int i = 0; i < PublicLevel.friendlyTypeCreatureNum; i++)
+                    {
+                        PublicLevel.friendlyType[i] = new Vector2Int(i, 0);
+                    }
+                }
+                else
+                {
+                    PublicLevel.SetPlayerLevel(loadedData.GetPlayerLevel());
+                    PublicLevel.SetPlayerWin(loadedData.GetPlayerWin());
+                    for (int i = 0; i < PublicLevel.friendlyTypeCreatureNum; i++)
+                    {
+                        PublicLevel.friendlyType[i] = new Vector2Int(loadedData.GetFriendlyType()[i].x, loadedData.GetFriendlyType()[i].y);
+                    }
+                }
+                PublicLevel.InitSetting();
+                Debug.Log("loaded!");
+            }
+
+            gameData.SaveGameData();
+            Debug.Log("saved!");
         }
-
-        gameData.SaveGameData();
-        Debug.Log("saved!");
-
     }
 }
