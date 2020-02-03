@@ -101,7 +101,11 @@ public class AIplayer : MonoBehaviour
     {
         for (int i = 0; i < 5; ++i)
         {
-            creatureFlag[i] = Mathf.RoundToInt( creatureRatio[i] * manaRegenTime / creatureSpawnTime );
+            creatureFlag[i] = Mathf.RoundToInt( creatureRatio[i] * manaRegenTime / creatureSpawnTime ) ;
+            if(creatureFlag[i] == 0)
+            {
+                creatureFlag[i] = 1;
+            }
         }
     }
 
