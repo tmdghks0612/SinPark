@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class GameControl : MonoBehaviour
 {
@@ -32,6 +33,9 @@ public class GameControl : MonoBehaviour
     
     private Text[] costText;
     private bool gameOverFlag = false;
+
+    public GameObject losePanel;
+    public GameObject winPanel;
 
     public enum Sides { Friendly, Hostile };
 
@@ -107,12 +111,22 @@ public class GameControl : MonoBehaviour
     //called from PlayerBase when one of the player died
     public virtual void GameOver(bool isWin)
     {
+        Debug.Log(isWin + "  " + gameOverFlag);
         if (isWin && gameOverFlag == false)
         {
             PublicLevel.SetPlayerLevel(PublicLevel.GetStageLevel());
+            winPanel.SetActive(true);
+        }
+        else if (!isWin && gameOverFlag)
+        {
+            losePanel.SetActive(true);
         }
         gameOverFlag = true;
         aiplayer.AIplayerStop();
+    }
+    public void LoadGameScene()
+    {
+        SceneManager.LoadScene("LevelSelect");
     }
 
     private void LateUpdate()

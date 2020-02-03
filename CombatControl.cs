@@ -224,4 +224,6 @@ public class CombatControl : MonoBehaviour
             hostileLanes.creatureList[i] = new List<DefaultCreature>();
         }
     }
+
+   
 }

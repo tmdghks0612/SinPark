@@ -77,6 +77,7 @@ public static class PublicLevel
 
     public static void InitReady()
     {
+        /*
         friendlyPrefab = new GameObject[friendlyTypeCreatureNum, friendlyTypeUpgradeNum];
         friendlyCreatureList = new GameObject[friendlyTypeCreatureNum];
         friendlyImage = new Sprite[friendlyTypeCreatureNum, friendlyTypeUpgradeNum];
@@ -86,10 +87,22 @@ public static class PublicLevel
         hostilePrefab = new GameObject[hostileTypeCreatureNum, hostileTypeUpgradeNum];
         hostileCreatureList = new GameObject[hostileTypeCreatureNum];
         hostileType = new Vector2Int[hostileTypeCreatureNum];
+         */
     }
 
     public static void InitSetting()
     {
+        friendlyPrefab = new GameObject[friendlyTypeCreatureNum, friendlyTypeUpgradeNum];
+        friendlyCreatureList = new GameObject[friendlyTypeCreatureNum];
+        friendlyImage = new Sprite[friendlyTypeCreatureNum, friendlyTypeUpgradeNum];
+        friendlyImageList = new Sprite[friendlyTypeCreatureNum];
+        friendlyType = new Vector2Int[friendlyTypeCreatureNum];
+
+        hostilePrefab = new GameObject[hostileTypeCreatureNum, hostileTypeUpgradeNum];
+        hostileCreatureList = new GameObject[hostileTypeCreatureNum];
+        hostileType = new Vector2Int[hostileTypeCreatureNum];
+
+
         //find and load creature prefabs from folder 'creature#'
         for (int i = 0; i < friendlyTypeCreatureNum; ++i)
         {
@@ -108,13 +121,6 @@ public static class PublicLevel
             }
         }
 
-        for (int i= 0; i < friendlyTypeCreatureNum; i ++)
-        {
-            friendlyCreatureList[i] = friendlyPrefab[friendlyType[i].x, friendlyType[i].y];
-            
-            friendlyImageList[i] = friendlyImage[friendlyType[i].x, friendlyType[i].y];
-            Debug.Log(friendlyImageList[i]);
-        }
     }
 
     public static void PlayerStageSetting(GameObject[] friendlyArray, GameObject[] hostileArray)
