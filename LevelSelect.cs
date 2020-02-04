@@ -29,10 +29,7 @@ public class LevelSelect : MonoBehaviour
 
     private void Start()
     {
-        Debug.Log("I'm in now");
         PublicLevel.usingCreatureNum = 5;
-
-        Debug.Log("Creature Num " + PublicLevel.friendlyTypeCreatureNum);
 
         for (int i = 0; i < PublicLevel.friendlyTypeCreatureNum; i++)
         {
@@ -61,7 +58,7 @@ public class LevelSelect : MonoBehaviour
             //load when game was levelselect scene was first loaded
             if (loadedData == null)
             {
-
+                Debug.Log("no save exists!");
                 PublicLevel.SetPlayerLevel(1);
                 PublicLevel.SetPlayerWin(0);
                 for (int i = 0; i < PublicLevel.friendlyTypeCreatureNum; i++)
@@ -71,9 +68,10 @@ public class LevelSelect : MonoBehaviour
             }
             else
             {
+                Debug.Log("loaded player level : " + loadedData.GetPlayerLevel().ToString() + "win : " + loadedData.GetPlayerWin().ToString());
                 PublicLevel.SetPlayerLevel(loadedData.GetPlayerLevel());
                 PublicLevel.SetPlayerWin(loadedData.GetPlayerWin());
-                for (int i = 0; i < PublicLevel.friendlyTypeCreatureNum; i++)
+                for (int i = 0; i < PublicLevel.usingCreatureNum; i++)
                 {
                     PublicLevel.friendlyType[i] = new Vector2Int(loadedData.GetFriendlyType()[i].x, loadedData.GetFriendlyType()[i].y);
                 }
@@ -86,11 +84,9 @@ public class LevelSelect : MonoBehaviour
                 PublicLevel.friendlyImageList[i] = PublicLevel.friendlyImage[PublicLevel.friendlyType[i].x, PublicLevel.friendlyType[i].y];
                 Debug.Log(PublicLevel.friendlyImageList[i]);
             }
-            Debug.Log("loaded!");
         }
 
         gameData.SaveGameData();
-        Debug.Log("saved!");
     }
     void Update()
     {
@@ -121,10 +117,13 @@ public class LevelSelect : MonoBehaviour
         }
         
     }
+
+    public void Escape()
+    {
+        Application.Quit();
+    }
     public void LoadUpgrade()
     {
-        Debug.Log("Level " + PublicLevel.GetPlayerLevel());
-        Debug.Log("Win " + PublicLevel.GetPlayerWin());
         upgradeShop.SetActive(true);
 
         for(int i=0; i<PublicLevel.friendlyTypeCreatureNum;i++)
@@ -166,6 +165,11 @@ public class LevelSelect : MonoBehaviour
             {
                 gameData = gameDataControl.GetComponent<GameData>();
             }
+        }
+        if(scene.name == "DefaultIngame")
+        {
+            GameObject combatControl = GameObject.Find("CombatControl");
+            //combatControl.GetComponent<CombatControl>().InitCombatControl();
         }
     }
 }

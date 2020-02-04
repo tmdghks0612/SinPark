@@ -39,17 +39,14 @@ public static class PublicLevel
 
     public static int GetManaAmount()
     {
-        Debug.Log(manaAmount);
         return manaAmount;
     }
     public static float GetManaRegenTime()
     {
-        Debug.Log(manaRegenTime);
         return manaRegenTime;
     }
     public static float GetCreatureSpawnTime()
     {
-        Debug.Log(creatureSpawnTime);
         return creatureSpawnTime;
     }
 
@@ -154,7 +151,7 @@ public static class PublicLevel
     {
         if (newWin < int.MaxValue)
         {
-            playerLevel = newWin;
+            playerWin = newWin;
         }
     }
 

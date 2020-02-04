@@ -20,7 +20,7 @@ public class GameData : GameDataForm
 
     public GameDataForm LoadGameData()//int _playerLevel, long _playerWin, Vector2Int[] _friendlyType)
     {
-        GameDataForm currentGameData = LoadGame(GetFileName());
+        GameDataForm currentGameData = LoadGame(GetFileName(), this);
         //when local save does not exist
         if (currentGameData == null)
         {
@@ -56,12 +56,16 @@ public class GameData : GameDataForm
 
         using (FileStream stream = new FileStream(GetSavePath(name), FileMode.Create))
         {
+            Debug.Log("class internal data" + saveGame.GetPlayerLevel().ToString());
             try
             {
-                formatter.Serialize(stream, saveGame);
+                Debug.Log("try save!");
+                formatter.Serialize(stream, saveGame.GetSaveString());
+                //formatter.Serialize(stream, saveGame);
             }
             catch (Exception)
             {
+                Debug.Log("save failed!");
                 return false;
             }
         }
@@ -69,7 +73,7 @@ public class GameData : GameDataForm
         return true;
     }
 
-    public static GameData LoadGame(string name)
+    public static GameDataForm LoadGame(string name, GameDataForm loadData)
     {
         if (!DoesSaveGameExist(name))
         {
@@ -77,15 +81,18 @@ public class GameData : GameDataForm
         }
 
         BinaryFormatter formatter = new BinaryFormatter();
-
+        Debug.Log("loading from : " + GetSavePath(name));
         using (FileStream stream = new FileStream(GetSavePath(name), FileMode.Open))
         {
             try
             {
-                return formatter.Deserialize(stream) as GameData;
+                loadData.loadGameDataFromString(formatter.Deserialize(stream) as String);
+                
+                return loadData;
             }
             catch (Exception)
             {
+                Debug.Log("hello");
                 return null;
             }
         }
