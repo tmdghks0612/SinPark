@@ -116,6 +116,7 @@ public class GameControl : MonoBehaviour
         {
             PublicLevel.SetPlayerLevel(PublicLevel.GetStageLevel());
             winPanel.SetActive(true);
+            winPanel.transform.GetChild(0).GetComponent<Text>().text = "Your level is " + PublicLevel.GetPlayerLevel().ToString();
         }
         else if (!isWin && gameOverFlag)
         {

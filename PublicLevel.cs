@@ -61,7 +61,7 @@ public static class PublicLevel
         }
     }
 
-    public static void SetLevel(Vector2Int[] _hostileType, int _manaAmount, float _manaRegenTime, float _creatureSpawnTime)
+    public static void SetLevel(Vector2Int[] _hostileType, int _manaAmount, float _manaRegenTime, float _creatureSpawnTime, int _stageLevel)
     {
         manaAmount = _manaAmount;
         manaRegenTime = _manaRegenTime;
@@ -73,6 +73,7 @@ public static class PublicLevel
             hostileCreatureList[i] = hostilePrefab[(int)hostileType[i].x, (int)hostileType[i].y];
         }
         hostileType = _hostileType;
+        stageLevel = _stageLevel;
     }
 
     public static void InitReady()
@@ -141,7 +142,7 @@ public static class PublicLevel
         {
             playerLevel = playerMaxLevel;
         }
-        else
+        else if(newLevel > playerLevel)
         {
             playerLevel = newLevel;
 
@@ -156,12 +157,6 @@ public static class PublicLevel
             playerLevel = newWin;
         }
     }
-
-    public static void SetStageLevel(int newStageLevel)
-    {
-        stageLevel = newStageLevel;
-    }
-
 
     public static int GetPlayerLevel()
     {

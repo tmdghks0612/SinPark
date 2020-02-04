@@ -29,7 +29,7 @@ public class LevelButton : MonoBehaviour
 
     public void InitLevel()
     {
-        PublicLevel.SetLevel(hostileType, manaAmount, manaRegenTime, creatureSpawnTime);
+        PublicLevel.SetLevel(hostileType, manaAmount, manaRegenTime, creatureSpawnTime, stageLevel);
         SceneManager.LoadScene("DefaultIngame");
     }
 }
