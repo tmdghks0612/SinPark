@@ -168,8 +168,6 @@ public class LevelSelect : MonoBehaviour
         }
         if(scene.name == "DefaultIngame")
         {
-            GameObject combatControl = GameObject.Find("CombatControl");
-            //combatControl.GetComponent<CombatControl>().InitCombatControl();
         }
     }
 }
