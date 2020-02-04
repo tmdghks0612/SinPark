@@ -58,7 +58,7 @@ public class LevelSelect : MonoBehaviour
             //load when game was levelselect scene was first loaded
             if (loadedData == null)
             {
-
+                Debug.Log("no save exists!");
                 PublicLevel.SetPlayerLevel(1);
                 PublicLevel.SetPlayerWin(0);
                 for (int i = 0; i < PublicLevel.friendlyTypeCreatureNum; i++)
@@ -68,9 +68,10 @@ public class LevelSelect : MonoBehaviour
             }
             else
             {
+                Debug.Log("loaded player level : " + loadedData.GetPlayerLevel().ToString() + "win : " + loadedData.GetPlayerWin().ToString());
                 PublicLevel.SetPlayerLevel(loadedData.GetPlayerLevel());
                 PublicLevel.SetPlayerWin(loadedData.GetPlayerWin());
-                for (int i = 0; i < PublicLevel.friendlyTypeCreatureNum; i++)
+                for (int i = 0; i < PublicLevel.usingCreatureNum; i++)
                 {
                     PublicLevel.friendlyType[i] = new Vector2Int(loadedData.GetFriendlyType()[i].x, loadedData.GetFriendlyType()[i].y);
                 }

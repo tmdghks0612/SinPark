@@ -124,7 +124,9 @@ public class GameControl : MonoBehaviour
         Debug.Log(isWin + "  " + gameOverFlag);
         if (isWin && gameOverFlag == false)
         {
+            Debug.Log("won, player level was " + PublicLevel.GetPlayerLevel());
             PublicLevel.SetPlayerLevel(PublicLevel.GetStageLevel());
+            Debug.Log("won, player level is " + PublicLevel.GetPlayerLevel());
             winPanel.SetActive(true);
             winPanel.transform.GetChild(0).GetComponent<Text>().text = "Your level is " + PublicLevel.GetPlayerLevel().ToString();
         }

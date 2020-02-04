@@ -151,7 +151,7 @@ public static class PublicLevel
     {
         if (newWin < int.MaxValue)
         {
-            playerLevel = newWin;
+            playerWin = newWin;
         }
     }
 
