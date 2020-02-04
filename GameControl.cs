@@ -37,6 +37,14 @@ public class GameControl : MonoBehaviour
     public GameObject losePanel;
     public GameObject winPanel;
 
+
+    Vector2 ScreenSize;
+    float minSwipeDist;
+    Vector2 swipeDirection;
+    Vector2 touchDownPos;
+    Vector2 currentPos;
+
+
     public enum Sides { Friendly, Hostile };
 
     // Start is called before the first frame update
@@ -69,7 +77,9 @@ public class GameControl : MonoBehaviour
             Debug.Log("aiplayer not null!");
             aiplayer.AIplayerStart();
         }
-        spawnControl.SummonBase();
+
+        ScreenSize = new Vector2(Screen.width, Screen.height);
+        minSwipeDist = Mathf.Max(ScreenSize.x, ScreenSize.y) / 14f;
     }
     
 
@@ -132,6 +142,34 @@ public class GameControl : MonoBehaviour
 
     private void LateUpdate()
     {
+#if UNITY_ANDROID
+        if(Input.touches.Length>0)
+        {
+            Touch t = Input.GetTouch(0);
+            if(t.phase == TouchPhase.Began)
+            {
+                touchDownPos = new Vector2(t.position.x, t.position.y);
+                currentPos = new Vector2(t.position.x, t.position.y);
+            }
+            else if(t.phase == TouchPhase.Moved || t.phase == TouchPhase.Stationary)
+            {
+                currentPos = new Vector2(t.position.x, t.position.y);
+                if(touchDownPos.x - currentPos.x > minSwipeDist)
+                {
+                    targetPosition = mainCamera.transform.position - cameraSpeed;
+                }
+                else if(currentPos.x - touchDownPos.x > minSwipeDist)
+                {
+                    targetPosition = mainCamera.transform.position + cameraSpeed;
+                }
+            }
+            else if (t.phase == TouchPhase.Ended)
+            {
+
+            }
+        }
+
+#else
         if (Input.GetKey("right"))
         {
             targetPosition = mainCamera.transform.position + cameraSpeed;
@@ -140,6 +178,7 @@ public class GameControl : MonoBehaviour
         {
             targetPosition = mainCamera.transform.position - cameraSpeed;
         }
+#endif
 
         smoothPosition = Vector3.Lerp(mainCamera.transform.position, targetPosition, 0.05f);
         mainCamera.transform.position = smoothPosition;

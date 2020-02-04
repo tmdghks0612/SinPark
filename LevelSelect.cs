@@ -29,10 +29,7 @@ public class LevelSelect : MonoBehaviour
 
     private void Start()
     {
-        Debug.Log("I'm in now");
         PublicLevel.usingCreatureNum = 5;
-
-        Debug.Log("Creature Num " + PublicLevel.friendlyTypeCreatureNum);
 
         for (int i = 0; i < PublicLevel.friendlyTypeCreatureNum; i++)
         {
@@ -86,11 +83,9 @@ public class LevelSelect : MonoBehaviour
                 PublicLevel.friendlyImageList[i] = PublicLevel.friendlyImage[PublicLevel.friendlyType[i].x, PublicLevel.friendlyType[i].y];
                 Debug.Log(PublicLevel.friendlyImageList[i]);
             }
-            Debug.Log("loaded!");
         }
 
         gameData.SaveGameData();
-        Debug.Log("saved!");
     }
     void Update()
     {
@@ -121,10 +116,13 @@ public class LevelSelect : MonoBehaviour
         }
         
     }
+
+    public void Escape()
+    {
+        Application.Quit();
+    }
     public void LoadUpgrade()
     {
-        Debug.Log("Level " + PublicLevel.GetPlayerLevel());
-        Debug.Log("Win " + PublicLevel.GetPlayerWin());
         upgradeShop.SetActive(true);
 
         for(int i=0; i<PublicLevel.friendlyTypeCreatureNum;i++)
@@ -166,6 +164,9 @@ public class LevelSelect : MonoBehaviour
             {
                 gameData = gameDataControl.GetComponent<GameData>();
             }
+        }
+        if(scene.name == "DefaultIngame")
+        {
         }
     }
 }

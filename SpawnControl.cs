@@ -46,6 +46,7 @@ public class SpawnControl : MonoBehaviour
     // Start is called before the first frame update
     public void SpawnControlStart()
     {
+        
         maxLanes = gameControl.GetMaxLanes();
         maxUnits = gameControl.GetMaxUnits();
         typeCreature = gameControl.typeCreature;
@@ -54,10 +55,12 @@ public class SpawnControl : MonoBehaviour
         InitStage();
         ScaleManaBar();
         //default creature
-        combatControl.InitLanes();
+        Debug.Log("SpawnControlStart");
+        combatControl.InitCombatControl();
         currentCreature = friendlyCreatureList[0].GetComponent<DefaultCreature>();
 
         InvokeRepeating("GainMana", 0.5f, regenTime);
+        SummonBase();
     }
 
     // Update is called once per frame

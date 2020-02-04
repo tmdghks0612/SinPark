@@ -28,7 +28,7 @@ public class CombatControl : MonoBehaviour
     private SideLanes hostileLanes;
 
     // Start is called before the first frame update
-    void Start()
+    public void InitCombatControl()
     {
         maxLanes = gameControl.GetMaxLanes();
         maxUnits = gameControl.GetMaxUnits();
@@ -53,18 +53,20 @@ public class CombatControl : MonoBehaviour
         {
             lock (lock_friendlyLanes)
             {
-                Debug.Log("pushed1 " + laneNum);
+                Debug.Log("laneNum : " + laneNum + " size: " + friendlyLanes.creatureList.Length + " Creature : " + newCreature.gameObject.name);
                 //add the newCreature to friendly lanes in current laneNum
                 friendlyLanes.creatureList[laneNum].Add(newCreature);
+                Debug.Log("pushed1 " + laneNum + "end");
             }
         }
         else
         {
             lock (lock_hostileLanes)
             {
-                //Debug.Log("pushed2" + laneNum);
+                Debug.Log("pushed2" + laneNum);
                 //add the newCreature to hostile lanes in current laneNum
                 hostileLanes.creatureList[laneNum].Add(newCreature);
+                Debug.Log("pushed2" + laneNum + "end");
             }
         }
     }
@@ -215,6 +217,7 @@ public class CombatControl : MonoBehaviour
     {
         //initialize creatureList in SideLanes
         //maxLanes contain the number of lanes available in the game
+        Debug.Log("initiate");
         friendlyLanes.creatureList = new List<DefaultCreature>[maxLanes];
         hostileLanes.creatureList = new List<DefaultCreature>[maxLanes];
 
