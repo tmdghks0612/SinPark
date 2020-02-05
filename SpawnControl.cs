@@ -4,11 +4,24 @@ using UnityEngine;
 
 public class SpawnControl : MonoBehaviour
 {
+    // control instances
+    public GameControl gameControl;
+    public CombatControl combatControl;
+
+    // mana related variables
     private readonly object lock_mana = new object();
     private bool manaFlag;
 
-    public GameControl gameControl;
-    public CombatControl combatControl;
+    // mana related variables
+    private int maxMana = 100;
+    private int regenAmount = 5;
+    private float regenTime = 0.5f;
+
+    [SerializeField]
+    private int baseMana;
+
+    private int[] friendlyCreatureManaCost;
+    private int[] hostileCreatureManaCost;
 
     public GameObject manaBar;
 
@@ -16,77 +29,68 @@ public class SpawnControl : MonoBehaviour
     private int maxLanes;
     private int maxUnits;
    
-
-    //number of type of creatures
+    // number of type of creatures
     private int typeCreature;
     private int typeUpgrade;
 
+    // player selected creature
     private DefaultCreature currentCreature;
 
+    //number of player creatures in the scene
     private int playerCreatureNum = 0;
+    //offset of z position difference for display
     private float layerOffset = 0.01f;
 
+    // creature start and end coordinates
     Vector3[] startCoord;
     Vector3[] endCoord;
 
-    public GameObject[] friendlyCreatureList;// = new GameObject[5];
-    public GameObject[] hostileCreatureList;// = new GameObject[5];
-
-    private int[] friendlyCreatureManaCost;
-    private int[] hostileCreatureManaCost;
-
-    //mana related variables
-    private int maxMana = 100;
-    private int regenAmount = 5;
-    private float regenTime = 0.5f;
-    [SerializeField]
-    private int baseMana;
-
+    // creature prefab list for friendly and hostile player
+    public GameObject[] friendlyCreatureList;
+    public GameObject[] hostileCreatureList;
 
     // Start is called before the first frame update
     public void SpawnControlStart()
     {
-        
+        // variable initialization according to GameControl
         maxLanes = gameControl.GetMaxLanes();
         maxUnits = gameControl.GetMaxUnits();
         typeCreature = gameControl.typeCreature;
         typeUpgrade = gameControl.typeUpgrade;
+
+        // data structure initializations
         InitLaneCoords();
         InitStage();
         ScaleManaBar();
-        //default creature
-        Debug.Log("SpawnControlStart");
+
+        // initialize combat control
         combatControl.InitCombatControl();
         currentCreature = friendlyCreatureList[0].GetComponent<DefaultCreature>();
 
-        InvokeRepeating("GainMana", 0.5f, regenTime);
+        // regenerate mana
+        InvokeRepeating("GainMana", regenTime, regenTime);
+        // summon friendly and hostile base
         SummonBase();
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
-
+    // spawn selected craeture in selected lane
     public void SpawnCreatureLane(int laneNum, GameControl.Sides side, int buttonNum)
     {
         if (playerCreatureNum == maxUnits)
         {
-            //when unit is full
+            // when player spawned too much creatures
             return;
         }
         else if(!UseMana(friendlyCreatureManaCost[buttonNum]))
         {
+            // when insufficient mana to spawn such creature
             return;
         }
         playerCreatureNum++;
-        //UseMana(creatureManaCost[creatureType, upgradeType]);
-        //summon a certaine creature in lane
         SummonCreature(laneNum, side, buttonNum);
     }
 
+    // summon a creature in certain lane, instantiate in the scene
     public void SummonCreature(int laneNum, GameControl.Sides side, int buttonNum)
     {
         //spawn an actor through instantiate
@@ -101,10 +105,13 @@ public class SpawnControl : MonoBehaviour
         {
             newObject = Instantiate<GameObject>(hostileCreatureList[buttonNum]);
         }
+
+        // pass control instances to each of the creatures
         newCreature = newObject.GetComponent<DefaultCreature>();
         newCreature.SetGameControl(gameControl);
         newCreature.SetCombatControl(combatControl);
 
+        // set start and end coordinates for spawning creature
         if(side == GameControl.Sides.Friendly)
         {
             startCoord[laneNum] -= new Vector3(0, 0, layerOffset);
@@ -118,10 +125,13 @@ public class SpawnControl : MonoBehaviour
             newCreature.SetCreature(endCoord[laneNum], startCoord[laneNum], buttonNum, laneNum, side);
         }
 
+        // push creature into the list(side, lane) in combatControl
         combatControl.PushCreature(laneNum, side, newCreature);
     }
 
-    //mana related functions
+    #region mana related functions
+
+    // use user mana
     bool UseMana(int cost)
     {
         lock (lock_mana)
@@ -156,10 +166,13 @@ public class SpawnControl : MonoBehaviour
         ScaleManaBar();
     }
 
+    // resize mana bar for UI
     void ScaleManaBar()
     {
         manaBar.transform.localScale = new Vector3((float)baseMana / maxMana, 1.0f, 1.0f);
     }
+
+    #endregion
 
     //initialize coordinates of start, end of lanes
     void InitLaneCoords()
@@ -178,6 +191,8 @@ public class SpawnControl : MonoBehaviour
     {
         playerCreatureNum--;
     }
+
+    // initialize prefab list and its mana costs according to PublicLevel
     void InitStage()
     {
         friendlyCreatureList = new GameObject[typeCreature];
@@ -194,14 +209,15 @@ public class SpawnControl : MonoBehaviour
         }
     }
 
+    // summon friendly and hostile base
     public void SummonBase()
     {
         for(int i=0; i<3; i++)
         {
+            //create three invisible creatures to take all lane's damage
             SummonCreature(i, GameControl.Sides.Friendly, 0);
             SummonCreature(i, GameControl.Sides.Hostile, 0);
         }
-
     }
 }
 

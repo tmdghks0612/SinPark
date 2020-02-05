@@ -18,6 +18,7 @@ public class StageSelect : MonoBehaviour
     [SerializeField]
     private GameObject stageMap;
 
+
     //Buttons that are child of upgradeShop gameObject. They are put mannually in editor by SerializeField
     [SerializeField]
     private Button[] upgradeButton = new Button[PublicLevel.friendlyTypeCreatureNum * PublicLevel.friendlyTypeUpgradeNum];
@@ -40,8 +41,8 @@ public class StageSelect : MonoBehaviour
         for (int i = 0; i < PublicLevel.friendlyTypeCreatureNum; i++)
         {
             int temp = i; //used temp since just using i makes every buttons to send last i value as a parameter
-            upgradeButton[i].GetComponent<Button>().onClick.AddListener(delegate { TargetCreature(upgradeOption[temp]); });
 
+            upgradeButton[i].GetComponent<Button>().onClick.AddListener(delegate { TargetCreature(upgradeOption[temp]); });
         }
 
         //make buttons toi call ChangeCreature fucntion
@@ -53,7 +54,6 @@ public class StageSelect : MonoBehaviour
 
         //UI upgradShop is not shown until upgradeShop is active
         upgradeShop.SetActive(false);
-
 
         //Try to find GameDataControl
         gameDataControl = GameObject.Find("GameDataControl");
@@ -131,7 +131,7 @@ public class StageSelect : MonoBehaviour
 
     }
     
-    //eixt the game
+    //exit the game
     public void Escape()
     {
         Application.Quit();
