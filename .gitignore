@@ -58,7 +58,8 @@ ExportedObj/
 # Unity3D generated file on crash reports
 sysinfo.txt
 SpawnRequestForm.cs
-SpawnRequestForm.cs.meta
+ServerControlForm.cs
+GameDataForm.cs
 *.meta
 
 # Builds

@@ -8,7 +8,7 @@ public class DefaultCreature : MonoBehaviour
 	//Transform creatureTransform;
 
 	public enum AttackType { Melee, Missile, Heal };
-
+	[SerializeField]
 	protected GameControl.Sides side;
 	protected int laneNum;
 
@@ -30,13 +30,13 @@ public class DefaultCreature : MonoBehaviour
 	[SerializeField]
     protected int manaCost;
     [SerializeField]
-	protected int creatureType;
-    [SerializeField]
     protected Vector3 speed = new Vector3( 0.05f, 0, 0 );
 	[SerializeField]
-	protected int upgradeType;
+	protected int buttonNum;
+	[SerializeField]
+	protected GameObject projectile;
 
-    private float pushDistance = 1.0f;
+	private float pushDistance = 1.0f;
 	private float deathDelay = 0.05f;
 	private Vector3 start;
 	private Vector3 end;
@@ -48,7 +48,7 @@ public class DefaultCreature : MonoBehaviour
 	protected bool Enemy = false;
 
     //script instances
-	private GameControl gameControl;
+	protected GameControl gameControl;
 	protected CombatControl combatControl;
 	protected Animator animControl;
 	void Start()
@@ -57,7 +57,7 @@ public class DefaultCreature : MonoBehaviour
 	}
 
 	
-	protected void MoveTo(Vector2 st, Vector2 ed)
+	protected void MoveTo(Vector3 st, Vector3 ed)
 	{
 		start = st;
 		end = ed;
@@ -82,7 +82,7 @@ public class DefaultCreature : MonoBehaviour
 			moveFlag = true;
 		}
 	}
-	public virtual void SetCreature(Vector2 st, Vector2 ed, int creatureType, int upgradeType, int lane, GameControl.Sides sideCheck)
+	public virtual void SetCreature(Vector3 st, Vector3 ed, int _buttonNum, int lane, GameControl.Sides sideCheck)
 	{
 		InitCreature();
 		laneNum = lane;
@@ -91,8 +91,7 @@ public class DefaultCreature : MonoBehaviour
 		side = sideCheck;
 		detectRange = attackRange;
 		maxHp = hp;
-        this.creatureType = creatureType;
-		this.upgradeType = upgradeType;
+		buttonNum = _buttonNum;
 		if(side == GameControl.Sides.Hostile)
 		{
 			speed.x *= -1;
@@ -116,7 +115,7 @@ public class DefaultCreature : MonoBehaviour
 			}
 			else if (creatureAttackType == AttackType.Missile)
 			{
-				combatControl.MissileAttack(currentPosition, creatureType, upgradeType, attackDamage, laneNum, side);
+				combatControl.MissileAttack(currentPosition, projectile, attackDamage, laneNum, side);
 				//animation
 			}
 			else if(creatureAttackType == AttackType.Heal)
@@ -207,6 +206,12 @@ public class DefaultCreature : MonoBehaviour
 			}
 		}
     }
+
+    public int GetManaCost()
+    {
+        return manaCost;
+    }
+
 	public GameControl.Sides getSide()
 	{
 		return side;

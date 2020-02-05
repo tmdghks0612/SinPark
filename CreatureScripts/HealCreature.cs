@@ -10,9 +10,9 @@ public class HealCreature : DefaultCreature
     protected int healAmount;
 
 
-    public override void SetCreature(Vector2 st, Vector2 ed, int creatureType, int upgradeType, int lane, GameControl.Sides sideCheck)
+    public override void SetCreature(Vector3 st, Vector3 ed, int buttonNum, int lane, GameControl.Sides sideCheck)
     { 
-        base.SetCreature(st, ed, creatureType, upgradeType, lane, sideCheck);
+        base.SetCreature(st, ed, buttonNum, lane, sideCheck);
         attackDamage = healAmount * -1; //
     }
 }

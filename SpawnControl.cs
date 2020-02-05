@@ -4,8 +4,24 @@ using UnityEngine;
 
 public class SpawnControl : MonoBehaviour
 {
+    // control instances
     public GameControl gameControl;
     public CombatControl combatControl;
+
+    // mana related variables
+    private readonly object lock_mana = new object();
+    private bool manaFlag;
+
+    // mana related variables
+    private int maxMana = 100;
+    private int regenAmount = 5;
+    private float regenTime = 0.5f;
+
+    [SerializeField]
+    private int baseMana;
+
+    private int[] friendlyCreatureManaCost;
+    private int[] hostileCreatureManaCost;
 
     public GameObject manaBar;
 
@@ -13,103 +29,122 @@ public class SpawnControl : MonoBehaviour
     private int maxLanes;
     private int maxUnits;
 
-    //number of type of creatures
-    private int typeCreature;
-    private int typeUpgrade;
-
+    // player selected creature
     private DefaultCreature currentCreature;
 
+    //number of player creatures in the scene
     private int playerCreatureNum = 0;
+    //offset of z position difference for display
+    private float layerOffset = 0.01f;
 
-    Vector2[] startCoord;
-    Vector2[] endCoord;
+    // creature start and end coordinates
+    Vector3[] startCoord;
+    Vector3[] endCoord;
 
-    public GameObject[,] prefabArray;
-
-    //mana related variables
-    private int maxMana = 100;
-    private int regenAmount = 5;
-    private float regenTime = 0.5f;
-    [SerializeField]
-    private int baseMana;
-
+    // creature prefab list for friendly and hostile player
+    public GameObject[] friendlyCreatureList;
+    public GameObject[] hostileCreatureList;
 
     // Start is called before the first frame update
-    void Start()
+    public void SpawnControlStart()
     {
+        // variable initialization according to GameControl
         maxLanes = gameControl.GetMaxLanes();
         maxUnits = gameControl.GetMaxUnits();
-        typeCreature = gameControl.typeCreature;
-        typeUpgrade = gameControl.typeUpgrade;
+
+        // data structure initializations
         InitLaneCoords();
-        InitPrefabs();
+        InitStage();
+        ScaleManaBar();
 
-        //default creature
-        combatControl.InitLanes();
-        currentCreature = prefabArray[0,0].GetComponent<DefaultCreature>();
+        // initialize combat control
+        combatControl.InitCombatControl();
+        currentCreature = friendlyCreatureList[0].GetComponent<DefaultCreature>();
 
-        this.manaBar = GameObject.Find("/GameControl/ManaContainerPrefab/Bar");
-        InvokeRepeating("GainMana", 0.5f, regenTime);
+        // regenerate mana
+        InvokeRepeating("GainMana", regenTime, regenTime);
+        // summon friendly and hostile base
+        SummonBase();
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
-    public void SpawnCreatureLane(int laneNum, GameControl.Sides side, int creatureType, int upgradeType)
+    // spawn selected craeture in selected lane
+    public void SpawnCreatureLane(int laneNum, GameControl.Sides side, int buttonNum)
     {
         if (playerCreatureNum == maxUnits)
         {
-            //when unit is full
+            // when player spawned too much creatures
+            return;
+        }
+        else if(!UseMana(friendlyCreatureManaCost[buttonNum]))
+        {
+            // when insufficient mana to spawn such creature
             return;
         }
         playerCreatureNum++;
-
-        //summon a certaine creature in lane
-        SummonCreature(laneNum, side, creatureType, upgradeType);
+        SummonCreature(laneNum, side, buttonNum);
     }
 
-    void SummonCreature(int laneNum, GameControl.Sides side, int creatureType, int upgradeType)
+    // summon a creature in certain lane, instantiate in the scene
+    public void SummonCreature(int laneNum, GameControl.Sides side, int buttonNum)
     {
         //spawn an actor through instantiate
         GameObject newObject;
         DefaultCreature newCreature;
 
+        if (side == GameControl.Sides.Friendly)
+        {
+            newObject = Instantiate<GameObject>(friendlyCreatureList[buttonNum]);
+        }
+        else
+        {
+            newObject = Instantiate<GameObject>(hostileCreatureList[buttonNum]);
+        }
 
-        Debug.Log("creature type is " + creatureType.ToString());
-        newObject = Instantiate<GameObject>(prefabArray[creatureType,upgradeType]); // 일단 0으로 설정 후에 변수 upgradeType으로 바꿔줘야한다. 함수 자체를 바꿔야 하기에 일단은 0 넣음
+        // pass control instances to each of the creatures
         newCreature = newObject.GetComponent<DefaultCreature>();
-
         newCreature.SetGameControl(gameControl);
         newCreature.SetCombatControl(combatControl);
 
+        // set start and end coordinates for spawning creature
         if(side == GameControl.Sides.Friendly)
         {
-            newCreature.SetCreature(startCoord[laneNum], endCoord[laneNum], creatureType, upgradeType, laneNum, side);
+            startCoord[laneNum] -= new Vector3(0, 0, layerOffset);
+            endCoord[laneNum] -= new Vector3(0, 0, layerOffset);
+            newCreature.SetCreature(startCoord[laneNum], endCoord[laneNum], buttonNum, laneNum, side);
         }
         else
         {
-            newCreature.SetCreature(endCoord[laneNum], startCoord[laneNum], creatureType, upgradeType, laneNum, side);
+            startCoord[laneNum] -= new Vector3(0, 0, layerOffset);
+            endCoord[laneNum] -= new Vector3(0, 0, layerOffset);
+            newCreature.SetCreature(endCoord[laneNum], startCoord[laneNum], buttonNum, laneNum, side);
         }
 
+        // push creature into the list(side, lane) in combatControl
         combatControl.PushCreature(laneNum, side, newCreature);
     }
 
-    //mana related functions
+    #region mana related functions
+
+    // use user mana
     bool UseMana(int cost)
     {
-        if (cost < baseMana)
+        lock (lock_mana)
         {
-            baseMana -= cost;
+            if (cost < baseMana)
+            {
+                baseMana -= cost;
+                manaFlag = true;
+            }
+            else
+            {
+                manaFlag = false;
+            }
+        }
+        if(manaFlag == true)
+        {
             ScaleManaBar();
-            return true;
         }
-        else
-        {
-            return false;
-        }
+        return manaFlag;
     }
 
     void GainMana()
@@ -125,36 +160,58 @@ public class SpawnControl : MonoBehaviour
         ScaleManaBar();
     }
 
+    // resize mana bar for UI
     void ScaleManaBar()
     {
         manaBar.transform.localScale = new Vector3((float)baseMana / maxMana, 1.0f, 1.0f);
     }
 
-    //initialization functions
+    #endregion
 
     //initialize coordinates of start, end of lanes
     void InitLaneCoords()
     {
-        startCoord = new Vector2[maxLanes];
-        endCoord = new Vector2[maxLanes];
+        startCoord = new Vector3[maxLanes];
+        endCoord = new Vector3[maxLanes];
 
         for(int i=0; i < maxLanes; ++i)
         {
-            startCoord[i] = new Vector2(-15.0f, i * 2.0f);
-            endCoord[i] = new Vector2(15.0f, i * 2.0f);
+            startCoord[i] = new Vector3(-15.0f, i * 2.5f -1, 0);
+            endCoord[i] = new Vector3(15.0f, i * 2.5f -1, 0 );
         }
     }
 
-    void InitPrefabs()
+    public void OnUnitDeath()
     {
-        prefabArray = new GameObject[typeCreature,typeUpgrade];
-        //find and load creature prefabs from folder 'creature#'
-        for (int i = 0; i < typeCreature; ++i)
+        playerCreatureNum--;
+    }
+
+    // initialize prefab list and its mana costs according to PublicLevel
+    void InitStage()
+    {
+        friendlyCreatureList = new GameObject[PublicLevel.friendlyTypeCreatureNum];
+        hostileCreatureList = new GameObject[PublicLevel.friendlyTypeCreatureNum];
+
+        friendlyCreatureManaCost = new int[PublicLevel.friendlyTypeCreatureNum];
+        hostileCreatureManaCost = new int[PublicLevel.friendlyTypeCreatureNum];
+
+        PublicLevel.PlayerStageSetting(friendlyCreatureList,hostileCreatureList);
+        
+        for(int i=0; i<PublicLevel.friendlyTypeCreatureNum;i++)
         {
-            for(int k = 0; k < typeUpgrade; ++k)
-            {
-                prefabArray[i, k] = Resources.Load("creature" + i.ToString() + "/creature" + i.ToString() + "_" + k.ToString() + "/creature" + i.ToString() + "_" + k.ToString() + "Prefab") as GameObject;
-            }
+            friendlyCreatureManaCost[i] = friendlyCreatureList[i].GetComponent<DefaultCreature>().GetManaCost();
+        }
+    }
+
+    // summon friendly and hostile base
+    public void SummonBase()
+    {
+        for(int i=0; i<3; i++)
+        {
+            //create three invisible creatures to take all lane's damage
+            SummonCreature(i, GameControl.Sides.Friendly, 0);
+            SummonCreature(i, GameControl.Sides.Hostile, 0);
         }
     }
 }
+

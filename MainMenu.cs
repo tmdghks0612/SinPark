@@ -20,6 +20,7 @@ public class MainMenu : MonoBehaviour
 
     public void LoadGameScene()
     {
-        SceneManager.LoadScene("DefaultIngame");
+        PublicLevel.InitSetting();
+        SceneManager.LoadScene("StageSelect");
     }
 }

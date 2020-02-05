@@ -4,49 +4,45 @@ using UnityEngine;
 
 public class CombatControl : MonoBehaviour
 {
+    // control instances
     public GameControl gameControl;
+    public SpawnControl spawnControl;
     
+    // lane and creature initialization variables
     private int maxLanes;
     private int maxUnits;
-    private int typeCreature;
-    private int typeUpgrade;
 
+    // locks used for synchronizing spawn
     private readonly object lock_friendlyLanes = new object();
     private readonly object lock_hostileLanes = new object();
 
+    // array of missile prefabs
     private GameObject[,] missileArray;
 
-    //structure for sides containing creatureList(lanes)
-    //creatureList contains creatures in the lane
+    // structure for sides containing creatureList(lanes)
+    // creatureList contains creatures in the lane
     public struct SideLanes
     {
         public List<DefaultCreature>[] creatureList;
     }
 
+    // data structure for lane of creatures in each sides
     private SideLanes friendlyLanes;
     private SideLanes hostileLanes;
 
     // Start is called before the first frame update
-    void Start()
+    public void InitCombatControl()
     {
+        // variable initialization according to gameControl
         maxLanes = gameControl.GetMaxLanes();
         maxUnits = gameControl.GetMaxUnits();
-        typeCreature = gameControl.typeCreature;
-        typeUpgrade = gameControl.typeUpgrade;
 
         InitLanes();
-        InitMissiles();
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+    #region push pop functions
 
-    //functions to push and pop from creature lists
-
-    //push creature called when a creature is spawned in a certain lane
+    // push creature called when a creature is spawned in a certain lane
     public void PushCreature( int laneNum, GameControl.Sides side, DefaultCreature newCreature )
     {
         if (side == GameControl.Sides.Friendly)
@@ -70,6 +66,7 @@ public class CombatControl : MonoBehaviour
     //pop creature called when a creature died in a certain lane
     public void PopCreature( int laneNum, GameControl.Sides side, DefaultCreature deadCreature )
     {
+        spawnControl.OnUnitDeath();
         if (side == GameControl.Sides.Friendly)
         {
             //remove the deadCreature to friendly lanes in current laneNum
@@ -88,9 +85,11 @@ public class CombatControl : MonoBehaviour
             }
         }
     }
+    #endregion
 
-    //functions to search and attack according to creature list
+    #region search and attack functions
 
+    // search creatures in melee attack range
     public bool SearchCreature( Vector3 currentPosition, float attackRange, int laneNum, GameControl.Sides side )
     {
         //attack from friendly to hostile
@@ -101,7 +100,6 @@ public class CombatControl : MonoBehaviour
                 //search creatures within attackrange of friendly lanes in current laneNum
                 foreach (DefaultCreature currentCreature in hostileLanes.creatureList[laneNum])
                 {
-
                     if (currentCreature.transform.position.x - currentPosition.x < attackRange)
                     {
                         return true;
@@ -127,15 +125,17 @@ public class CombatControl : MonoBehaviour
         return false;
     }
 
+    // attacks performed to each creature
     public void MeleeAttack(Vector3 currentPosition, float attackRange, int attackDamage, int size, int laneNum, GameControl.Sides side)
     {
-        //attack from friendly to hostile
+        // attack from friendly to hostile
         if (side == GameControl.Sides.Friendly)
         {
+            // used lock to stop creature unwanted destroys
             lock(lock_hostileLanes)
             {
                 List<DefaultCreature> currentList = hostileLanes.creatureList[laneNum];
-                //search creatures within attackrange of friendly lanes in current laneNum
+                // search creatures within attackrange of friendly lanes in current laneNum
                 for (int i = currentList.Count-1; i >= 0; i--)
                 {
                     if (currentList[i].transform.position.x - currentPosition.x < attackRange)
@@ -145,7 +145,7 @@ public class CombatControl : MonoBehaviour
                 }
             }
         }
-        //attack from hostile to friendly
+        // attack from hostile to friendly
         else
         {
             lock(lock_friendlyLanes)
@@ -163,9 +163,10 @@ public class CombatControl : MonoBehaviour
         }
     }
 
+    // heal performed to nearby allies on confronting hostile creature
     public void Heal(Vector3 currentPosition, float attackRange, int attackDamage, int laneNum, GameControl.Sides side)
     {
-        Debug.Log("Healing");
+        //heal friendly creatures
         if (side == GameControl.Sides.Friendly)
         {
             lock (lock_friendlyLanes)
@@ -181,7 +182,7 @@ public class CombatControl : MonoBehaviour
                 }
             }
         }
-        //attack from hostile to friendly
+        //heal hostile creatures
         else
         {
             lock (lock_hostileLanes)
@@ -199,16 +200,19 @@ public class CombatControl : MonoBehaviour
         }
     }
 
-    public void MissileAttack( Vector3 currentPosition, int missileType, int upgradeType, int attackDamage, int laneNum, GameControl.Sides side)
+    #endregion
+
+    // spawn a missile that damage on hit
+    public void MissileAttack( Vector3 currentPosition, GameObject projectile, int attackDamage, int laneNum, GameControl.Sides side)
     {
-        GameObject newObject = Instantiate<GameObject>(missileArray[missileType,upgradeType]); 
+        GameObject newObject = Instantiate<GameObject>(projectile); 
         DefaultMissile newMissile = newObject.GetComponent<DefaultMissile>();
         newMissile.SetMissile( currentPosition, side, laneNum );
     }
 
-    //initializing functions
+    // initializing functions
 
-    //initialize struct of lists
+    // initialize struct of lists
     public void InitLanes()
     {
         //initialize creatureList in SideLanes
@@ -223,17 +227,5 @@ public class CombatControl : MonoBehaviour
         }
     }
 
-    public void InitMissiles()
-    {
-        missileArray = new GameObject[typeCreature,typeUpgrade]; 
-        //find and load creature prefabs from folder 'creature#'
-        for(int i = 0; i < typeCreature; i++)
-        {
-            for (int k = 0; k < typeUpgrade; k++)
-            {
-                missileArray[i, k] = Resources.Load("creature" + i.ToString() + "/creature" + i.ToString() + "_" + k.ToString() + "/creature" + i.ToString() + "_" + k.ToString() + "Projectile") as GameObject;
-            }
-        }
-
-    }
+   
 }

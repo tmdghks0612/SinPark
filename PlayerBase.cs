@@ -4,48 +4,97 @@ using UnityEngine;
 
 public class PlayerBase : DefaultCreature
 {
-    public GameObject healthBar;
+    //HealthBar of friendly and hostile base
+    private GameObject friendlyHealthBar;
+    private GameObject hostileHealthBar;
 
-    
-    private int maxHealth = 200;
+    //Both Health cannot exceed their MaxHealth
+    [SerializeField]
+    private int friendlyMaxHealth;
+    [SerializeField]
+    private int hostileMaxHealth;
+
+    //curernt health of the PlayerBase
+    [SerializeField]
+    private static int friendlyCurrentHealth;
+    [SerializeField]
+    private static int hostileCurrentHealth;
 
     // Start is called before the first frame update
     void Start()
     {
-        size = 99; // To prevent base from pushed
-    }
-
-    public override void SetCreature( Vector2 st, Vector2 ed, int creatureType, int upgradeType, int lane, GameControl.Sides sideCheck )
-    {
+        //start game with full health
+        friendlyCurrentHealth = friendlyMaxHealth;
+        hostileCurrentHealth = hostileMaxHealth;
         
-        base.SetCreature(st, ed, creatureType, upgradeType, lane, sideCheck);
-        this.hp = maxHealth;
-        this.creatureAttackType = AttackType.Missile;
-        this.creatureType = 0;
-        this.upgradeType = 0;
+        //Find HealthBar GameObject in the scnce
+        friendlyHealthBar = GameObject.Find("friendlyBaseHealthBar");
+        hostileHealthBar = GameObject.Find("hostileBaseHealthBar");
+        
+        size = 99; // To prevent base from pushed
+
+        //Find Gamecontrol
+        gameControl = GameObject.Find("GameControl").GetComponent<GameControl>();
     }
 
+    //overrided function from DefaultCreature.
     public override void DamageTaken(int damage, int size)
     {
+        //PlayerBase does not get heal
         if (damage > 0)
         {
-            hp -= damage;
-            CalculateHealth();
+            //Damage Taken depends on the side(Friendly/Hostile) of the base
+            if (side == GameControl.Sides.Friendly)
+            {
+                friendlyCurrentHealth -= damage;
+                CalculateHealth();
+            }
+            else
+            {
+                hostileCurrentHealth -= damage;
+                CalculateHealth();
+            }
         }
     }
 
+    // Win/Lose Check and healthBar update
     void CalculateHealth()
     {
-        if( this.hp < 0)
+        if( friendlyCurrentHealth < 0)
         {
-            //player down!
-            Debug.Log("player died!");
-            this.Dead();
+            PlayerLose();
+        }
+        else if(hostileCurrentHealth < 0)
+        {
+            PlayerWin();
         }
         else
         {
-            healthBar.transform.localScale = new Vector3( (float)this.hp / maxHealth, 1.0f, 1.0f );
+            //HealthBar is updated by changing localScale of the bar based on percentile.
+            if (side == GameControl.Sides.Friendly)
+            {
+                friendlyHealthBar.transform.localScale = new Vector3((float)friendlyCurrentHealth / friendlyMaxHealth, 1.0f, 1.0f);
+            }
+            else
+            {
+                hostileHealthBar.transform.localScale = new Vector3((float)hostileCurrentHealth / hostileMaxHealth, 1.0f, 1.0f);
+            }
         }
+    }
 
+    //When Friendly side PlayerBase's health < 0, call GameOver Function in gameControl with parameter false.
+    private void PlayerLose()
+    {
+        friendlyHealthBar.transform.localScale = new Vector3(0,1,1);
+        gameControl.GameOver(false);
+        this.Dead();
+    }
+
+    //When Hostile side PlayerBase's health < 0, call GameOver Function in gameControl with parameter true.
+    private void PlayerWin()
+    {
+        hostileHealthBar.transform.localScale = new Vector3(0, 1, 1);
+        gameControl.GameOver(true);
+        this.Dead();
     }
 }
