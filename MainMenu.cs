@@ -22,6 +22,6 @@ public class MainMenu : MonoBehaviour
     {
         PublicLevel.InitReady();
         PublicLevel.InitSetting();
-        SceneManager.LoadScene("LevelSelect");
+        SceneManager.LoadScene("StageSelect");
     }
 }

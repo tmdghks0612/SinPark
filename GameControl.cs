@@ -139,7 +139,8 @@ public class GameControl : MonoBehaviour
     }
     public void LoadGameScene()
     {
-        SceneManager.LoadScene("LevelSelect");
+        SceneManager.LoadScene("StageSelect");
+        //SceneManager.LoadScene("StageSelect");
     }
 
     private void LateUpdate()

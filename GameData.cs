@@ -9,63 +9,41 @@ public class GameData : GameDataForm
 {
     #region save/load functions
 
+    // create and save a GameDataForm
     public void SaveGameData()
     {
+        // find GameData in the scene
         GameDataForm currentGameData = GameObject.Find("GameDataControl").GetComponent<GameData>();
-
+        // set GameData variables according to PublicLevel
         currentGameData.SetGameData(PublicLevel.GetPlayerLevel(), PublicLevel.GetPlayerWin(), PublicLevel.friendlyType);
-
+        // save current GameData
         SaveGame(currentGameData, GetFileName());
     }
 
-    public GameDataForm LoadGameData()//int _playerLevel, long _playerWin, Vector2Int[] _friendlyType)
+    // return GameDataForm if found, else return null
+    public GameDataForm LoadGameData()
     {
         GameDataForm currentGameData = LoadGame(GetFileName(), this);
-        //when local save does not exist
-        if (currentGameData == null)
-        {
-            /*
-            //initialize player info
-            _playerLevel = 1;
-            _playerWin = 0;
-            //initialize friendlyType
-            for (int i = 0; i < 5; ++i)
-            {
-                _friendlyType[i] = new Vector2Int(i, 0);
-            }*/
-            return null;
-        }
-        else
-        {
-            return currentGameData;
-            /*
-            //load player info from local save
-            _playerLevel = currentGameData.GetPlayerLevel();
-            _playerWin = currentGameData.GetPlayerWin();
-            for (int i = 0; i < 5; ++i)
-            {
-                _friendlyType[i] = new Vector2Int(currentGameData.GetFriendlyType()[i].x, currentGameData.GetFriendlyType()[i].y);
-            }
-            */
-        }
+        return currentGameData;
     }
 
+    // save GameData as a file in persistent datapath
     public static bool SaveGame(GameDataForm saveGame, string name)
     {
+        // serializer
         BinaryFormatter formatter = new BinaryFormatter();
 
+        // Open a file stream as create(write)
         using (FileStream stream = new FileStream(GetSavePath(name), FileMode.Create))
         {
-            Debug.Log("class internal data" + saveGame.GetPlayerLevel().ToString());
             try
             {
-                Debug.Log("try save!");
+                // serialize GameData using a converted format of string
                 formatter.Serialize(stream, saveGame.GetSaveString());
-                //formatter.Serialize(stream, saveGame);
             }
             catch (Exception)
             {
-                Debug.Log("save failed!");
+                // when save failed
                 return false;
             }
         }
@@ -73,35 +51,43 @@ public class GameData : GameDataForm
         return true;
     }
 
+    // return GameDataForm from saved file, if none exist, return null
     public static GameDataForm LoadGame(string name, GameDataForm loadData)
     {
         if (!DoesSaveGameExist(name))
         {
+            //when file does not exist
             return null;
         }
 
+        // deserializer
         BinaryFormatter formatter = new BinaryFormatter();
-        Debug.Log("loading from : " + GetSavePath(name));
+
+        // temporary stream for taking string input
         using (FileStream stream = new FileStream(GetSavePath(name), FileMode.Open))
         {
             try
             {
+                // get formatted string from serialized file
                 loadData.loadGameDataFromString(formatter.Deserialize(stream) as String);
-                
                 return loadData;
             }
             catch (Exception)
             {
-                Debug.Log("hello");
+                //when load file was found but failed to read
                 return null;
             }
         }
     }
 
+    #endregion
+
+    // delete a existing save
     public static bool DeleteSaveGame(string name)
     {
         try
         {
+            //delete the file
             File.Delete(GetSavePath(name));
         }
         catch (Exception)
@@ -112,17 +98,19 @@ public class GameData : GameDataForm
         return true;
     }
 
+    // return true if save file exists, null if none exists
     public static bool DoesSaveGameExist(string name)
     {
         return File.Exists(GetSavePath(name));
     }
 
+    // return save / load path for a given name of file
     private static string GetSavePath(string name)
     {
         return Path.Combine(Application.persistentDataPath, name + ".sav");
     }
 
-    #endregion
+    
 
     
 }

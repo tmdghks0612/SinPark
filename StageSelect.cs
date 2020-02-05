@@ -4,7 +4,7 @@ using UnityEngine.SceneManagement;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class LevelSelect : MonoBehaviour
+public class StageSelect : MonoBehaviour
 {
     [SerializeField]
     private GameObject gameDataControl;
@@ -55,7 +55,7 @@ public class LevelSelect : MonoBehaviour
 
             loadedData = gameData.LoadGameData();
 
-            //load when game was levelselect scene was first loaded
+            //load when game was StageSelect scene was first loaded
             if (loadedData == null)
             {
                 Debug.Log("no save exists!");
@@ -85,7 +85,6 @@ public class LevelSelect : MonoBehaviour
                 Debug.Log(PublicLevel.friendlyImageList[i]);
             }
         }
-
         gameData.SaveGameData();
     }
     void Update()
@@ -158,7 +157,7 @@ public class LevelSelect : MonoBehaviour
 
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        if(scene.name == "LevelSelect")
+        if(scene.name == "StageSelect")
         {
             gameDataControl = GameObject.Find("GameDataControl");
             if (gameDataControl != null)
