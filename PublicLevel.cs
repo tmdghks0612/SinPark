@@ -142,8 +142,6 @@ public static class PublicLevel
         else if(newLevel > playerLevel)
         {
             playerLevel = newLevel;
-
-            Debug.Log("playerlevel set to " + newLevel.ToString());
         }
     }
 

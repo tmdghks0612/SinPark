@@ -132,7 +132,6 @@ public class GameControl : MonoBehaviour
     //called from PlayerBase when one of the player died
     public virtual void GameOver(bool isWin)
     {
-        Debug.Log(isWin + "  " + gameOverFlag);
         if (isWin && gameOverFlag == false)
         {
             PublicLevel.SetPlayerLevel(PublicLevel.GetStageLevel());

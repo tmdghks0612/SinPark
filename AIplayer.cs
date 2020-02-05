@@ -148,7 +148,6 @@ public class AIplayer : MonoBehaviour
     {
         for (int i = 0; i < PublicLevel.hostileTypeCreatureNum; ++i)
         {
-            Debug.Log(hostileCreatureList[i]);
             creatureArray[i] = hostileCreatureList[i].GetComponent<DefaultCreature>();
         }
     }

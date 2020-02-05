@@ -93,7 +93,6 @@ public class StageSelect : MonoBehaviour
                 PublicLevel.friendlyCreatureList[i] = PublicLevel.friendlyPrefab[PublicLevel.friendlyType[i].x, PublicLevel.friendlyType[i].y];
 
                 PublicLevel.friendlyImageList[i] = PublicLevel.friendlyImage[PublicLevel.friendlyType[i].x, PublicLevel.friendlyType[i].y];
-                Debug.Log(PublicLevel.friendlyImageList[i]);
             }
         }
 
@@ -105,7 +104,6 @@ public class StageSelect : MonoBehaviour
     //make location button interactable(clickable) for player to put decided creature to the position they want
     void TargetCreature(Vector2Int type)
     {
-        Debug.Log("in");
         changingInfo = type;
 
         for (int i = 0; i < PublicLevel.usingCreatureNum; i++)
