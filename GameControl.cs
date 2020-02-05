@@ -6,17 +6,24 @@ using UnityEngine.SceneManagement;
 
 public class GameControl : MonoBehaviour
 {
+    //Basic Controller during game. put manually by Unity Editor
     public CombatControl combatControl;
     public SpawnControl spawnControl;
     public ServerControl serverControl;
-
     public AIplayer aiplayer;
 
+
     //variables defined overall in game
+    //Number of maximum lane
     private int maxLanes = 3;
+    //Maximum number of Units that can exist during the game
     private int maxUnits = 100;
-    public int typeCreature = 7;
-    public int typeUpgrade = 1;
+    
+    
+    public int typeCreature = PublicLevel.friendlyTypeCreatureNum;
+    public int typeUpgrade = PublicLevel.friendlyTypeUpgradeNum;
+    
+    //Paramters for camera to move smoothly to intended direction
     private Vector3 cameraSpeed;
     private float smoothSpeed;
     private GameObject mainCamera;
@@ -34,17 +41,18 @@ public class GameControl : MonoBehaviour
     private Text[] costText;
     private bool gameOverFlag = false;
 
+    //UI Panel hidden. One of the panel become active when game ends
     public GameObject losePanel;
     public GameObject winPanel;
 
-
+    //Parameters For Android Touch/Swipe Function
     Vector2 ScreenSize;
     float minSwipeDist;
     Vector2 swipeDirection;
     Vector2 touchDownPos;
     Vector2 currentPos;
 
-
+    //Side of the Creatures summoned in the game
     public enum Sides { Friendly, Hostile };
 
     // Start is called before the first frame update
@@ -57,12 +65,16 @@ public class GameControl : MonoBehaviour
         //initializing creature and its upgrade type later changes will remove this 2 lines
         InitCreatureType();
         InitButtonImage();
+
+        //Make Buttons to call ChooseCreature.
         for (int i = 0; i < SummonButton.Length; i++)
         {
             int temp = creatureType[i];
             SummonButton[i].GetComponent<Button>().onClick.AddListener(delegate { ChooseCreature(temp); });
         }
         monsterType = 0;
+
+        //Make Buttons to call SummonProcedure. Make it disabled until activated
         for (int i = 0; i < lanes.Length; i++)
         {
             int temp = creatureType[i];
@@ -74,10 +86,10 @@ public class GameControl : MonoBehaviour
 
         if(aiplayer != null)
         {
-            Debug.Log("aiplayer not null!");
             aiplayer.AIplayerStart();
         }
 
+        //Values for android touch. Get Screen Size and set minimum swipe distant as 1/14 of it.
         ScreenSize = new Vector2(Screen.width, Screen.height);
         minSwipeDist = Mathf.Max(ScreenSize.x, ScreenSize.y) / 14f;
     }
@@ -85,11 +97,10 @@ public class GameControl : MonoBehaviour
 
     protected virtual void SummonProcedure(int laneNumber)
     {
-        Debug.Log("monsterType " + monsterType + "typeCreature" + typeCreature);
         spawnControl.SpawnCreatureLane(laneNumber, GameControl.Sides.Friendly, monsterType);
-
     }
 
+    //Choose the creature to summon to the lane. Decided data is saved at monsterType
     void ChooseCreature(int type)
     {
         if (type != monsterType)
@@ -124,9 +135,7 @@ public class GameControl : MonoBehaviour
         Debug.Log(isWin + "  " + gameOverFlag);
         if (isWin && gameOverFlag == false)
         {
-            Debug.Log("won, player level was " + PublicLevel.GetPlayerLevel());
             PublicLevel.SetPlayerLevel(PublicLevel.GetStageLevel());
-            Debug.Log("won, player level is " + PublicLevel.GetPlayerLevel());
             winPanel.SetActive(true);
             winPanel.transform.GetChild(0).GetComponent<Text>().text = "Your level is " + PublicLevel.GetPlayerLevel().ToString();
         }
@@ -139,12 +148,16 @@ public class GameControl : MonoBehaviour
     }
     public void LoadGameScene()
     {
-        SceneManager.LoadScene("LevelSelect");
+        SceneManager.LoadScene("StageSelect");
+        //SceneManager.LoadScene("StageSelect");
     }
 
+    //Input Depends on the mod
     private void LateUpdate()
     {
+        //UNITY_Anroid
 #if UNITY_ANDROID
+        //save the position where first touched, calculate the disance between first and current. If it's distance is larger than setted value, make camera move to the position
         if(Input.touches.Length>0)
         {
             Touch t = Input.GetTouch(0);
@@ -186,10 +199,13 @@ public class GameControl : MonoBehaviour
         mainCamera.transform.position = smoothPosition;
     }
 
+    //reutrn maxLanes
     public int GetMaxLanes()
     {
         return maxLanes;
     }
+
+    //return maxUnits
     public int GetMaxUnits()
     {
         return maxUnits;
@@ -203,6 +219,7 @@ public class GameControl : MonoBehaviour
         }
     }
 
+    //Change image and cost of summon creature to the right value
     private void InitButtonImage()
     {
         costText = new Text[PublicLevel.usingCreatureNum];

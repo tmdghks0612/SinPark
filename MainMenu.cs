@@ -20,8 +20,7 @@ public class MainMenu : MonoBehaviour
 
     public void LoadGameScene()
     {
-        PublicLevel.InitReady();
         PublicLevel.InitSetting();
-        SceneManager.LoadScene("LevelSelect");
+        SceneManager.LoadScene("StageSelect");
     }
 }
