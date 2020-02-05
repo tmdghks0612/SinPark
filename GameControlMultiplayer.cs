@@ -19,7 +19,6 @@ public class GameControlMultiplayer : GameControl
         StartCoroutine(SendSpawnRequest(laneNumber, GameControl.Sides.Friendly, monsterType, upgradeType[monsterType]));
         
         // test codes for spawning creatures easily
-        Debug.Log("monsterType " + monsterType + "typeCreature" + typeCreature);
         spawnControl.SpawnCreatureLane(laneNumber, GameControl.Sides.Friendly, monsterType);
         spawnControl.SpawnCreatureLane(laneNumber, GameControl.Sides.Hostile, monsterType);
     }

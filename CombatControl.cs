@@ -11,8 +11,6 @@ public class CombatControl : MonoBehaviour
     // lane and creature initialization variables
     private int maxLanes;
     private int maxUnits;
-    private int typeCreature;
-    private int typeUpgrade;
 
     // locks used for synchronizing spawn
     private readonly object lock_friendlyLanes = new object();
@@ -38,8 +36,6 @@ public class CombatControl : MonoBehaviour
         // variable initialization according to gameControl
         maxLanes = gameControl.GetMaxLanes();
         maxUnits = gameControl.GetMaxUnits();
-        typeCreature = gameControl.typeCreature;
-        typeUpgrade = gameControl.typeUpgrade;
 
         InitLanes();
     }
