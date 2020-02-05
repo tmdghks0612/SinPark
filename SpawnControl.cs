@@ -28,10 +28,6 @@ public class SpawnControl : MonoBehaviour
     // maxLanes according to CombatControl
     private int maxLanes;
     private int maxUnits;
-   
-    // number of type of creatures
-    private int typeCreature;
-    private int typeUpgrade;
 
     // player selected creature
     private DefaultCreature currentCreature;
@@ -55,8 +51,6 @@ public class SpawnControl : MonoBehaviour
         // variable initialization according to GameControl
         maxLanes = gameControl.GetMaxLanes();
         maxUnits = gameControl.GetMaxUnits();
-        typeCreature = gameControl.typeCreature;
-        typeUpgrade = gameControl.typeUpgrade;
 
         // data structure initializations
         InitLaneCoords();
@@ -195,15 +189,15 @@ public class SpawnControl : MonoBehaviour
     // initialize prefab list and its mana costs according to PublicLevel
     void InitStage()
     {
-        friendlyCreatureList = new GameObject[typeCreature];
-        hostileCreatureList = new GameObject[typeCreature];
+        friendlyCreatureList = new GameObject[PublicLevel.friendlyTypeCreatureNum];
+        hostileCreatureList = new GameObject[PublicLevel.friendlyTypeCreatureNum];
 
-        friendlyCreatureManaCost = new int[typeCreature];
-        hostileCreatureManaCost = new int[typeCreature];
+        friendlyCreatureManaCost = new int[PublicLevel.friendlyTypeCreatureNum];
+        hostileCreatureManaCost = new int[PublicLevel.friendlyTypeCreatureNum];
 
         PublicLevel.PlayerStageSetting(friendlyCreatureList,hostileCreatureList);
         
-        for(int i=0; i<typeCreature;i++)
+        for(int i=0; i<PublicLevel.friendlyTypeCreatureNum;i++)
         {
             friendlyCreatureManaCost[i] = friendlyCreatureList[i].GetComponent<DefaultCreature>().GetManaCost();
         }

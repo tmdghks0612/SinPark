@@ -19,10 +19,6 @@ public class GameControl : MonoBehaviour
     //Maximum number of Units that can exist during the game
     private int maxUnits = 100;
     
-    
-    public int typeCreature = PublicLevel.friendlyTypeCreatureNum;
-    public int typeUpgrade = PublicLevel.friendlyTypeUpgradeNum;
-    
     //Paramters for camera to move smoothly to intended direction
     private Vector3 cameraSpeed;
     private float smoothSpeed;
@@ -61,7 +57,7 @@ public class GameControl : MonoBehaviour
         cameraSpeed = new Vector3(2.0f, 0, 0);
         mainCamera = GameObject.FindWithTag("MainCamera");
         targetPosition = mainCamera.transform.position;
-        creatureType = new int[typeCreature];
+        creatureType = new int[PublicLevel.friendlyTypeCreatureNum];
         //initializing creature and its upgrade type later changes will remove this 2 lines
         InitCreatureType();
         InitButtonImage();
@@ -94,7 +90,6 @@ public class GameControl : MonoBehaviour
         minSwipeDist = Mathf.Max(ScreenSize.x, ScreenSize.y) / 14f;
     }
     
-
     protected virtual void SummonProcedure(int laneNumber)
     {
         spawnControl.SpawnCreatureLane(laneNumber, GameControl.Sides.Friendly, monsterType);
@@ -148,7 +143,6 @@ public class GameControl : MonoBehaviour
     public void LoadGameScene()
     {
         SceneManager.LoadScene("StageSelect");
-        //SceneManager.LoadScene("StageSelect");
     }
 
     //Input Depends on the mod
@@ -212,7 +206,7 @@ public class GameControl : MonoBehaviour
 
     private void InitCreatureType()
     {
-        for(int i=0; i< typeCreature; ++i)
+        for(int i=0; i< PublicLevel.friendlyTypeCreatureNum; ++i)
         {
             creatureType[i] = i;
         }
