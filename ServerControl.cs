@@ -46,12 +46,13 @@ public class ServerControl : MonoBehaviour
             stream.Write(buffer, 0, buffer.Length);
 
             ClearBuffer(buffer);
+            int i = 0;
             while (true)
             {
-                if(stream.Read(buffer, 0, buffer.Length) != 0)
+                i = stream.Read(buffer, 0, buffer.Length);
+                if (i != 0)
                 {
-                    Debug.Log(buffer.ToString());
-                    
+                    Debug.Log(Encoding.UTF8.GetString(buffer) + ", length : " + i.ToString());
                     //process data saved in bytes
                     //call spawnControl.SummonCreature accordingly
 
