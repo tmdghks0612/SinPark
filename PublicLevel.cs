@@ -4,52 +4,55 @@ using UnityEngine;
 
 public static class PublicLevel
 {
+    //Total number of creatures and upgrades : friendly side
     public readonly static int friendlyTypeCreatureNum = 7;
     public readonly static int friendlyTypeUpgradeNum = 1;
 
+    //Total number of creatures and upgrades : hostile side
     public readonly static int hostileTypeCreatureNum = 7;
     public readonly static int hostileTypeUpgradeNum = 1;
 
-    [SerializeField]
-    public static int manaAmount = 30;
-    [SerializeField]
-    public static float manaRegenTime = 1.0f;
-    [SerializeField]
-    public static float creatureSpawnTime = 0.1f;
+    //number of actually using creatures' number
+    public static int usingCreatureNum = 5;
 
+    //Adjust difficulties of the stage by changing mana regenration amount/period and spawn cooldown
+    [SerializeField]
+    public static int manaAmount;
+    [SerializeField]
+    public static float manaRegenTime;
+    [SerializeField]
+    public static float creatureSpawnTime;
+
+    //List of every creature prefabs loaded from resources folder
     public static GameObject[,] friendlyPrefab;
     public static GameObject[,] hostilePrefab;
+   
+    //List of images loaded from resources folder
     public static Sprite[,] friendlyImage;
 
+    //List of images which will be used in actual game.
+    public static Sprite[] friendlyImageList;
+
+    //Save type of creature/upgrade which will be used in actual game.
     public static Vector2Int[] friendlyType;
     public static Vector2Int[] hostileType;
 
+    //Save list of GameObjects which will be used in actual game.
     static GameObject[] hostileCreatureList;
     public static GameObject[] friendlyCreatureList;
-    public static Sprite[] friendlyImageList;
-
+    
+    //Player Profile. These parameters will be saved and loaded by GameDataControl.
     private static readonly int playerMaxLevel = 10;
     private static int playerLevel;
     private static int playerWin;
-    private static int stageLevel;
 
-    public static int usingCreatureNum;
+    //stage level which will be set before starting actual game.
+    private static int stageLevel;
 
     private static GameData gameData;
 
-    public static int GetManaAmount()
-    {
-        return manaAmount;
-    }
-    public static float GetManaRegenTime()
-    {
-        return manaRegenTime;
-    }
-    public static float GetCreatureSpawnTime()
-    {
-        return creatureSpawnTime;
-    }
 
+    //Used by AIController to know which creature to spawn.
     public static void getHostileCreatureList(GameObject[] _hostileCreatureList)
     {
         for(int i = 0; i < hostileTypeCreatureNum; ++i)
@@ -58,11 +61,15 @@ public static class PublicLevel
         }
     }
 
+    //Called when stage enter button is clicked. Save settings of the stage which is stored in the button to PublicLevel
     public static void SetLevel(Vector2Int[] _hostileType, int _manaAmount, float _manaRegenTime, float _creatureSpawnTime, int _stageLevel)
     {
+        //Difficulty adjustments
         manaAmount = _manaAmount;
         manaRegenTime = _manaRegenTime;
         creatureSpawnTime = _creatureSpawnTime;
+        
+        //Set hostile creature list used by AIController based on hostileType[]
         for(int i = 0; i < hostileTypeCreatureNum; ++i)
         {
             hostileType[i] = _hostileType[i];
@@ -73,35 +80,25 @@ public static class PublicLevel
         stageLevel = _stageLevel;
     }
 
-    public static void InitReady()
-    {
-        /*
-        friendlyPrefab = new GameObject[friendlyTypeCreatureNum, friendlyTypeUpgradeNum];
-        friendlyCreatureList = new GameObject[friendlyTypeCreatureNum];
-        friendlyImage = new Sprite[friendlyTypeCreatureNum, friendlyTypeUpgradeNum];
-        friendlyImageList = new Sprite[friendlyTypeCreatureNum];
-        friendlyType = new Vector2Int[friendlyTypeCreatureNum];
-
-        hostilePrefab = new GameObject[hostileTypeCreatureNum, hostileTypeUpgradeNum];
-        hostileCreatureList = new GameObject[hostileTypeCreatureNum];
-        hostileType = new Vector2Int[hostileTypeCreatureNum];
-         */
-    }
-
+    //Basic Setting of the game before going into StageSelect Scene.
+    //Initialize lists using in PublicLevel
+    //Load prefabs and image of creatures and save it at list
     public static void InitSetting()
     {
+        //Initialize every friendly-related lists. Every Prefab, Using Prefab, Every Image, Using Image, Using Type.
         friendlyPrefab = new GameObject[friendlyTypeCreatureNum, friendlyTypeUpgradeNum];
         friendlyCreatureList = new GameObject[friendlyTypeCreatureNum];
         friendlyImage = new Sprite[friendlyTypeCreatureNum, friendlyTypeUpgradeNum];
         friendlyImageList = new Sprite[friendlyTypeCreatureNum];
         friendlyType = new Vector2Int[friendlyTypeCreatureNum];
 
+        //Initialize every hostile-related lists. Every Prefab, Using Prefab, Using Type.
         hostilePrefab = new GameObject[hostileTypeCreatureNum, hostileTypeUpgradeNum];
         hostileCreatureList = new GameObject[hostileTypeCreatureNum];
         hostileType = new Vector2Int[hostileTypeCreatureNum];
 
 
-        //find and load creature prefabs from folder 'creature#'
+        //find and load friendly creature prefabs and images from folder 'creature#_#'
         for (int i = 0; i < friendlyTypeCreatureNum; ++i)
         {
             for (int k = 0; k < friendlyTypeUpgradeNum; ++k)
@@ -111,6 +108,7 @@ public static class PublicLevel
             }
         }
 
+        //find and load friendly creature prefabs from folder 'creature#_#'
         for (int i = 0; i < hostileTypeCreatureNum; ++i)
         {
             for (int k = 0; k < hostileTypeUpgradeNum; ++k)
@@ -121,6 +119,7 @@ public static class PublicLevel
 
     }
 
+    //Called by Spawn Control. Set friendlyArray and hostile Array based on friendlyCreature List and hostileCreatureList
     public static void PlayerStageSetting(GameObject[] friendlyArray, GameObject[] hostileArray)
     {
         for(int i=0; i<friendlyTypeCreatureNum; i++)
@@ -133,6 +132,7 @@ public static class PublicLevel
         }
     }
 
+    //Called when game ends, or attempts to load. Set Player's level. Player's level only maintains or increases, not decreases
     public static void SetPlayerLevel(int newLevel)
     {
         if(newLevel > playerMaxLevel)
@@ -147,6 +147,7 @@ public static class PublicLevel
         }
     }
 
+    //Set Player's win number. Works only at multi mode
     public static void SetPlayerWin(int newWin)
     {
         if (newWin < int.MaxValue)
@@ -155,16 +156,39 @@ public static class PublicLevel
         }
     }
 
+    //Used to get player's current level
     public static int GetPlayerLevel()
     {
         return playerLevel;
     }
+
+    //Used to get player's curren win number
     public static int GetPlayerWin()
     {
         return playerWin;
     }
+
+    //Used to get current stage level
     public static int GetStageLevel()
     {
         return stageLevel;
+    }
+
+    //return manaAmount. Used by AIController to know amount of mana gain
+    public static int GetManaAmount()
+    {
+        return manaAmount;
+    }
+
+    //return manaRegenTime. Used by AIController to know period of mana gain
+    public static float GetManaRegenTime()
+    {
+        return manaRegenTime;
+    }
+
+    //return manaAmount. Used by AIController to know cooldown of creature spawn
+    public static float GetCreatureSpawnTime()
+    {
+        return creatureSpawnTime;
     }
 }
