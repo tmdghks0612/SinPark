@@ -12,7 +12,7 @@ using UnityEngine.Networking;
 public class ServerControl : MonoBehaviour
 {
     // control instances
-    public SpawnControl spawnControl;
+    public GameControlMultiplayer gameControlMultiplayer;
 
     // socket of server connection
     private TcpClient socketConnection;
@@ -40,21 +40,19 @@ public class ServerControl : MonoBehaviour
             socketConnection = new TcpClient(ServerControlForm.GetUrl() , ServerControlForm.GetPort());
             NetworkStream stream = socketConnection.GetStream();
 
-            //s erver connection message
+            // server connection message
             string serverMessage = "server connection stream constructed";
             buffer = Encoding.ASCII.GetBytes(serverMessage);
             stream.Write(buffer, 0, buffer.Length);
 
             ClearBuffer(buffer);
-            int i = 0;
             while (true)
             {
-                i = stream.Read(buffer, 0, buffer.Length);
-                if (i != 0)
+                if (stream.Read(buffer, 0, buffer.Length) != 0)
                 {
-                    Debug.Log(Encoding.UTF8.GetString(buffer) + ", length : " + i.ToString());
-                    //process data saved in bytes
-                    //call spawnControl.SummonCreature accordingly
+                    serverMessage = Encoding.UTF8.GetString(buffer);
+                    // ReceiveSpawnRequest will call spawnControl.SummonCreature
+                    gameControlMultiplayer.ReceiveSpawnRequest(serverMessage);
 
                     ClearBuffer(buffer);
                 }

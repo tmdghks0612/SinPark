@@ -14,25 +14,19 @@ public class GameControlMultiplayer : GameControl
     }
 
     // Send spawn request of creature to server
-    protected override void SummonProcedure(int laneNumber)
+    protected override void SummonProcedure(int laneNum)
     {
-        StartCoroutine(SendSpawnRequest(laneNumber, GameControl.Sides.Friendly, monsterType, upgradeType[monsterType]));
-        
-        // test codes for spawning creatures easily
-        Debug.Log("monsterType " + monsterType + "typeCreature" + typeCreature);
-        spawnControl.SpawnCreatureLane(laneNumber, GameControl.Sides.Friendly, monsterType);
-        spawnControl.SpawnCreatureLane(laneNumber, GameControl.Sides.Hostile, monsterType);
+        StartCoroutine(SendSpawnRequest(laneNum, GameControl.Sides.Friendly, selectedCreatureType));
     }
 
     // create and send a SpawnRequestForm
-    IEnumerator SendSpawnRequest(int laneNumber, GameControl.Sides side, int creatureType, int upgradeType)
+    IEnumerator SendSpawnRequest(int _laneNum, GameControl.Sides _side, int _selectedCreatureType)
     {
         SpawnRequestForm newRequestForm = new SpawnRequestForm();
         // initialize variables with parameters passed from SummonProcedure()
-        newRequestForm.laneNumber = laneNumber;
-        newRequestForm.side = side;
-        newRequestForm.creatureType = creatureType;
-        newRequestForm.upgradeType = upgradeType;
+        newRequestForm.SetlaneNum(_laneNum);
+        newRequestForm.SetSide(_side);
+        newRequestForm.SetSelectedCreatureType(_selectedCreatureType);
         // serialize class instance into JSON API
         string newJson = JsonUtility.ToJson(newRequestForm);
 
@@ -44,6 +38,15 @@ public class GameControlMultiplayer : GameControl
         // set request header to JSON
         newRequest.SetRequestHeader("Content-Type", "application/json");
         yield return newRequest.SendWebRequest();
+    }
+
+    // create and set information of SpawnRequestForm
+    public void ReceiveSpawnRequest(string jsonString)
+    {
+        SpawnRequestForm newRequestForm = new SpawnRequestForm();
+        newRequestForm = JsonUtility.FromJson<SpawnRequestForm>(jsonString);
+        spawnControl.SummonCreature(newRequestForm.GetlaneNum(), newRequestForm.GetSide(), newRequestForm.GetSelectedCreatureType());
+        return;
     }
 
     // update PublicLevel to save win on exitting game

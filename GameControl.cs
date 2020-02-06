@@ -34,7 +34,7 @@ public class GameControl : MonoBehaviour
     protected int[] upgradeType;
 
     public GameObject[] lanes;
-    protected int monsterType;
+    protected int selectedCreatureType;
     public GameObject[] SummonButton;
     private bool buttonFlag = true;
     
@@ -72,7 +72,7 @@ public class GameControl : MonoBehaviour
             int temp = creatureType[i];
             SummonButton[i].GetComponent<Button>().onClick.AddListener(delegate { ChooseCreature(temp); });
         }
-        monsterType = 0;
+        selectedCreatureType = 0;
 
         //Make Buttons to call SummonProcedure. Make it disabled until activated
         for (int i = 0; i < lanes.Length; i++)
@@ -97,19 +97,19 @@ public class GameControl : MonoBehaviour
 
     protected virtual void SummonProcedure(int laneNumber)
     {
-        spawnControl.SpawnCreatureLane(laneNumber, GameControl.Sides.Friendly, monsterType);
+        spawnControl.SpawnCreatureLane(laneNumber, GameControl.Sides.Friendly, selectedCreatureType);
     }
 
-    //Choose the creature to summon to the lane. Decided data is saved at monsterType
+    //Choose the creature to summon to the lane. Decided data is saved at selectedCreatureType
     void ChooseCreature(int type)
     {
-        if (type != monsterType)
+        if (type != selectedCreatureType)
         {
             foreach (GameObject buttons in lanes)
             {
                 buttons.SetActive(true);
             }
-            monsterType = type;
+            selectedCreatureType = type;
         }
         else if (buttonFlag)
         {
