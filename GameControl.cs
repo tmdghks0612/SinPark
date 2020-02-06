@@ -71,6 +71,7 @@ public class GameControl : MonoBehaviour
             SummonButton[i].GetComponent<Button>().onClick.AddListener(delegate { ChooseCreature(temp); });
         }
         selectedCreatureType = 0;
+        
         InitButtonImage();
 
         //Make Buttons to call SummonProcedure. Make it disabled until activated
@@ -99,7 +100,7 @@ public class GameControl : MonoBehaviour
         spawnControl.SpawnCreatureLane(laneNumber, GameControl.Sides.Friendly, selectedCreatureType);
     }
 
-    //Choose the creature to summon to the lane. Decided data is saved at monsterType
+    //Choose the creature to summon to the lane. Decided data is saved at selectedCreatureType
     void ChooseCreature(int type)
     {
         if (type != selectedCreatureType)
@@ -224,7 +225,7 @@ public class GameControl : MonoBehaviour
         {
             SummonButton[i].GetComponent<Image>().sprite = PublicLevel.friendlyImageList[i];
             costText[i] = SummonButton[i].transform.GetChild(0).gameObject.GetComponent<Text>();
-            costText[i].text = PublicLevel.friendlyCreatureList[i].GetComponent<DefaultCreature>().GetManaCost().ToString();
+            costText[i].text = "0";//PublicLevel.friendlyCreatureList[i].GetComponent<DefaultCreature>().GetManaCost().ToString();
         }
     }
 }
