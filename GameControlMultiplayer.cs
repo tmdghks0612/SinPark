@@ -16,11 +16,11 @@ public class GameControlMultiplayer : GameControl
     // Send spawn request of creature to server
     protected override void SummonProcedure(int laneNumber)
     {
-        StartCoroutine(SendSpawnRequest(laneNumber, GameControl.Sides.Friendly, monsterType, upgradeType[monsterType]));
+        StartCoroutine(SendSpawnRequest(laneNumber, GameControl.Sides.Friendly, selectedCreatureType, upgradeType[selectedCreatureType]));
         
         // test codes for spawning creatures easily
-        spawnControl.SpawnCreatureLane(laneNumber, GameControl.Sides.Friendly, monsterType);
-        spawnControl.SpawnCreatureLane(laneNumber, GameControl.Sides.Hostile, monsterType);
+        spawnControl.SpawnCreatureLane(laneNumber, GameControl.Sides.Friendly, selectedCreatureType);
+        spawnControl.SpawnCreatureLane(laneNumber, GameControl.Sides.Hostile, selectedCreatureType);
     }
 
     // create and send a SpawnRequestForm

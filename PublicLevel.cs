@@ -14,6 +14,7 @@ public static class PublicLevel
 
     //number of actually using creatures' number
     public static int usingCreatureNum = 5;
+    public static int usingLaneNum = 3;
 
     //Adjust difficulties of the stage by changing mana regenration amount/period and spawn cooldown
     [SerializeField]
