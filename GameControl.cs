@@ -19,10 +19,6 @@ public class GameControl : MonoBehaviour
     //Maximum number of Units that can exist during the game
     private int maxUnits = 100;
     
-    
-    public int typeCreature = PublicLevel.friendlyTypeCreatureNum;
-    public int typeUpgrade = PublicLevel.friendlyTypeUpgradeNum;
-    
     //Paramters for camera to move smoothly to intended direction
     private Vector3 cameraSpeed;
     private float smoothSpeed;
@@ -33,9 +29,10 @@ public class GameControl : MonoBehaviour
     protected int[] creatureType;
     protected int[] upgradeType;
 
-    public GameObject[] lanes;
+    private GameObject[] lanes = new GameObject[PublicLevel.usingLaneNum];
+    private GameObject[] SummonButton = new GameObject[PublicLevel.usingCreatureNum];
     protected int selectedCreatureType;
-    public GameObject[] SummonButton;
+
     private bool buttonFlag = true;
     
     private Text[] costText;
@@ -61,22 +58,26 @@ public class GameControl : MonoBehaviour
         cameraSpeed = new Vector3(2.0f, 0, 0);
         mainCamera = GameObject.FindWithTag("MainCamera");
         targetPosition = mainCamera.transform.position;
-        creatureType = new int[typeCreature];
+        creatureType = new int[PublicLevel.friendlyTypeCreatureNum];
         //initializing creature and its upgrade type later changes will remove this 2 lines
         InitCreatureType();
-        InitButtonImage();
+        
 
         //Make Buttons to call ChooseCreature.
         for (int i = 0; i < SummonButton.Length; i++)
         {
+            SummonButton[i] = GameObject.Find("SummonButton" + (i + 1));
             int temp = creatureType[i];
             SummonButton[i].GetComponent<Button>().onClick.AddListener(delegate { ChooseCreature(temp); });
         }
         selectedCreatureType = 0;
+        
+        InitButtonImage();
 
         //Make Buttons to call SummonProcedure. Make it disabled until activated
         for (int i = 0; i < lanes.Length; i++)
         {
+            lanes[i] = GameObject.Find("LaneButton" + (i + 1));
             int temp = creatureType[i];
             lanes[i].GetComponent<Button>().onClick.AddListener(delegate { SummonProcedure(temp); });
             lanes[i].SetActive(false);
@@ -94,7 +95,6 @@ public class GameControl : MonoBehaviour
         minSwipeDist = Mathf.Max(ScreenSize.x, ScreenSize.y) / 14f;
     }
     
-
     protected virtual void SummonProcedure(int laneNumber)
     {
         spawnControl.SpawnCreatureLane(laneNumber, GameControl.Sides.Friendly, selectedCreatureType);
@@ -148,7 +148,6 @@ public class GameControl : MonoBehaviour
     public void LoadGameScene()
     {
         SceneManager.LoadScene("StageSelect");
-        //SceneManager.LoadScene("StageSelect");
     }
 
     //Input Depends on the mod
@@ -212,7 +211,7 @@ public class GameControl : MonoBehaviour
 
     private void InitCreatureType()
     {
-        for(int i=0; i< typeCreature; ++i)
+        for(int i=0; i< PublicLevel.friendlyTypeCreatureNum; ++i)
         {
             creatureType[i] = i;
         }

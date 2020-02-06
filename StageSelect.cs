@@ -20,10 +20,8 @@ public class StageSelect : MonoBehaviour
 
 
     //Buttons that are child of upgradeShop gameObject. They are put mannually in editor by SerializeField
-    [SerializeField]
     private Button[] upgradeButton = new Button[PublicLevel.friendlyTypeCreatureNum * PublicLevel.friendlyTypeUpgradeNum];
-    [SerializeField]
-    private Button[] locationButton = new Button[5];
+    private Button[] locationButton = new Button[PublicLevel.usingCreatureNum];
 
     //connects the type of creatures to select and button. datas put mannually in editor
     [SerializeField]
@@ -40,14 +38,15 @@ public class StageSelect : MonoBehaviour
         //make buttons to call TargetCreature function which sends upgradeoption[temp] as a parameter.
         for (int i = 0; i < PublicLevel.friendlyTypeCreatureNum; i++)
         {
+            upgradeButton[i] = GameObject.Find("UpgradeButton" + (i + 1)).GetComponent<Button>();
             int temp = i; //used temp since just using i makes every buttons to send last i value as a parameter
-
             upgradeButton[i].GetComponent<Button>().onClick.AddListener(delegate { TargetCreature(upgradeOption[temp]); });
         }
 
         //make buttons toi call ChangeCreature fucntion
         for (int i = 0; i < PublicLevel.usingCreatureNum; i++)
         {
+            locationButton[i] = GameObject.Find("Location" + (i + 1)).GetComponent<Button>();
             int temp = i;
             locationButton[temp].onClick.AddListener(delegate { ChangeCreature(temp); });
         }
