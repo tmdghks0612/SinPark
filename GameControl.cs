@@ -226,7 +226,7 @@ public class GameControl : MonoBehaviour
         {
             SummonButton[i].GetComponent<Image>().sprite = PublicLevel.friendlyImageList[i];
             costText[i] = SummonButton[i].transform.GetChild(0).gameObject.GetComponent<Text>();
-            costText[i].text = PublicLevel.friendlyCreatureList[i].GetComponent<DefaultCreature>().GetManaCost().ToString();
+            costText[i].text = "0";//PublicLevel.friendlyCreatureList[i].GetComponent<DefaultCreature>().GetManaCost().ToString();
         }
     }
 }

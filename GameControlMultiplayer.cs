@@ -1,16 +1,21 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-
+using System.Net;
+using System;
+using System.Net.Sockets;
 using System.Text;
 using UnityEngine;
 using UnityEngine.Networking;
 
 public class GameControlMultiplayer : GameControl
 {
+
+    private int bufferSize = 1024;
     protected override void Start()
     {
         // call GameControl.Start()
         base.Start();
+        aiplayer.AIplayerStop();
     }
 
     // Send spawn request of creature to server
@@ -22,22 +27,28 @@ public class GameControlMultiplayer : GameControl
     // create and send a SpawnRequestForm
     IEnumerator SendSpawnRequest(int _laneNum, GameControl.Sides _side, int _selectedCreatureType)
     {
-        SpawnRequestForm newRequestForm = new SpawnRequestForm();
-        // initialize variables with parameters passed from SummonProcedure()
-        newRequestForm.SetlaneNum(_laneNum);
-        newRequestForm.SetSide(_side);
-        newRequestForm.SetSelectedCreatureType(_selectedCreatureType);
-        // serialize class instance into JSON API
-        string newJson = JsonUtility.ToJson(newRequestForm);
 
-        // send post request to a hidden url of server
-        UnityWebRequest newRequest = new UnityWebRequest(SpawnRequestForm.getUrl(), "POST");
-        byte[] bodyByte = Encoding.UTF8.GetBytes(newJson);
-        newRequest.uploadHandler = (UploadHandler)new UploadHandlerRaw(bodyByte);
-        newRequest.downloadHandler = (DownloadHandler)new DownloadHandlerBuffer();
-        // set request header to JSON
-        newRequest.SetRequestHeader("Content-Type", "application/json");
-        yield return newRequest.SendWebRequest();
+        try
+        {
+            Byte[] buffer = new Byte[bufferSize];
+
+            // save variables to class sending through socket
+            SpawnRequestForm spawnRequestForm = new SpawnRequestForm();
+            spawnRequestForm.SetlaneNum(_laneNum);
+            spawnRequestForm.SetSelectedCreatureType(_selectedCreatureType);
+            spawnRequestForm.SetSide(_side);
+            string serverMessage = JsonUtility.ToJson(spawnRequestForm);
+            buffer = Encoding.ASCII.GetBytes(serverMessage);
+            serverControl.GetServerStream().Write(buffer, 0, buffer.Length);
+
+            ClearBuffer(buffer);
+        }
+        catch (SocketException socketException)
+        {
+            Debug.Log("SocketException " + socketException.ToString());
+        }
+
+        yield return null;
     }
 
     // create and set information of SpawnRequestForm
@@ -55,6 +66,14 @@ public class GameControlMultiplayer : GameControl
         if (isWin)
         {
             PublicLevel.SetPlayerWin(PublicLevel.GetPlayerWin() + 1);
+        }
+    }
+
+    public void ClearBuffer(byte[] buffer)
+    {
+        for (int i = 0; i < buffer.Length; ++i)
+        {
+            buffer[i] = 0;
         }
     }
 }

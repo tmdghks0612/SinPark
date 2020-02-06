@@ -103,6 +103,7 @@ public class SpawnControl : MonoBehaviour
         }
         else
         {
+            Debug.Log("current number : " + buttonNum);
             newObject = Instantiate<GameObject>(hostileCreatureList[buttonNum]);
         }
 
