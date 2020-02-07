@@ -19,9 +19,10 @@ public class StageSelect : MonoBehaviour
     private GameObject stageMap;
 
 
-    //Buttons that are child of upgradeShop gameObject. They are put mannually in editor by SerializeField
+    //Buttons that are child of upgradeShop gameObject.
     private Button[] upgradeButton = new Button[PublicLevel.friendlyTypeCreatureNum * PublicLevel.friendlyTypeUpgradeNum];
     private Button[] locationButton = new Button[PublicLevel.usingCreatureNum];
+    private GameObject[] stageButton;
 
     //connects the type of creatures to select and button. datas put mannually in editor
     [SerializeField]
@@ -95,6 +96,22 @@ public class StageSelect : MonoBehaviour
             }
         }
 
+        stageButton = GameObject.FindGameObjectsWithTag("StageButton");
+        foreach (GameObject stageBtn in stageButton)
+        {
+            Debug.Log(stageBtn);
+            StageButton stageCheck = stageBtn.GetComponent<StageButton>();
+            if (stageCheck.GetStageLevel() > PublicLevel.GetPlayerLevel())
+            {
+                stageBtn.GetComponent<Image>().color = Color.red;
+                stageBtn.GetComponent<Button>().interactable = false;
+            }
+            else if(stageCheck. GetStageLevel() == PublicLevel.GetPlayerLevel())
+            {
+                stageBtn.GetComponent<Image>().color = Color.blue;
+            }
+        }
+
         //save data
         gameData.SaveGameData();
     }
@@ -114,9 +131,8 @@ public class StageSelect : MonoBehaviour
     //Change friendlyCreatureList and image of the button to the saved creature/upgrade type at TargetCreature function. 
     void ChangeCreature(int location)
     {
-        PublicLevel.friendlyCreatureList[location] = PublicLevel.friendlyPrefab[changingInfo.x, changingInfo.y];
-        PublicLevel.friendlyImageList[location] = PublicLevel.friendlyImage[changingInfo.x, changingInfo.y];
-        PublicLevel.friendlyType[location] = changingInfo;
+        PublicLevel.UpdateFriendlyList(location, changingInfo);
+        
     
         upgradeShop.transform.GetChild(2 + location).GetChild(0).GetComponent<Image>().sprite = PublicLevel.friendlyImageList[location];
 

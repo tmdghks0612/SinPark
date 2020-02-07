@@ -134,7 +134,7 @@ public class GameControl : MonoBehaviour
     {
         if (isWin && gameOverFlag == false)
         {
-            PublicLevel.SetPlayerLevel(PublicLevel.GetStageLevel());
+            PublicLevel.SetPlayerLevel(PublicLevel.GetStageLevel() + 1);
             winPanel.SetActive(true);
             winPanel.transform.GetChild(0).GetComponent<Text>().text = "Your level is " + PublicLevel.GetPlayerLevel().ToString();
         }

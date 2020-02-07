@@ -34,5 +34,10 @@ public class StageButton : MonoBehaviour
         PublicLevel.SetLevel(hostileType, manaAmount, manaRegenTime, creatureSpawnTime, stageLevel);
         SceneManager.LoadScene("DefaultIngameCopy");
     }
+
+    public int GetStageLevel()
+    {
+        return stageLevel;
+    }
 }
 

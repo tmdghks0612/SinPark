@@ -133,6 +133,13 @@ public static class PublicLevel
         }
     }
 
+    public static void UpdateFriendlyList(int _location, Vector2Int _changingInfo)
+    {
+        PublicLevel.friendlyCreatureList[_location] = PublicLevel.friendlyPrefab[_changingInfo.x, _changingInfo.y];
+        PublicLevel.friendlyImageList[_location] = PublicLevel.friendlyImage[_changingInfo.x, _changingInfo.y];
+        PublicLevel.friendlyType[_location] = _changingInfo;
+    }
+
     //Called when game ends, or attempts to load. Set Player's level. Player's level only maintains or increases, not decreases
     public static void SetPlayerLevel(int newLevel)
     {
