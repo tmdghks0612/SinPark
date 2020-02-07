@@ -176,8 +176,12 @@ public class DefaultCreature : MonoBehaviour
         
     }
 
-	protected virtual void Dead()
+	public virtual void Dead()
 	{
+        if(gameObject.name == "creature0_0Prefab(Clone)")
+        {
+            Debug.Log("died in lane " + laneNum);
+        }
 		combatControl.PopCreature(laneNum, side, this);
 		CancelInvoke("Dead");
 		CancelInvoke("DetectEnemy");
@@ -212,7 +216,12 @@ public class DefaultCreature : MonoBehaviour
         return manaCost;
     }
 
-	public GameControl.Sides getSide()
+    public int GetLaneNum()
+    {
+        return laneNum;
+    }
+
+	public GameControl.Sides GetSide()
 	{
 		return side;
 	}

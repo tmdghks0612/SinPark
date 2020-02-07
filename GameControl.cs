@@ -132,12 +132,39 @@ public class GameControl : MonoBehaviour
     //called from PlayerBase when one of the player died
     public virtual void GameOver(bool isWin)
     {
+        // if player destroyed hostile base
         if (isWin && gameOverFlag == false)
         {
-            PublicLevel.SetPlayerLevel(PublicLevel.GetStageLevel());
-            winPanel.SetActive(true);
-            winPanel.transform.GetChild(0).GetComponent<Text>().text = "Your level is " + PublicLevel.GetPlayerLevel().ToString();
+            // if incoming boss remains
+            if (PublicLevel.GetIsBoss())
+            {
+                //spawn boss
+                spawnControl.SummonBoss();
+                PublicLevel.SetIsBoss(false);
+            }
+            else
+            {
+                PublicLevel.SetPlayerLevel(PublicLevel.GetStageLevel());
+                spawnControl.DeadAllHostileCreature();
+                winPanel.SetActive(true);
+                winPanel.transform.GetChild(0).GetComponent<Text>().text = "Your level is " + PublicLevel.GetPlayerLevel().ToString();
+            }
+            
+            for(int i = 0; i < PublicLevel.usingLaneNum; ++i)
+            {
+                GameObject[] laneObjects = GameObject.FindGameObjectsWithTag("Lane" + i.ToString());
+                foreach(GameObject laneObject in laneObjects)
+                {
+                    if(laneObject.name == "creature0_0Prefab(Clone)" && laneObject.GetComponent<DefaultCreature>().GetSide() == GameControl.Sides.Hostile)
+                    {
+                        laneObject.GetComponent<DefaultCreature>().Dead();
+                    }
+                }
+            }
+            return;
+
         }
+        // if player's base was destroyed
         else if (!isWin && gameOverFlag)
         {
             losePanel.SetActive(true);

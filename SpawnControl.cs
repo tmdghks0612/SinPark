@@ -214,5 +214,56 @@ public class SpawnControl : MonoBehaviour
             SummonCreature(i, GameControl.Sides.Hostile, 0);
         }
     }
+
+    // summon friendly and hostile base
+    public void SummonBoss()
+    {
+        /*for (int i = 0; i < 3; i++)
+        {
+            //create three invisible creatures to take all lane's damage
+            SummonCreature(i, GameControl.Sides.Hostile, 0);
+        }*/
+
+        for (int i = 0; i < PublicLevel.usingLaneNum; ++i)
+        {
+            //spawn an actor through instantiate
+            GameObject newObject;
+            DefaultCreature newCreature; ;
+            newObject = Instantiate<GameObject>(PublicLevel.GetBossPrefab());
+
+            // pass control instances to each of the creatures
+            newCreature = newObject.GetComponent<DefaultCreature>();
+            newCreature.SetGameControl(gameControl);
+            newCreature.SetCombatControl(combatControl);
+
+            // set start and end coordinates for spawning creature
+            startCoord[i] -= new Vector3(0, 0, layerOffset);
+            endCoord[i] -= new Vector3(0, 0, layerOffset);
+            newCreature.SetCreature(endCoord[i], startCoord[i], 0, i, GameControl.Sides.Hostile);
+
+            newObject.tag = "Boss";
+
+            // push creature into the list(side, lane) in combatControl
+            combatControl.PushCreature(i, GameControl.Sides.Hostile, newCreature);
+        }
+    }
+
+    // summon friendly and hostile base
+    public void DeadAllHostileCreature()
+    {
+        for (int i = 0; i < 3; i++)
+        {
+            GameObject[] currentCreatureLane = GameObject.FindGameObjectsWithTag("Lane" + i.ToString());
+            for(int j = currentCreatureLane.Length - 1; j >= 0; --j)
+            {
+                Debug.Log("deleted a creature from lane " + i.ToString());
+                /*if (currentCreatureLane[j].GetComponent<DefaultCreature>().GetSide() == GameControl.Sides.Hostile)
+                {
+                    currentCreatureLane[j].GetComponent<DefaultCreature>().Dead();
+                }*/
+            }
+        }
+    }
+
 }
 
