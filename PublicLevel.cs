@@ -5,11 +5,11 @@ using UnityEngine;
 public static class PublicLevel
 {
     //Total number of creatures and upgrades : friendly side
-    public readonly static int friendlyTypeCreatureNum = 7;
+    public readonly static int friendlyTypeCreatureNum = 8;
     public readonly static int friendlyTypeUpgradeNum = 1;
 
     //Total number of creatures and upgrades : hostile side
-    public readonly static int hostileTypeCreatureNum = 7;
+    public readonly static int hostileTypeCreatureNum = 8;
     public readonly static int hostileTypeUpgradeNum = 1;
 
     //number of actually using creatures' number
@@ -56,6 +56,7 @@ public static class PublicLevel
     //Used by AIController to know which creature to spawn.
     public static void getHostileCreatureList(GameObject[] _hostileCreatureList)
     {
+        Debug.Log(_hostileCreatureList.Length + " " + hostileCreatureList.Length + " " + hostileTypeCreatureNum);
         for(int i = 0; i < hostileTypeCreatureNum; ++i)
         {
             _hostileCreatureList[i] = hostileCreatureList[i];
@@ -72,7 +73,7 @@ public static class PublicLevel
         
         //Set hostile creature list used by AIController based on hostileType[]
         for(int i = 0; i < hostileTypeCreatureNum; ++i)
-        {
+        { 
             hostileType[i] = _hostileType[i];
 
             hostileCreatureList[i] = hostilePrefab[(int)hostileType[i].x, (int)hostileType[i].y];
