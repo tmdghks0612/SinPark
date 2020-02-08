@@ -146,6 +146,7 @@ public class GameControl : MonoBehaviour
             {
                 PublicLevel.SetPlayerLevel(PublicLevel.GetStageLevel());
                 spawnControl.DeadAllHostileCreature();
+                aiplayer.AIplayerStop();
                 winPanel.SetActive(true);
                 winPanel.transform.GetChild(0).GetComponent<Text>().text = "Your level is " + PublicLevel.GetPlayerLevel().ToString();
             }

@@ -251,16 +251,26 @@ public class SpawnControl : MonoBehaviour
     // summon friendly and hostile base
     public void DeadAllHostileCreature()
     {
-        for (int i = 0; i < 3; i++)
+        for (int i = PublicLevel.usingCreatureNum - 1; i >= 0; i--)
         {
+            // find objects depending on lane
             GameObject[] currentCreatureLane = GameObject.FindGameObjectsWithTag("Lane" + i.ToString());
-            for(int j = currentCreatureLane.Length - 1; j >= 0; --j)
+            
+            DefaultCreature deletingCreature;
+            for (int j = currentCreatureLane.Length - 1; j >= 0; --j)
             {
-                Debug.Log("deleted a creature from lane " + i.ToString());
-                /*if (currentCreatureLane[j].GetComponent<DefaultCreature>().GetSide() == GameControl.Sides.Hostile)
+                deletingCreature = currentCreatureLane[j].GetComponent<DefaultCreature>();
+                // when it is not a valid creature
+                if (deletingCreature == null)
                 {
-                    currentCreatureLane[j].GetComponent<DefaultCreature>().Dead();
-                }*/
+                    continue;
+                }
+                // when it is a hostile creature
+                else if (currentCreature.GetSide() == GameControl.Sides.Hostile)
+                {
+                    // creature dies (deleted frop list and gameObject destroyed)
+                    currentCreature.Dead();
+                }
             }
         }
     }
