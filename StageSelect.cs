@@ -67,6 +67,7 @@ public class StageSelect : MonoBehaviour
 
             loadedData = gameData.LoadGameData();
 
+
             //load when StageSelect scene was first loaded. If there's no loadedData, make a default setting for player - level, win, creature type using.
             if (loadedData == null)
             {
@@ -99,7 +100,6 @@ public class StageSelect : MonoBehaviour
         stageButton = GameObject.FindGameObjectsWithTag("StageButton");
         foreach (GameObject stageBtn in stageButton)
         {
-            Debug.Log(stageBtn);
             StageButton stageCheck = stageBtn.GetComponent<StageButton>();
             if (stageCheck.GetStageLevel() > PublicLevel.GetPlayerLevel())
             {
