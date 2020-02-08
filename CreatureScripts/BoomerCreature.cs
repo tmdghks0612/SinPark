@@ -22,7 +22,7 @@ public class BoomerCreature : DefaultCreature
         }
     }
 
-    protected override void Dead()
+    public override void Dead()
     {
         combatControl.PopCreature(laneNum, side, this);
         CancelInvoke("Dead");

@@ -5,20 +5,20 @@ using UnityEngine;
 public class PlayerBase : DefaultCreature
 {
     //HealthBar of friendly and hostile base
-    private GameObject friendlyHealthBar;
-    private GameObject hostileHealthBar;
+    protected GameObject friendlyHealthBar;
+    public GameObject hostileHealthBar;
 
     //Both Health cannot exceed their MaxHealth
     [SerializeField]
     private int friendlyMaxHealth;
     [SerializeField]
-    private int hostileMaxHealth;
+    protected int hostileMaxHealth;
 
     //curernt health of the PlayerBase
     [SerializeField]
     private static int friendlyCurrentHealth;
     [SerializeField]
-    private static int hostileCurrentHealth;
+    protected static int hostileCurrentHealth;
 
     // Start is called before the first frame update
     void Start()
@@ -30,6 +30,15 @@ public class PlayerBase : DefaultCreature
         //Find HealthBar GameObject in the scnce
         friendlyHealthBar = GameObject.Find("friendlyBaseHealthBar");
         hostileHealthBar = GameObject.Find("hostileBaseHealthBar");
+
+        /*if(this.GetSide() == GameControl.Sides.Friendly)
+        {
+            this.tag = "FriendlyBase";
+        }
+        else
+        {
+            this.tag = "HostileBase";
+        }*/
         
         size = 99; // To prevent base from pushed
 
@@ -58,7 +67,7 @@ public class PlayerBase : DefaultCreature
     }
 
     // Win/Lose Check and healthBar update
-    void CalculateHealth()
+    protected void CalculateHealth()
     {
         if( friendlyCurrentHealth < 0)
         {
@@ -73,11 +82,11 @@ public class PlayerBase : DefaultCreature
             //HealthBar is updated by changing localScale of the bar based on percentile.
             if (side == GameControl.Sides.Friendly)
             {
-                friendlyHealthBar.transform.localScale = new Vector3((float)friendlyCurrentHealth / friendlyMaxHealth, 1.0f, 1.0f);
+                friendlyHealthBar.transform.localScale = new Vector3((float)friendlyCurrentHealth / friendlyMaxHealth, friendlyHealthBar.transform.localScale.y, 1.0f);
             }
             else
             {
-                hostileHealthBar.transform.localScale = new Vector3((float)hostileCurrentHealth / hostileMaxHealth, 1.0f, 1.0f);
+                hostileHealthBar.transform.localScale = new Vector3((float)hostileCurrentHealth / hostileMaxHealth, hostileHealthBar.transform.localScale.y, 1.0f);
             }
         }
     }
@@ -87,7 +96,6 @@ public class PlayerBase : DefaultCreature
     {
         friendlyHealthBar.transform.localScale = new Vector3(0,1,1);
         gameControl.GameOver(false);
-        this.Dead();
     }
 
     //When Hostile side PlayerBase's health < 0, call GameOver Function in gameControl with parameter true.
@@ -95,6 +103,5 @@ public class PlayerBase : DefaultCreature
     {
         hostileHealthBar.transform.localScale = new Vector3(0, 1, 1);
         gameControl.GameOver(true);
-        this.Dead();
     }
 }

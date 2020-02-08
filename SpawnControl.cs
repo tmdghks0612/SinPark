@@ -214,5 +214,66 @@ public class SpawnControl : MonoBehaviour
             SummonCreature(i, GameControl.Sides.Hostile, 0);
         }
     }
+
+    // summon friendly and hostile base
+    public void SummonBoss()
+    {
+        /*for (int i = 0; i < 3; i++)
+        {
+            //create three invisible creatures to take all lane's damage
+            SummonCreature(i, GameControl.Sides.Hostile, 0);
+        }*/
+
+        for (int i = 0; i < PublicLevel.usingLaneNum; ++i)
+        {
+            //spawn an actor through instantiate
+            GameObject newObject;
+            DefaultCreature newCreature; ;
+            newObject = Instantiate<GameObject>(PublicLevel.GetBossPrefab());
+
+            // pass control instances to each of the creatures
+            newCreature = newObject.GetComponent<DefaultCreature>();
+            newCreature.SetGameControl(gameControl);
+            newCreature.SetCombatControl(combatControl);
+
+            // set start and end coordinates for spawning creature
+            startCoord[i] -= new Vector3(0, 0, layerOffset);
+            endCoord[i] -= new Vector3(0, 0, layerOffset);
+            newCreature.SetCreature(endCoord[i], startCoord[i], 0, i, GameControl.Sides.Hostile);
+
+            newObject.tag = "Boss";
+
+            // push creature into the list(side, lane) in combatControl
+            combatControl.PushCreature(i, GameControl.Sides.Hostile, newCreature);
+        }
+    }
+
+    // summon friendly and hostile base
+    public void DeadAllHostileCreature()
+    {
+        for (int i = PublicLevel.usingCreatureNum - 1; i >= 0; i--)
+        {
+            // find objects depending on lane
+            GameObject[] currentCreatureLane = GameObject.FindGameObjectsWithTag("Lane" + i.ToString());
+            
+            DefaultCreature deletingCreature;
+            for (int j = currentCreatureLane.Length - 1; j >= 0; --j)
+            {
+                deletingCreature = currentCreatureLane[j].GetComponent<DefaultCreature>();
+                // when it is not a valid creature
+                if (deletingCreature == null)
+                {
+                    continue;
+                }
+                // when it is a hostile creature
+                else if (currentCreature.GetSide() == GameControl.Sides.Hostile)
+                {
+                    // creature dies (deleted frop list and gameObject destroyed)
+                    currentCreature.Dead();
+                }
+            }
+        }
+    }
+
 }
 
