@@ -266,10 +266,10 @@ public class SpawnControl : MonoBehaviour
                     continue;
                 }
                 // when it is a hostile creature
-                else if (currentCreature.GetSide() == GameControl.Sides.Hostile)
+                else if (deletingCreature.GetSide() == GameControl.Sides.Hostile)
                 {
                     // creature dies (deleted frop list and gameObject destroyed)
-                    currentCreature.Dead();
+                    deletingCreature.Dead();
                 }
             }
         }
