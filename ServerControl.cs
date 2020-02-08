@@ -63,6 +63,7 @@ public class ServerControl : MonoBehaviour
                 if (serverStream.Read(buffer, 0, buffer.Length) != 0)
                 {
                     serverMessage = Encoding.UTF8.GetString(buffer);
+                    Debug.Log("Server message is " + serverMessage);
                     // ReceiveSpawnRequest will call spawnControl.SummonCreature
                     gameControlMultiplayer.ReceiveSpawnRequest(serverMessage);
 

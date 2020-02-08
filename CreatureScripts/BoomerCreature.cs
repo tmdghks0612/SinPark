@@ -8,7 +8,6 @@ public class BoomerCreature : DefaultCreature
 
     protected override void Attack()
     {
-        Debug.Log(attackFlag);
         if (attackFlag)
         {
             if (animControl != null)

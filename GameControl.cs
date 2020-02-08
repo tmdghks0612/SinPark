@@ -149,6 +149,7 @@ public class GameControl : MonoBehaviour
                 aiplayer.AIplayerStop();
                 winPanel.SetActive(true);
                 winPanel.transform.GetChild(0).GetComponent<Text>().text = "Your level is " + PublicLevel.GetPlayerLevel().ToString();
+                Debug.Log("player win!");
             }
             
             for(int i = 0; i < PublicLevel.usingLaneNum; ++i)

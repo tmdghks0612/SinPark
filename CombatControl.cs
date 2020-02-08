@@ -80,7 +80,7 @@ public class CombatControl : MonoBehaviour
         {
             lock (lock_hostileLanes)
             {
-                //remove the deadCreature to hostile lanes in current laneNum
+                // remove the deadCreature to hostile lanes in current laneNum
                 hostileLanes.creatureList[laneNum].Remove(deadCreature);
             }
         }
