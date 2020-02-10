@@ -19,11 +19,10 @@ public class StageSelect : MonoBehaviour
     private GameObject stageMap;
 
 
-    //Buttons that are child of upgradeShop gameObject. They are put mannually in editor by SerializeField
-    [SerializeField]
+    //Buttons that are child of upgradeShop gameObject.
     private Button[] upgradeButton = new Button[PublicLevel.friendlyTypeCreatureNum * PublicLevel.friendlyTypeUpgradeNum];
-    [SerializeField]
-    private Button[] locationButton = new Button[5];
+    private Button[] locationButton = new Button[PublicLevel.usingCreatureNum];
+    private GameObject[] stageButton;
 
     //connects the type of creatures to select and button. datas put mannually in editor
     [SerializeField]
@@ -40,14 +39,15 @@ public class StageSelect : MonoBehaviour
         //make buttons to call TargetCreature function which sends upgradeoption[temp] as a parameter.
         for (int i = 0; i < PublicLevel.friendlyTypeCreatureNum; i++)
         {
+            upgradeButton[i] = GameObject.Find("UpgradeButton" + (i + 1)).GetComponent<Button>();
             int temp = i; //used temp since just using i makes every buttons to send last i value as a parameter
-
             upgradeButton[i].GetComponent<Button>().onClick.AddListener(delegate { TargetCreature(upgradeOption[temp]); });
         }
 
         //make buttons toi call ChangeCreature fucntion
         for (int i = 0; i < PublicLevel.usingCreatureNum; i++)
         {
+            locationButton[i] = GameObject.Find("Location" + (i + 1)).GetComponent<Button>();
             int temp = i;
             locationButton[temp].onClick.AddListener(delegate { ChangeCreature(temp); });
         }
@@ -66,6 +66,7 @@ public class StageSelect : MonoBehaviour
             gameData = gameDataControl.AddComponent<GameData>();
 
             loadedData = gameData.LoadGameData();
+
 
             //load when StageSelect scene was first loaded. If there's no loadedData, make a default setting for player - level, win, creature type using.
             if (loadedData == null)
@@ -96,6 +97,21 @@ public class StageSelect : MonoBehaviour
             }
         }
 
+        stageButton = GameObject.FindGameObjectsWithTag("StageButton");
+        foreach (GameObject stageBtn in stageButton)
+        {
+            StageButton stageCheck = stageBtn.GetComponent<StageButton>();
+            if (stageCheck.GetStageLevel() > PublicLevel.GetPlayerLevel())
+            {
+                stageBtn.GetComponent<Image>().color = Color.red;
+                stageBtn.GetComponent<Button>().interactable = false;
+            }
+            else if(stageCheck. GetStageLevel() == PublicLevel.GetPlayerLevel())
+            {
+                stageBtn.GetComponent<Image>().color = Color.blue;
+            }
+        }
+
         //save data
         gameData.SaveGameData();
     }
@@ -115,9 +131,8 @@ public class StageSelect : MonoBehaviour
     //Change friendlyCreatureList and image of the button to the saved creature/upgrade type at TargetCreature function. 
     void ChangeCreature(int location)
     {
-        PublicLevel.friendlyCreatureList[location] = PublicLevel.friendlyPrefab[changingInfo.x, changingInfo.y];
-        PublicLevel.friendlyImageList[location] = PublicLevel.friendlyImage[changingInfo.x, changingInfo.y];
-        PublicLevel.friendlyType[location] = changingInfo;
+        PublicLevel.UpdateFriendlyList(location, changingInfo);
+        
     
         upgradeShop.transform.GetChild(2 + location).GetChild(0).GetComponent<Image>().sprite = PublicLevel.friendlyImageList[location];
 
@@ -190,4 +205,5 @@ public class StageSelect : MonoBehaviour
         {
         }
     }
+
 }

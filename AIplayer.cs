@@ -26,7 +26,7 @@ public class AIplayer : MonoBehaviour
     private float[] creatureRatio = new float[PublicLevel.hostileTypeCreatureNum];
     // array of spawnable creature types
     [SerializeField]
-    private GameObject[] hostileCreatureList = new GameObject[PublicLevel.hostileTypeCreatureNum];
+    private GameObject[] hostileCreatureList;
 
     // time interval between creature spawns
     [SerializeField]
@@ -58,6 +58,7 @@ public class AIplayer : MonoBehaviour
         this.manaAmount = PublicLevel.GetManaAmount();
         this.manaRegenTime = PublicLevel.GetManaRegenTime();
         this.creatureSpawnTime = PublicLevel.GetCreatureSpawnTime();
+        hostileCreatureList = new GameObject[PublicLevel.hostileTypeCreatureNum];
         PublicLevel.getHostileCreatureList(hostileCreatureList);
 
         // deciding how much creatures will be spawned, and its composition

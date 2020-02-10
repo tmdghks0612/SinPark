@@ -29,9 +29,10 @@ public class GameControl : MonoBehaviour
     protected int[] creatureType;
     protected int[] upgradeType;
 
-    public GameObject[] lanes;
-    protected int monsterType;
-    public GameObject[] SummonButton;
+    private GameObject[] lanes = new GameObject[PublicLevel.usingLaneNum];
+    private GameObject[] SummonButton = new GameObject[PublicLevel.usingCreatureNum];
+    protected int selectedCreatureType;
+
     private bool buttonFlag = true;
     
     private Text[] costText;
@@ -60,19 +61,23 @@ public class GameControl : MonoBehaviour
         creatureType = new int[PublicLevel.friendlyTypeCreatureNum];
         //initializing creature and its upgrade type later changes will remove this 2 lines
         InitCreatureType();
-        InitButtonImage();
+        
 
         //Make Buttons to call ChooseCreature.
         for (int i = 0; i < SummonButton.Length; i++)
         {
+            SummonButton[i] = GameObject.Find("SummonButton" + (i + 1));
             int temp = creatureType[i];
             SummonButton[i].GetComponent<Button>().onClick.AddListener(delegate { ChooseCreature(temp); });
         }
-        monsterType = 0;
+        selectedCreatureType = 0;
+        
+        InitButtonImage();
 
         //Make Buttons to call SummonProcedure. Make it disabled until activated
         for (int i = 0; i < lanes.Length; i++)
         {
+            lanes[i] = GameObject.Find("LaneButton" + (i + 1));
             int temp = creatureType[i];
             lanes[i].GetComponent<Button>().onClick.AddListener(delegate { SummonProcedure(temp); });
             lanes[i].SetActive(false);
@@ -92,19 +97,19 @@ public class GameControl : MonoBehaviour
     
     protected virtual void SummonProcedure(int laneNumber)
     {
-        spawnControl.SpawnCreatureLane(laneNumber, GameControl.Sides.Friendly, monsterType);
+        spawnControl.SpawnCreatureLane(laneNumber, GameControl.Sides.Friendly, selectedCreatureType);
     }
 
-    //Choose the creature to summon to the lane. Decided data is saved at monsterType
+    //Choose the creature to summon to the lane. Decided data is saved at selectedCreatureType
     void ChooseCreature(int type)
     {
-        if (type != monsterType)
+        if (type != selectedCreatureType)
         {
             foreach (GameObject buttons in lanes)
             {
                 buttons.SetActive(true);
             }
-            monsterType = type;
+            selectedCreatureType = type;
         }
         else if (buttonFlag)
         {
@@ -127,12 +132,40 @@ public class GameControl : MonoBehaviour
     //called from PlayerBase when one of the player died
     public virtual void GameOver(bool isWin)
     {
+        // if player destroyed hostile base
         if (isWin && gameOverFlag == false)
         {
-            PublicLevel.SetPlayerLevel(PublicLevel.GetStageLevel());
-            winPanel.SetActive(true);
-            winPanel.transform.GetChild(0).GetComponent<Text>().text = "Your level is " + PublicLevel.GetPlayerLevel().ToString();
+            // if incoming boss remains
+            if (PublicLevel.GetIsBoss())
+            {
+                //spawn boss
+                spawnControl.SummonBoss();
+                PublicLevel.SetIsBoss(false);
+            }
+            else
+            {
+                PublicLevel.SetPlayerLevel(PublicLevel.GetStageLevel() + 1);
+                spawnControl.DeadAllHostileCreature();
+                aiplayer.AIplayerStop();
+                winPanel.SetActive(true);
+                winPanel.transform.GetChild(0).GetComponent<Text>().text = "Your level is " + PublicLevel.GetPlayerLevel().ToString();
+                Debug.Log("player win!");
+            }
+            
+            for(int i = 0; i < PublicLevel.usingLaneNum; ++i)
+            {
+                GameObject[] laneObjects = GameObject.FindGameObjectsWithTag("Lane" + i.ToString());
+                foreach(GameObject laneObject in laneObjects)
+                {
+                    if(laneObject.name == "creature0_0Prefab(Clone)" && laneObject.GetComponent<DefaultCreature>().GetSide() == GameControl.Sides.Hostile)
+                    {
+                        laneObject.GetComponent<DefaultCreature>().Dead();
+                    }
+                }
+            }
+            return;
         }
+        // if player's base was destroyed
         else if (!isWin && gameOverFlag)
         {
             losePanel.SetActive(true);
