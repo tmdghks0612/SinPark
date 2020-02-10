@@ -4,17 +4,21 @@ using UnityEngine;
 
 public class DefaultMissile : MonoBehaviour
 {
+    private readonly object lock_hit = new object();
+
     public int attackDamage;
     public float attackRange;
     public Vector3 direction;
 
     private Vector3 position;
     private GameControl.Sides side;
-    
+    private bool hitFlag;
+
     // Start is called before the first frame update
     void Start()
     {
         InvokeRepeating("DestroyItself", 4.0f, 30.0f);
+        hitFlag = false;
     }
 
     void DestroyItself()
@@ -32,15 +36,23 @@ public class DefaultMissile : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        GameObject collided = collision.gameObject;
-        if (collided.GetComponent<DefaultCreature>().GetSide() != this.side)
+        lock(lock_hit)
         {
-            if (collided.CompareTag(gameObject.tag))
+            if (hitFlag == false)
             {
-                collision.gameObject.GetComponent<DefaultCreature>().DamageTaken(attackDamage,0);
-                Destroy(this.gameObject);
+                GameObject collided = collision.gameObject;
+                if (collided.GetComponent<DefaultCreature>().GetSide() != this.side)
+                {
+                    if (collided.CompareTag(gameObject.tag))
+                    {
+                        collision.gameObject.GetComponent<DefaultCreature>().DamageTaken(attackDamage, 0);
+                        hitFlag = true;
+                        Destroy(this.gameObject);
+                    }
+                }
             }
         }
+        
     }
 
     public void SetMissile(Vector3 currentPosition, GameControl.Sides side, int laneNum)
