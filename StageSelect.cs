@@ -200,9 +200,13 @@ public class StageSelect : MonoBehaviour
             {
                 gameData = gameDataControl.GetComponent<GameData>();
             }
+            Debug.Log("changing music to stageselect!");
+            GameObject.Find("BGMControl").GetComponent<BGMControl>().ChangeBGMToMainMenu();
         }
         if(scene.name == "DefaultIngame")
         {
+            Debug.Log("changing music to Ingame!");
+            GameObject.Find("BGMControl").GetComponent<BGMControl>().ChangeBGMToIngame();
         }
     }
 

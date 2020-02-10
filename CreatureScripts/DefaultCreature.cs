@@ -36,6 +36,12 @@ public class DefaultCreature : MonoBehaviour
 	[SerializeField]
 	protected GameObject projectile;
 
+    // Audio related variables
+    [SerializeField]
+    protected AudioClip attackSound;
+    [SerializeField]
+    protected AudioSource audioSource;
+
 	private float pushDistance = 1.0f;
 	private float deathDelay = 0.05f;
 	private Vector3 start;
@@ -54,6 +60,12 @@ public class DefaultCreature : MonoBehaviour
 	void Start()
     {
 		animControl = GetComponent<Animator>();
+
+        // add and find audio clip
+        gameObject.AddComponent<AudioSource>();
+        audioSource = GetComponent<AudioSource>();
+        findAttackSound();
+
 	}
 
 	
@@ -106,7 +118,10 @@ public class DefaultCreature : MonoBehaviour
 	{
 		if (attackFlag)
 		{
-
+            if(attackSound != null)
+            {
+                playAttackSound();
+            }
 			if (creatureAttackType == AttackType.Melee)
 			{
 				combatControl.MeleeAttack(currentPosition, attackRange, attackDamage, size, laneNum, side);
@@ -211,6 +226,19 @@ public class DefaultCreature : MonoBehaviour
 		}
     }
 
+    // find selected audio clip
+    public virtual void findAttackSound()
+    {
+    }
+
+    // play selected audio clip
+    public void playAttackSound()
+    {
+        audioSource.PlayOneShot(attackSound);
+    }
+
+    #region Get functions
+
     public int GetManaCost()
     {
         return manaCost;
@@ -225,7 +253,12 @@ public class DefaultCreature : MonoBehaviour
 	{
 		return side;
 	}
-	public void SetGameControl(GameControl GameControl)
+
+    #endregion
+
+    #region Set functions
+
+    public void SetGameControl(GameControl GameControl)
 	{
 		gameControl = GameControl;
 	}
@@ -233,5 +266,6 @@ public class DefaultCreature : MonoBehaviour
 	{
 		combatControl = CombatControl;
 	}
+    #endregion
 
 }
