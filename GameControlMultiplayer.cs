@@ -72,7 +72,7 @@ public class GameControlMultiplayer : GameControl
             // create a JSON string with SpawnRequestForm instance
             string serverMessage = JsonUtility.ToJson(spawnRequestForm);
             buffer = Encoding.ASCII.GetBytes(serverMessage);
-            serverControl.GetServerStream().Write(buffer, 0, buffer.Length);
+            serverControl.GetServerStream().Write(buffer, 0, buffer.Length );
 
             ClearBuffer(buffer);
         }
@@ -87,12 +87,19 @@ public class GameControlMultiplayer : GameControl
     // create and set information of SpawnRequestForm
     public void ReceiveSpawnRequest(string jsonString)
     {
-        Debug.Log(jsonString);
-        SpawnRequestForm newRequestForm = new SpawnRequestForm();
-        newRequestForm = JsonUtility.FromJson<SpawnRequestForm>(jsonString);
-        lock (lock_spawn)
+        try
         {
-            spawnQueue.Enqueue(newRequestForm);
+            Debug.Log(jsonString);
+            SpawnRequestForm newRequestForm = new SpawnRequestForm();
+            newRequestForm = JsonUtility.FromJson<SpawnRequestForm>(jsonString);
+            lock (lock_spawn)
+            {
+                spawnQueue.Enqueue(newRequestForm);
+            }
+        }
+        catch (ArgumentException argumentException)
+        {
+            Debug.Log("ArgumentException " + argumentException.ToString());
         }
         return;
     }
@@ -104,6 +111,7 @@ public class GameControlMultiplayer : GameControl
         {
             PublicLevel.SetPlayerWin(PublicLevel.GetPlayerWin() + 1);
         }
+        base.GameOver(true);
     }
 
     public void ClearBuffer(byte[] buffer)
