@@ -31,14 +31,14 @@ public class StageButton : MonoBehaviour
     public void InitLevel()
     {
         PublicLevel.SetLevel(hostileType, manaAmount, manaRegenTime, creatureSpawnTime, stageLevel, isBoss, bossPrefab);
-        SceneManager.LoadScene("DefaultIngame");
+        LoadingSceneManager.LoadScene("DefaultIngame");
     }
 
     //Save parameters stored in the button to the PublicLevel and load scene
     public void InitLevelMultiplayer()
     {
         PublicLevel.SetLevel(hostileType, manaAmount, manaRegenTime, creatureSpawnTime, stageLevel, false, null);
-        SceneManager.LoadScene("DefaultIngameCopy");
+        LoadingSceneManager.LoadScene("DefaultIngameCopy");
     }
 
     public int GetStageLevel()
