@@ -144,7 +144,7 @@ public class GameControl : MonoBehaviour
             }
             else
             {
-                PublicLevel.SetPlayerLevel(PublicLevel.GetStageLevel());
+                PublicLevel.SetPlayerLevel(PublicLevel.GetStageLevel() + 1);
                 spawnControl.DeadAllHostileCreature();
                 aiplayer.AIplayerStop();
                 winPanel.SetActive(true);
@@ -164,7 +164,6 @@ public class GameControl : MonoBehaviour
                 }
             }
             return;
-
         }
         // if player's base was destroyed
         else if (!isWin && gameOverFlag)
