@@ -11,7 +11,7 @@ public class StageButton : MonoBehaviour
 {
     // control instances
     [SerializeField]
-    GameObject networkErrorPanel;
+    private GameObject networkErrorPanel;
 
     // parameter that handle difficulties of the game.
     // level of the stage
@@ -52,7 +52,11 @@ public class StageButton : MonoBehaviour
             if (ServerControl.OpenStream())
             {
                 PublicLevel.SetLevel(hostileType, manaAmount, manaRegenTime, creatureSpawnTime, stageLevel, false, null);
-                LoadingSceneManager.LoadScene("DefaultIngameCopy");
+                if (ServerControl.SendCreatureList())
+                {
+                    StartCoroutine(ServerControl.ListenForHostileCreatureList(3.0f));
+                }
+                WaitForCreatureList();
             }
             // when connection was a failure
             else
@@ -67,6 +71,16 @@ public class StageButton : MonoBehaviour
             NetworkErrorPanelactive();
             Debug.Log("Connection Exception : " + exception);
         }
+    }
+
+    public void WaitForCreatureList()
+    {
+        for(int i = 0; i < int.MaxValue; ++i)
+        {
+            if (i % 100000 == 0)
+                Debug.Log("waiting for server to send list....");
+        }
+        return;
     }
 
     #region network error UI control functions

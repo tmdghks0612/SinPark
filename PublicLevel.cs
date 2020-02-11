@@ -64,13 +64,18 @@ public static class PublicLevel
     private static NetworkStream serverStream;
 
     // Used by AIController to know which creature to spawn.
-    public static void getHostileCreatureList(GameObject[] _hostileCreatureList)
+    public static void GetHostileCreatureList(GameObject[] _hostileCreatureList)
     {
         Debug.Log(_hostileCreatureList.Length + " " + hostileCreatureList.Length + " " + hostileTypeCreatureNum);
         for(int i = 0; i < hostileTypeCreatureNum; ++i)
         {
             _hostileCreatureList[i] = hostileCreatureList[i];
         }
+    }
+
+    public static Vector2Int[] GetFriendlyType()
+    {
+        return friendlyType;
     }
 
     // Called when stage enter button is clicked. Save settings of the stage which is stored in the button to PublicLevel

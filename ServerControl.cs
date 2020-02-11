@@ -22,6 +22,8 @@ public class ServerControl : MonoBehaviour
     
     private int bufferSize = 1024;
 
+    public static bool creatureReceiveSuccess;
+
     // Use this for initialization
     void Start()
     {
@@ -47,6 +49,65 @@ public class ServerControl : MonoBehaviour
         }
         return true;
     }
+
+    public static bool SendCreatureList()
+    {
+        try
+        {
+            Byte[] buffer = new Byte[1024];
+            // create a socket for streaming data
+
+            string serverMessage;
+            Vector2Int[] friendlyType = PublicLevel.GetFriendlyType();
+            for(int i = 0; i < PublicLevel.usingCreatureNum; ++i)
+            {
+                serverMessage = friendlyType[i].x.ToString() + ',' + friendlyType[i].y.ToString();
+                buffer = Encoding.ASCII.GetBytes(serverMessage);
+                PublicLevel.GetServerStream().Write(buffer, 0, buffer.Length);
+            }
+        }
+        catch (SocketException socketException)
+        {
+            Debug.Log("SocketException " + socketException.ToString());
+            return false;
+        }
+        return true;
+    }
+
+    public static IEnumerator ListenForHostileCreatureList(float waitTime)
+    {
+        yield return new WaitForSeconds(waitTime);
+        try
+        {
+            Byte[] buffer = new Byte[1024];
+
+            int creatureCount = 0;
+
+            Vector2Int[] _hostileType = new Vector2Int[PublicLevel.usingCreatureNum];
+            while (creatureCount < PublicLevel.usingCreatureNum)
+            {
+                // when server sent a creature information
+                if (PublicLevel.GetServerStream().Read(buffer, 0, buffer.Length) != 0)
+                {
+                    string[] stringInt = Encoding.UTF8.GetString(buffer).Split(',');
+                    Debug.Log("Server message is " + stringInt[0] + ',' + stringInt[1]);
+
+                    // save hostileType vector2int to array
+                    _hostileType[creatureCount] = new Vector2Int(int.Parse(stringInt[0]), int.Parse(stringInt[1]));
+                    creatureCount++;
+                    ClearBuffer(buffer);
+                }
+            }
+            creatureReceiveSuccess = true;
+            // load after creaturelist receive is complete
+            LoadingSceneManager.LoadScene("DefaultIngameCopy");
+        }
+        catch (Exception socketException)
+        {
+            Debug.Log("SocketException " + socketException.ToString());
+        }
+    }
+       
 
     // Runs in background TcpServerThread; Handles incomming TcpClient requests
     private void ListenForIncommingRequests()
@@ -79,7 +140,7 @@ public class ServerControl : MonoBehaviour
     }
 
     // initialize given byte array to 0
-    public void ClearBuffer(byte[] buffer)
+    public static void ClearBuffer(byte[] buffer)
     {
         for(int i=0; i < buffer.Length; ++i)
         {
