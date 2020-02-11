@@ -15,7 +15,7 @@ public class GameData : GameDataForm
         // find GameData in the scene
         GameDataForm currentGameData = GameObject.Find("GameDataControl").GetComponent<GameData>();
         // set GameData variables according to PublicLevel
-        currentGameData.SetGameData(PublicLevel.GetPlayerLevel(), PublicLevel.GetPlayerWin(), PublicLevel.friendlyType);
+        currentGameData.SetGameData(PublicLevel.GetPlayerLevel(), PublicLevel.GetPlayerWin(), PublicLevel.GetCorn(), PublicLevel.friendlyType, PublicLevel.unlockType);
         // save current GameData
         SaveGame(currentGameData, GetFileName());
     }
@@ -69,7 +69,7 @@ public class GameData : GameDataForm
             try
             {
                 // get formatted string from serialized file
-                loadData.loadGameDataFromString(formatter.Deserialize(stream) as String);
+                loadData.LoadGameDataFromString(formatter.Deserialize(stream) as String);
                 return loadData;
             }
             catch (Exception)

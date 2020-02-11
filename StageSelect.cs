@@ -17,6 +17,12 @@ public class StageSelect : MonoBehaviour
     private GameObject upgradeShop;
     [SerializeField]
     private GameObject stageMap;
+    [SerializeField]
+    private GameObject unlockPopup;
+
+    //show number of corns player have
+    [SerializeField]
+    private Text cornText;
 
     //Buttons that are child of upgradeShop gameObject.
     private Button[] upgradeButton = new Button[PublicLevel.friendlyTypeCreatureNum * PublicLevel.friendlyTypeUpgradeNum];
@@ -51,6 +57,7 @@ public class StageSelect : MonoBehaviour
             locationButton[temp].onClick.AddListener(delegate { ChangeCreature(temp); });
         }
 
+        unlockPopup.SetActive(false);
         //UI upgradShop is not shown until upgradeShop is active
         upgradeShop.SetActive(false);
 
@@ -72,6 +79,11 @@ public class StageSelect : MonoBehaviour
             {
                 PublicLevel.SetPlayerLevel(1);
                 PublicLevel.SetPlayerWin(0);
+                PublicLevel.SetCorn(0);
+                for(int i=1; i<6; i++)
+                {
+                    PublicLevel.unlockType[i, 0] = true;
+                }
                 for (int i = 0; i < PublicLevel.friendlyTypeCreatureNum; i++)
                 {
                     PublicLevel.friendlyType[i] = new Vector2Int(i, 0);
@@ -81,9 +93,19 @@ public class StageSelect : MonoBehaviour
             {
                 PublicLevel.SetPlayerLevel(loadedData.GetPlayerLevel());
                 PublicLevel.SetPlayerWin(loadedData.GetPlayerWin());
+                PublicLevel.SetCorn(loadedData.GetCorn());
+
                 for (int i = 0; i < PublicLevel.usingCreatureNum; i++)
                 {
                     PublicLevel.friendlyType[i] = new Vector2Int(loadedData.GetFriendlyType()[i].x, loadedData.GetFriendlyType()[i].y);
+                }
+
+                for(int i=0; i< PublicLevel.friendlyTypeCreatureNum; i++)
+                {
+                    for(int k=0; k<PublicLevel.friendlyTypeUpgradeNum; k++)
+                    {
+                        PublicLevel.unlockType[i, k] = loadedData.GetUnlockType()[i,k];
+                    }
                 }
             }
 
@@ -95,6 +117,8 @@ public class StageSelect : MonoBehaviour
                 PublicLevel.friendlyImageList[i] = PublicLevel.friendlyImage[PublicLevel.friendlyType[i].x, PublicLevel.friendlyType[i].y];
             }
         }
+
+        cornText.text = PublicLevel.GetCorn().ToString();
 
         stageButton = GameObject.FindGameObjectsWithTag("StageButton");
         foreach (GameObject stageBtn in stageButton)
@@ -120,10 +144,27 @@ public class StageSelect : MonoBehaviour
     void TargetCreature(Vector2Int type)
     {
         changingInfo = type;
-
-        for (int i = 0; i < PublicLevel.usingCreatureNum; i++)
+        if (PublicLevel.unlockType[type.x, type.y] == true)
+        {   
+            for (int i = 0; i < PublicLevel.usingCreatureNum; i++)
+            {
+                locationButton[i].interactable = true;
+            }
+        }
+        else
         {
-            locationButton[i].interactable = true;
+            unlockPopup.SetActive(true);
+            int price = PublicLevel.friendlyPrefab[type.x, type.y].GetComponent<DefaultCreature>().GetUnlockCost();
+            if (PublicLevel.GetCorn() < price)
+            {
+                unlockPopup.transform.GetChild(1).GetComponent<Button>().interactable = false;
+                unlockPopup.transform.GetChild(1).GetChild(0).GetComponent<Text>().text = "Unlock\n (Not enough corns)";
+            }
+            else
+            {
+                unlockPopup.transform.GetChild(1).GetComponent<Button>().interactable = true;
+                unlockPopup.transform.GetChild(1).GetChild(0).GetComponent<Text>().text = "Unlock\n (" + price + " corn )";
+            }
         }
     }
 
@@ -134,6 +175,9 @@ public class StageSelect : MonoBehaviour
         
     
         upgradeShop.transform.GetChild(2 + location).GetChild(0).GetComponent<Image>().sprite = PublicLevel.friendlyImageList[location];
+
+        //player use 10 corns per changing upgrade mode will be fixed soon.
+        cornText.text = PublicLevel.GetCorn().ToString();
 
         //make location button no longer interactable
         for (int i = 0; i < PublicLevel.usingCreatureNum; i++)
@@ -153,7 +197,7 @@ public class StageSelect : MonoBehaviour
     public void LoadUpgrade()
     {
         upgradeShop.SetActive(true);
-
+        cornText.text = PublicLevel.GetCorn().ToString();
         //Changes images of button to the UpgradeOption buttons based on friendlyImage[,]
         for (int i=0; i<PublicLevel.friendlyTypeCreatureNum;i++)
         {
@@ -178,6 +222,7 @@ public class StageSelect : MonoBehaviour
     //opposite of LoadUpgrade. Activate stageMap and Deactivate upgradeShop. Save data that have been changed during upgradeShop
     public void LoadMap()
     {
+        cornText.text = PublicLevel.GetCorn().ToString();
         gameData.SaveGameData();
         stageMap.SetActive(true);
         upgradeShop.SetActive(false);
@@ -187,6 +232,19 @@ public class StageSelect : MonoBehaviour
     void OnEnable()
     {
         SceneManager.sceneLoaded += OnSceneLoaded;
+    }
+
+    public void UnlockCancel()
+    {
+        unlockPopup.SetActive(false);
+    }
+
+    public void UnlockCreature()
+    {
+        int cost = PublicLevel.friendlyPrefab[changingInfo.x, changingInfo.y].GetComponent<DefaultCreature>().GetUnlockCost();
+        PublicLevel.SetCorn(PublicLevel.GetCorn() - cost);
+        PublicLevel.unlockType[changingInfo.x, changingInfo.y] = true;
+        unlockPopup.SetActive(false);
     }
 
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
