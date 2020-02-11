@@ -12,6 +12,8 @@ public class StageButton : MonoBehaviour
     // control instances
     [SerializeField]
     private GameObject networkErrorPanel;
+    [SerializeField]
+    private GameObject networkWaitPanel;
 
     // parameter that handle difficulties of the game.
     // level of the stage
@@ -43,11 +45,22 @@ public class StageButton : MonoBehaviour
         LoadingSceneManager.LoadScene("DefaultIngame");
     }
 
+    public void NetworkWaitStart()
+    {
+        NetworkWaitPanelactive();
+        Invoke("InitLevelMultiplayer", 0.5f);
+    }
+
     //Save parameters stored in the button to the PublicLevel and load scene
     public void InitLevelMultiplayer()
     {
+        Debug.Log("activating");
+        // activate waiting panel
+        networkWaitPanel.SetActive(true);
+        Debug.Log("activated");
         try
         {
+
             // when connection was success
             if (ServerControl.OpenStream())
             {
@@ -75,22 +88,36 @@ public class StageButton : MonoBehaviour
 
     public void WaitForCreatureList()
     {
-        for(int i = 0; i < int.MaxValue; ++i)
+        
+        for(int i = 0; i < 50000000; ++i)
         {
-            if (i % 100000 == 0)
+            if (i % 1000000 == 0)
                 Debug.Log("waiting for server to send list....");
         }
+        NetworkWaitPanelInactive();
         return;
     }
 
     #region network error UI control functions
-    public void NetworkErrorPanelInactive()
+
+    private void NetworkWaitPanelInactive()
+    {
+        networkWaitPanel.SetActive(false);
+    }
+
+    private void NetworkWaitPanelactive()
+    {
+        networkWaitPanel.SetActive(true);
+    }
+
+    private void NetworkErrorPanelInactive()
     {
         networkErrorPanel.SetActive(false);
     }
 
-    public void NetworkErrorPanelactive()
+    private void NetworkErrorPanelactive()
     {
+        NetworkWaitPanelInactive();
         networkErrorPanel.SetActive(true);
     }
     #endregion

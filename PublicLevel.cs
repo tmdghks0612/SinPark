@@ -48,7 +48,7 @@ public static class PublicLevel
     public static Vector2Int[] hostileType;
 
     // Save list of GameObjects which will be used in actual game.
-    static GameObject[] hostileCreatureList;
+    public static GameObject[] hostileCreatureList;
     public static GameObject[] friendlyCreatureList;
     
     // Player Profile. These parameters will be saved and loaded by GameDataControl.

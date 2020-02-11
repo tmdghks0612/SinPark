@@ -20,7 +20,8 @@ public class ServerControl : MonoBehaviour
     // thread to run socket connection and spawn requests
     private Thread tcpListenerThread;
     
-    private int bufferSize = 1024;
+    private static int bufferSize = 1024;
+    private static Byte[] buffer = new Byte[bufferSize];
 
     public static bool creatureReceiveSuccess;
 
@@ -54,17 +55,17 @@ public class ServerControl : MonoBehaviour
     {
         try
         {
-            Byte[] buffer = new Byte[1024];
             // create a socket for streaming data
 
-            string serverMessage;
+            string serverMessage="";
             Vector2Int[] friendlyType = PublicLevel.GetFriendlyType();
             for(int i = 0; i < PublicLevel.usingCreatureNum; ++i)
             {
-                serverMessage = friendlyType[i].x.ToString() + ',' + friendlyType[i].y.ToString();
-                buffer = Encoding.ASCII.GetBytes(serverMessage);
-                PublicLevel.GetServerStream().Write(buffer, 0, buffer.Length);
+                serverMessage = serverMessage + friendlyType[i].x.ToString() + ',' + friendlyType[i].y.ToString() + " ";
             }
+            buffer = Encoding.ASCII.GetBytes(serverMessage);
+            PublicLevel.GetServerStream().Write(buffer, 0, buffer.Length);
+            ClearBuffer(buffer);
         }
         catch (SocketException socketException)
         {
@@ -79,25 +80,27 @@ public class ServerControl : MonoBehaviour
         yield return new WaitForSeconds(waitTime);
         try
         {
-            Byte[] buffer = new Byte[1024];
-
-            int creatureCount = 0;
-
             Vector2Int[] _hostileType = new Vector2Int[PublicLevel.usingCreatureNum];
-            while (creatureCount < PublicLevel.usingCreatureNum)
-            {
+            PublicLevel.GetServerStream().BeginRead(buffer, 0, bufferSize, OnReceive, null);
+
                 // when server sent a creature information
+                /*
+             while(true)
+             {
                 if (PublicLevel.GetServerStream().Read(buffer, 0, buffer.Length) != 0)
                 {
-                    string[] stringInt = Encoding.UTF8.GetString(buffer).Split(',');
-                    Debug.Log("Server message is " + stringInt[0] + ',' + stringInt[1]);
-
-                    // save hostileType vector2int to array
-                    _hostileType[creatureCount] = new Vector2Int(int.Parse(stringInt[0]), int.Parse(stringInt[1]));
-                    creatureCount++;
+                    string[] serverMessage = Encoding.UTF8.GetString(buffer).Split(' ');
+                    string[] intPair;
+                    for(int i = 0; i < PublicLevel.usingCreatureNum; ++i)
+                    {
+                        intPair = serverMessage[i].Split(',');
+                        PublicLevel.hostileCreatureList[i] = PublicLevel.hostilePrefab[int.Parse(intPair[0]), int.Parse(intPair[1])];
+                        Debug.Log(intPair[0]+ intPair[1]);
+                    }
                     ClearBuffer(buffer);
+                    break;
                 }
-            }
+            }*/
             creatureReceiveSuccess = true;
             // load after creaturelist receive is complete
             LoadingSceneManager.LoadScene("DefaultIngameCopy");
@@ -106,6 +109,20 @@ public class ServerControl : MonoBehaviour
         {
             Debug.Log("SocketException " + socketException.ToString());
         }
+    }
+
+    static void OnReceive(IAsyncResult result)
+    {
+        string[] serverMessage = Encoding.UTF8.GetString(buffer).Split(' ');
+        string[] intPair;
+        for (int i = 0; i < PublicLevel.usingCreatureNum; ++i)
+        {
+            intPair = serverMessage[i].Split(',');
+            PublicLevel.hostileCreatureList[i] = PublicLevel.hostilePrefab[int.Parse(intPair[0]), int.Parse(intPair[1])];
+            Debug.Log(intPair[0] + intPair[1]);
+        }
+        ClearBuffer(buffer);
+        return;
     }
        
 

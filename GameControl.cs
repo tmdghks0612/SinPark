@@ -22,9 +22,9 @@ public class GameControl : MonoBehaviour
     //Paramters for camera to move smoothly to intended direction
     private Vector3 cameraSpeed;
     private float smoothSpeed;
-    private GameObject mainCamera;
     private Vector3 targetPosition;
     private Vector3 smoothPosition;
+    protected static GameObject mainCamera;
 
     protected int[] creatureType;
     protected int[] upgradeType;
@@ -256,4 +256,13 @@ public class GameControl : MonoBehaviour
             costText[i].text = PublicLevel.friendlyCreatureList[i].GetComponent<DefaultCreature>().GetManaCost().ToString();
         }
     }
+
+    #region Get functions
+
+    public static Transform GetCameraTransform()
+    {
+        return mainCamera.transform;
+    }
+
+    #endregion
 }

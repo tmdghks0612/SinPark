@@ -40,6 +40,8 @@ public class DefaultCreature : MonoBehaviour
     [SerializeField]
     protected AudioClip attackSound;
     [SerializeField]
+    protected AudioClip deathSound;
+    [SerializeField]
     protected AudioSource audioSource;
 
 	private float pushDistance = 1.0f;
@@ -57,6 +59,7 @@ public class DefaultCreature : MonoBehaviour
 	protected GameControl gameControl;
 	protected CombatControl combatControl;
 	protected Animator animControl;
+
 	void Start()
     {
 		animControl = GetComponent<Animator>();
@@ -64,9 +67,15 @@ public class DefaultCreature : MonoBehaviour
         // add and find audio clip
         gameObject.AddComponent<AudioSource>();
         audioSource = GetComponent<AudioSource>();
-        findAttackSound();
+        FindSounds();
 
 	}
+
+    protected void FindSounds()
+    {
+        FindAttackSound();
+        FindDeathSound();
+    }
 
 	
 	protected void MoveTo(Vector3 st, Vector3 ed)
@@ -118,10 +127,7 @@ public class DefaultCreature : MonoBehaviour
 	{
 		if (attackFlag)
 		{
-            if(attackSound != null)
-            {
-                playAttackSound();
-            }
+            playAttackSound();
 			if (creatureAttackType == AttackType.Melee)
 			{
 				combatControl.MeleeAttack(currentPosition, attackRange, attackDamage, size, laneNum, side);
@@ -193,10 +199,7 @@ public class DefaultCreature : MonoBehaviour
 
 	public virtual void Dead()
 	{
-        if(gameObject.name == "creature0_0Prefab(Clone)")
-        {
-            Debug.Log("died in lane " + laneNum);
-        }
+        playDeathSound();
 		combatControl.PopCreature(laneNum, side, this);
 		CancelInvoke("Dead");
 		CancelInvoke("DetectEnemy");
@@ -227,14 +230,30 @@ public class DefaultCreature : MonoBehaviour
     }
 
     // find selected audio clip
-    public virtual void findAttackSound()
+    public virtual void FindAttackSound()
+    {
+    }
+
+    // find selected audio clip
+    public virtual void FindDeathSound()
     {
     }
 
     // play selected audio clip
     public void playAttackSound()
     {
-        audioSource.PlayOneShot(attackSound);
+        if(attackSound != null)
+        {
+            AudioSource.PlayClipAtPoint(attackSound,new Vector3(transform.position.x, 0, GameControl.GetCameraTransform().position.z));
+        }
+    }
+
+    public void playDeathSound()
+    {
+        if(deathSound != null)
+        {
+            AudioSource.PlayClipAtPoint(deathSound, new Vector3(transform.position.x, 0, GameControl.GetCameraTransform().position.z));
+        }
     }
 
     #region Get functions
