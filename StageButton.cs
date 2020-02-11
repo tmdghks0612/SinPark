@@ -3,8 +3,16 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using System.Threading;
+using System.Net;
+using System.Net.Sockets;
+
 public class StageButton : MonoBehaviour
 {
+    // control instances
+    [SerializeField]
+    GameObject networkErrorPanel;
+
     // parameter that handle difficulties of the game.
     // level of the stage
     [SerializeField]
@@ -18,6 +26,7 @@ public class StageButton : MonoBehaviour
     // if this stage contains boss
     [SerializeField]
     private bool isBoss;
+    
 
     [SerializeField]
     private GameObject bossPrefab;
@@ -37,9 +46,40 @@ public class StageButton : MonoBehaviour
     //Save parameters stored in the button to the PublicLevel and load scene
     public void InitLevelMultiplayer()
     {
-        PublicLevel.SetLevel(hostileType, manaAmount, manaRegenTime, creatureSpawnTime, stageLevel, false, null);
-        LoadingSceneManager.LoadScene("DefaultIngameCopy");
+        try
+        {
+            // when connection was success
+            if (ServerControl.OpenStream())
+            {
+                PublicLevel.SetLevel(hostileType, manaAmount, manaRegenTime, creatureSpawnTime, stageLevel, false, null);
+                LoadingSceneManager.LoadScene("DefaultIngameCopy");
+            }
+            // when connection was a failure
+            else
+            {
+                // pop up network connection error panel
+                NetworkErrorPanelactive();
+            }
+        }
+        catch(System.Exception exception)
+        {
+            // pop up network connection error panel
+            NetworkErrorPanelactive();
+            Debug.Log("Connection Exception : " + exception);
+        }
     }
+
+    #region network error UI control functions
+    public void NetworkErrorPanelInactive()
+    {
+        networkErrorPanel.SetActive(false);
+    }
+
+    public void NetworkErrorPanelactive()
+    {
+        networkErrorPanel.SetActive(true);
+    }
+    #endregion
 
     public int GetStageLevel()
     {

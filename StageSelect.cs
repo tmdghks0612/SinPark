@@ -18,6 +18,7 @@ public class StageSelect : MonoBehaviour
     [SerializeField]
     private GameObject stageMap;
 
+    private static GameObject networkErrorPanel;
 
     //Buttons that are child of upgradeShop gameObject.
     private Button[] upgradeButton = new Button[PublicLevel.friendlyTypeCreatureNum * PublicLevel.friendlyTypeUpgradeNum];
@@ -111,6 +112,10 @@ public class StageSelect : MonoBehaviour
                 stageBtn.GetComponent<Image>().color = Color.blue;
             }
         }
+
+        // find network error panel
+        networkErrorPanel = GameObject.Find("NetworkError");
+        networkErrorPanel.SetActive(false);
 
         //save data
         gameData.SaveGameData();

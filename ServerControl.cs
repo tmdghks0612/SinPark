@@ -14,9 +14,9 @@ public class ServerControl : MonoBehaviour
     // control instances
     public GameControlMultiplayer gameControlMultiplayer;
 
+    // stream of server connection
     private NetworkStream serverStream;
-    // socket of server connection
-    private TcpClient socketConnection;
+    
     // thread to run socket connection and spawn requests
     private Thread tcpListenerThread;
     
@@ -25,26 +25,27 @@ public class ServerControl : MonoBehaviour
     // Use this for initialization
     void Start()
     {
-        OpenStream();
-
+        serverStream = PublicLevel.GetServerStream();
         // Start TcpServer background thread
         tcpListenerThread = new Thread(new ThreadStart(ListenForIncommingRequests));
         tcpListenerThread.IsBackground = true;
         tcpListenerThread.Start();
     }
 
-    public void OpenStream()
+    public static bool OpenStream()
     {
+        TcpClient _socketConnection;
         try
         {
-            socketConnection = new TcpClient(ServerControlForm.GetUrl(), ServerControlForm.GetPort());
-            serverStream = socketConnection.GetStream();
+            _socketConnection = new TcpClient(ServerControlForm.GetUrl(), ServerControlForm.GetPort());
+            PublicLevel.SetServerStream(_socketConnection.GetStream());
         }
         catch(SocketException socketException)
         {
             Debug.Log("SocketException " + socketException.ToString());
+            return false;
         }
-        return;
+        return true;
     }
 
     // Runs in background TcpServerThread; Handles incomming TcpClient requests

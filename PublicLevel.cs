@@ -1,6 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Net;
+using System.Net.Sockets;
 
 public static class PublicLevel
 {
@@ -57,6 +59,7 @@ public static class PublicLevel
 
     private static GameData gameData;
 
+    private static NetworkStream serverStream;
 
     // Used by AIController to know which creature to spawn.
     public static void getHostileCreatureList(GameObject[] _hostileCreatureList)
@@ -171,13 +174,22 @@ public static class PublicLevel
             playerWin = newWin;
         }
     }
-    #endregion
+
+    // Set server stream
+    public static void SetServerStream(NetworkStream _serverStream)
+    {
+        serverStream = _serverStream;
+    }
 
     // Set PublicLevel variable according to stagebutton information
     public static void SetIsBoss(bool _isBoss)
     {
         isBoss = _isBoss;
     }
+
+    #endregion
+
+
 
     #region Get functions
 
@@ -226,6 +238,12 @@ public static class PublicLevel
     public static GameObject GetBossPrefab()
     {
         return bossPrefab;
+    }
+
+    // Get server stream
+    public static NetworkStream GetServerStream()
+    {
+        return serverStream;
     }
     #endregion
 }

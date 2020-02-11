@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Threading;
 
 public class BGMControl : MonoBehaviour
 {
@@ -14,6 +15,10 @@ public class BGMControl : MonoBehaviour
     {
         DontDestroyOnLoad(transform.gameObject);
         audioSource = gameObject.GetComponent<AudioSource>();
+
+        // set and play music
+        audioSource.clip = MainMenuBGM;
+        audioSource.loop = true;
         audioSource.Play();
     }
 
