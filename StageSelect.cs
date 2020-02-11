@@ -145,7 +145,7 @@ public class StageSelect : MonoBehaviour
     {
         changingInfo = type;
         if (PublicLevel.unlockType[type.x, type.y] == true)
-        {   
+        {
             for (int i = 0; i < PublicLevel.usingCreatureNum; i++)
             {
                 locationButton[i].interactable = true;
@@ -153,6 +153,10 @@ public class StageSelect : MonoBehaviour
         }
         else
         {
+            for (int i = 0; i < PublicLevel.usingCreatureNum; i++)
+            {
+                locationButton[i].interactable = false;
+            }
             unlockPopup.SetActive(true);
             int price = PublicLevel.friendlyPrefab[type.x, type.y].GetComponent<DefaultCreature>().GetUnlockCost();
             if (PublicLevel.GetCorn() < price)
