@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class SpawnControl : MonoBehaviour
 {
@@ -13,17 +14,16 @@ public class SpawnControl : MonoBehaviour
     private bool manaFlag;
 
     // mana related variables
-    private int maxMana = 100;
-    private int regenAmount = 5;
-    private float regenTime = 0.5f;
+    private float maxMana = 100;
+    private float regenAmount = 0.1f;
 
     [SerializeField]
-    private int baseMana;
+    private float baseMana;
 
     private int[] friendlyCreatureManaCost;
     private int[] hostileCreatureManaCost;
 
-    public GameObject manaBar;
+    public Image manaBar;
 
     // maxLanes according to CombatControl
     private int maxLanes;
@@ -45,6 +45,20 @@ public class SpawnControl : MonoBehaviour
     public GameObject[] friendlyCreatureList;
     public GameObject[] hostileCreatureList;
 
+
+    private void Update()
+    {
+        if (baseMana + regenAmount > maxMana)
+        {
+            baseMana = maxMana;
+        }
+        else
+        {
+            baseMana += regenAmount;
+        }
+        manaBar.fillAmount = baseMana / maxMana;
+    }
+
     // Start is called before the first frame update
     public void SpawnControlStart()
     {
@@ -55,14 +69,11 @@ public class SpawnControl : MonoBehaviour
         // data structure initializations
         InitLaneCoords();
         InitStage();
-        ScaleManaBar();
 
         // initialize combat control
         combatControl.InitCombatControl();
         currentCreature = friendlyCreatureList[0].GetComponent<DefaultCreature>();
 
-        // regenerate mana
-        InvokeRepeating("GainMana", regenTime, regenTime);
         // summon friendly and hostile base
         SummonBase();
     }
@@ -140,30 +151,7 @@ public class SpawnControl : MonoBehaviour
                 manaFlag = false;
             }
         }
-        if(manaFlag == true)
-        {
-            ScaleManaBar();
-        }
         return manaFlag;
-    }
-
-    void GainMana()
-    {
-        if (baseMana + regenAmount > maxMana)
-        {
-            baseMana = maxMana;
-        }
-        else
-        {
-            baseMana += 5;
-        }
-        ScaleManaBar();
-    }
-
-    // resize mana bar for UI
-    void ScaleManaBar()
-    {
-        manaBar.transform.localScale = new Vector3((float)baseMana / maxMana, 1.0f, 1.0f);
     }
 
     #endregion
