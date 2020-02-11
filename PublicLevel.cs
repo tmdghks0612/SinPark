@@ -28,6 +28,8 @@ public static class PublicLevel
     [SerializeField]
     private static bool isBoss;
 
+
+
     [SerializeField]
     private static GameObject bossPrefab;
 
