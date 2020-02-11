@@ -78,6 +78,7 @@ public class ServerControl : MonoBehaviour
     public static IEnumerator ListenForHostileCreatureList(float waitTime)
     {
         yield return new WaitForSeconds(waitTime);
+        buffer = new byte[bufferSize];
         try
         {
             Vector2Int[] _hostileType = new Vector2Int[PublicLevel.usingCreatureNum];
@@ -113,8 +114,10 @@ public class ServerControl : MonoBehaviour
 
     static void OnReceive(IAsyncResult result)
     {
+        Debug.Log("hello1");
         string[] serverMessage = Encoding.UTF8.GetString(buffer).Split(' ');
         string[] intPair;
+        Debug.Log("hello2");
         for (int i = 0; i < PublicLevel.usingCreatureNum; ++i)
         {
             intPair = serverMessage[i].Split(',');
