@@ -1,6 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Net;
+using System.Net.Sockets;
 
 public static class PublicLevel
 {
@@ -26,13 +28,18 @@ public static class PublicLevel
     [SerializeField]
     private static bool isBoss;
 
+    private static int cornNum;
+
+
     [SerializeField]
     private static GameObject bossPrefab;
 
     // List of every creature prefabs loaded from resources folder
     public static GameObject[,] friendlyPrefab;
     public static GameObject[,] hostilePrefab;
-   
+
+    public static bool[,] unlockType;
+
     // List of images loaded from resources folder
     public static Sprite[,] friendlyImage;
 
@@ -44,7 +51,7 @@ public static class PublicLevel
     public static Vector2Int[] hostileType;
 
     // Save list of GameObjects which will be used in actual game.
-    static GameObject[] hostileCreatureList;
+    public static GameObject[] hostileCreatureList;
     public static GameObject[] friendlyCreatureList;
     
     // Player Profile. These parameters will be saved and loaded by GameDataControl.
@@ -57,15 +64,21 @@ public static class PublicLevel
 
     private static GameData gameData;
 
+    private static NetworkStream serverStream;
 
     // Used by AIController to know which creature to spawn.
-    public static void getHostileCreatureList(GameObject[] _hostileCreatureList)
+    public static void GetHostileCreatureList(GameObject[] _hostileCreatureList)
     {
         Debug.Log(_hostileCreatureList.Length + " " + hostileCreatureList.Length + " " + hostileTypeCreatureNum);
         for(int i = 0; i < hostileTypeCreatureNum; ++i)
         {
             _hostileCreatureList[i] = hostileCreatureList[i];
         }
+    }
+
+    public static Vector2Int[] GetFriendlyType()
+    {
+        return friendlyType;
     }
 
     // Called when stage enter button is clicked. Save settings of the stage which is stored in the button to PublicLevel
@@ -107,6 +120,8 @@ public static class PublicLevel
         hostileCreatureList = new GameObject[hostileTypeCreatureNum];
         hostileType = new Vector2Int[hostileTypeCreatureNum];
 
+        unlockType = new bool[friendlyTypeCreatureNum, friendlyTypeUpgradeNum];
+
 
         // find and load friendly creature prefabs and images from folder 'creature#_#'
         for (int i = 0; i < friendlyTypeCreatureNum; ++i)
@@ -115,6 +130,7 @@ public static class PublicLevel
             {
                 friendlyPrefab[i, k] = Resources.Load("creature" + i.ToString() + "/creature" + i.ToString() + "_" + k.ToString() + "/creature" + i.ToString() + "_" + k.ToString() + "Prefab") as GameObject;
                 friendlyImage[i,k] = Resources.Load<Sprite>("creature" + i.ToString() + "/creature" + i.ToString() + "_" + k.ToString() + "/creature" + i.ToString() + "_" + k.ToString() + "Image") as Sprite;
+                unlockType[i, k] = false;
             }
         }
 
@@ -156,11 +172,15 @@ public static class PublicLevel
         if(newLevel > playerMaxLevel)
         {
             playerLevel = playerMaxLevel;
+            SetCorn(GetCorn() + 15);
         }
         else if(newLevel > playerLevel)
         {
             playerLevel = newLevel;
+            SetCorn(GetCorn() + 30);
         }
+        else
+            SetCorn(GetCorn() + 15);
     }
 
     // Set Player's win number. Works only at multi mode
@@ -171,7 +191,12 @@ public static class PublicLevel
             playerWin = newWin;
         }
     }
-    #endregion
+
+    // Set server stream
+    public static void SetServerStream(NetworkStream _serverStream)
+    {
+        serverStream = _serverStream;
+    }
 
     // Set PublicLevel variable according to stagebutton information
     public static void SetIsBoss(bool _isBoss)
@@ -179,12 +204,26 @@ public static class PublicLevel
         isBoss = _isBoss;
     }
 
+    #endregion
+
+    public static void SetCorn(int currentCorn)
+    {
+        cornNum = currentCorn;
+    }
+
+
     #region Get functions
 
     //Used to get player's current level
     public static int GetPlayerLevel()
     {
         return playerLevel;
+    }
+
+    //Used to get player's current corn
+    public static int GetCorn()
+    {
+        return cornNum;
     }
 
     //Used to get player's curren win number
@@ -226,6 +265,12 @@ public static class PublicLevel
     public static GameObject GetBossPrefab()
     {
         return bossPrefab;
+    }
+
+    // Get server stream
+    public static NetworkStream GetServerStream()
+    {
+        return serverStream;
     }
     #endregion
 }

@@ -14,38 +14,106 @@ public class ServerControl : MonoBehaviour
     // control instances
     public GameControlMultiplayer gameControlMultiplayer;
 
+    // stream of server connection
     private NetworkStream serverStream;
-    // socket of server connection
-    private TcpClient socketConnection;
+    
     // thread to run socket connection and spawn requests
     private Thread tcpListenerThread;
     
-    private int bufferSize = 1024;
+    private static int bufferSize = 1024;
+    private static Byte[] buffer = new Byte[bufferSize];
+
+    public static bool creatureReceiveSuccess;
 
     // Use this for initialization
     void Start()
     {
-        OpenStream();
-
+        serverStream = PublicLevel.GetServerStream();
         // Start TcpServer background thread
         tcpListenerThread = new Thread(new ThreadStart(ListenForIncommingRequests));
         tcpListenerThread.IsBackground = true;
         tcpListenerThread.Start();
     }
 
-    public void OpenStream()
+    public static IEnumerator OpenStream(float waitTime)
     {
+        yield return new WaitForSeconds(waitTime);
+        TcpClient _socketConnection;
         try
         {
-            socketConnection = new TcpClient(ServerControlForm.GetUrl(), ServerControlForm.GetPort());
-            serverStream = socketConnection.GetStream();
+            _socketConnection = new TcpClient(ServerControlForm.GetUrl(), ServerControlForm.GetPort());
+            PublicLevel.SetServerStream(_socketConnection.GetStream());
         }
         catch(SocketException socketException)
         {
             Debug.Log("SocketException " + socketException.ToString());
+            StageButtonMultiplayer.NetworkErrorPanelactive();
         }
+    }
+
+    public static bool SendCreatureList()
+    {
+        buffer = new byte[bufferSize];
+        try
+        {
+            // create a socket for streaming data
+
+            string serverMessage="";
+            Vector2Int[] friendlyType = PublicLevel.GetFriendlyType();
+            for(int i = 0; i < PublicLevel.usingCreatureNum; ++i)
+            {
+                serverMessage = serverMessage + friendlyType[i].x.ToString() + ',' + friendlyType[i].y.ToString() + " ";
+            }
+            buffer = Encoding.ASCII.GetBytes(serverMessage);
+            PublicLevel.GetServerStream().Write(buffer, 0, buffer.Length);
+            ClearBuffer(buffer);
+        }
+        catch (SocketException socketException)
+        {
+            Debug.Log("SocketException " + socketException.ToString());
+            return false;
+        }
+        return true;
+    }
+
+    public static IEnumerator ListenForHostileCreatureList(float waitTime)
+    {
+        yield return new WaitForSeconds(waitTime);
+        buffer = new byte[bufferSize];
+        try
+        {
+            Vector2Int[] _hostileType = new Vector2Int[PublicLevel.usingCreatureNum];
+            PublicLevel.GetServerStream().BeginRead(buffer, 0, bufferSize, OnReceive, null);
+            
+            creatureReceiveSuccess = true;
+            // load after creaturelist receive is complete
+            LoadingSceneManager.LoadScene("DefaultIngameCopy");
+        }
+        catch (Exception listSendException)
+        {
+            Debug.Log("ListSendException " + listSendException.ToString());
+            StageButtonMultiplayer.NetworkErrorPanelactive();
+        }
+        StageButtonMultiplayer.SetCreatureFlag(true);
+        StageButtonMultiplayer.NetworkWaitPanelInactive();
+    }
+
+    static void OnReceive(IAsyncResult result)
+    {
+        Debug.Log("hello1");
+        string[] serverMessage = Encoding.UTF8.GetString(buffer).Split(' ');
+        string[] intPair;
+        Debug.Log("hello2");
+        for (int i = 0; i < PublicLevel.usingCreatureNum; ++i)
+        {
+            intPair = serverMessage[i].Split(',');
+            PublicLevel.hostileCreatureList[i] = PublicLevel.hostilePrefab[int.Parse(intPair[0]), int.Parse(intPair[1])];
+            Debug.Log(intPair[0] + intPair[1]);
+        }
+        ClearBuffer(buffer);
         return;
     }
+       
 
     // Runs in background TcpServerThread; Handles incomming TcpClient requests
     private void ListenForIncommingRequests()
@@ -78,7 +146,7 @@ public class ServerControl : MonoBehaviour
     }
 
     // initialize given byte array to 0
-    public void ClearBuffer(byte[] buffer)
+    public static void ClearBuffer(byte[] buffer)
     {
         for(int i=0; i < buffer.Length; ++i)
         {

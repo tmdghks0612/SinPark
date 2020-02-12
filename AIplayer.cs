@@ -59,7 +59,7 @@ public class AIplayer : MonoBehaviour
         this.manaRegenTime = PublicLevel.GetManaRegenTime();
         this.creatureSpawnTime = PublicLevel.GetCreatureSpawnTime();
         hostileCreatureList = new GameObject[PublicLevel.hostileTypeCreatureNum];
-        PublicLevel.getHostileCreatureList(hostileCreatureList);
+        PublicLevel.GetHostileCreatureList(hostileCreatureList);
 
         // deciding how much creatures will be spawned, and its composition
         SetCreatureArray();

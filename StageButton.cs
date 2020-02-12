@@ -3,47 +3,55 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using System.Threading;
+using System.Net;
+using System.Net.Sockets;
+
 public class StageButton : MonoBehaviour
 {
+    
+
     // parameter that handle difficulties of the game.
     // level of the stage
     [SerializeField]
-    private int stageLevel;
+    protected int stageLevel;
     [SerializeField]
-    private int manaAmount;
+    protected int manaAmount;
     [SerializeField]
-    private float manaRegenTime;
+    protected float manaRegenTime;
     [SerializeField]
-    private float creatureSpawnTime;
+    protected float creatureSpawnTime;
     // if this stage contains boss
     [SerializeField]
-    private bool isBoss;
+    protected bool isBoss;
 
     [SerializeField]
     private GameObject bossPrefab;
 
     //Type of creatures used by hostile
     [SerializeField]
-    private Vector2Int[] hostileType = new Vector2Int[PublicLevel.hostileTypeCreatureNum];
- 
-    
+    protected Vector2Int[] hostileType = new Vector2Int[PublicLevel.hostileTypeCreatureNum];
+
     //Save parameters stored in the button to the PublicLevel and load scene
-    public void InitLevel()
+    public virtual void InitLevel()
     {
         PublicLevel.SetLevel(hostileType, manaAmount, manaRegenTime, creatureSpawnTime, stageLevel, isBoss, bossPrefab);
-        SceneManager.LoadScene("DefaultIngame");
+        LoadingSceneManager.LoadScene("DefaultIngame");
     }
 
-    //Save parameters stored in the button to the PublicLevel and load scene
-    public void InitLevelMultiplayer()
-    {
-        PublicLevel.SetLevel(hostileType, manaAmount, manaRegenTime, creatureSpawnTime, stageLevel, false, null);
-        SceneManager.LoadScene("DefaultIngameCopy");
-    }
+    
 
+    #region Get functions
     public int GetStageLevel()
     {
         return stageLevel;
     }
+    #endregion
+
+    #region Set functions
+
+    
+
+    #endregion
 }
 
