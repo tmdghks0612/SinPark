@@ -28,6 +28,7 @@ public static class PublicLevel
     [SerializeField]
     private static bool isBoss;
 
+    private static int cornNum;
 
 
     [SerializeField]
@@ -36,7 +37,9 @@ public static class PublicLevel
     // List of every creature prefabs loaded from resources folder
     public static GameObject[,] friendlyPrefab;
     public static GameObject[,] hostilePrefab;
-   
+
+    public static bool[,] unlockType;
+
     // List of images loaded from resources folder
     public static Sprite[,] friendlyImage;
 
@@ -117,6 +120,8 @@ public static class PublicLevel
         hostileCreatureList = new GameObject[hostileTypeCreatureNum];
         hostileType = new Vector2Int[hostileTypeCreatureNum];
 
+        unlockType = new bool[friendlyTypeCreatureNum, friendlyTypeUpgradeNum];
+
 
         // find and load friendly creature prefabs and images from folder 'creature#_#'
         for (int i = 0; i < friendlyTypeCreatureNum; ++i)
@@ -125,6 +130,7 @@ public static class PublicLevel
             {
                 friendlyPrefab[i, k] = Resources.Load("creature" + i.ToString() + "/creature" + i.ToString() + "_" + k.ToString() + "/creature" + i.ToString() + "_" + k.ToString() + "Prefab") as GameObject;
                 friendlyImage[i,k] = Resources.Load<Sprite>("creature" + i.ToString() + "/creature" + i.ToString() + "_" + k.ToString() + "/creature" + i.ToString() + "_" + k.ToString() + "Image") as Sprite;
+                unlockType[i, k] = false;
             }
         }
 
@@ -166,11 +172,15 @@ public static class PublicLevel
         if(newLevel > playerMaxLevel)
         {
             playerLevel = playerMaxLevel;
+            SetCorn(GetCorn() + 15);
         }
         else if(newLevel > playerLevel)
         {
             playerLevel = newLevel;
+            SetCorn(GetCorn() + 30);
         }
+        else
+            SetCorn(GetCorn() + 15);
     }
 
     // Set Player's win number. Works only at multi mode
@@ -196,6 +206,10 @@ public static class PublicLevel
 
     #endregion
 
+    public static void SetCorn(int currentCorn)
+    {
+        cornNum = currentCorn;
+    }
 
 
     #region Get functions
@@ -204,6 +218,12 @@ public static class PublicLevel
     public static int GetPlayerLevel()
     {
         return playerLevel;
+    }
+
+    //Used to get player's current corn
+    public static int GetCorn()
+    {
+        return cornNum;
     }
 
     //Used to get player's curren win number

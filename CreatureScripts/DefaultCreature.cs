@@ -35,9 +35,11 @@ public class DefaultCreature : MonoBehaviour
 	protected int buttonNum;
 	[SerializeField]
 	protected GameObject projectile;
+	[SerializeField]
+	private int unlockCost;
 
-    // Audio related variables
-    [SerializeField]
+	// Audio related variables
+	[SerializeField]
     protected AudioClip attackSound;
     [SerializeField]
     protected AudioClip deathSound;
@@ -54,6 +56,8 @@ public class DefaultCreature : MonoBehaviour
     protected bool moveFlag = true;
 	
 	protected bool Enemy = false;
+
+	
 
     //script instances
 	protected GameControl gameControl;
@@ -258,6 +262,10 @@ public class DefaultCreature : MonoBehaviour
 
     #region Get functions
 
+	public int GetUnlockCost()
+	{
+		return unlockCost;
+	}
     public int GetManaCost()
     {
         return manaCost;
