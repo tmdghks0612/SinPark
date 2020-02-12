@@ -131,7 +131,8 @@ public class DefaultCreature : MonoBehaviour
 	{
 		if (attackFlag)
 		{
-            playAttackSound();
+			Debug.Log("Time : " + System.DateTime.Now);
+			playAttackSound();
 			if (creatureAttackType == AttackType.Melee)
 			{
 				combatControl.MeleeAttack(currentPosition, attackRange, attackDamage, size, laneNum, side);
@@ -218,12 +219,12 @@ public class DefaultCreature : MonoBehaviour
 			if(!Enemy && transform.position.x <= end.x)
 			{
 				moveFlag = true;
-				transform.position += speed;
+				transform.position += speed * Time.deltaTime;
 			}
 			else if(Enemy && transform.position.x >= end.x)
 			{
 				moveFlag = true;
-				transform.position += speed;
+				transform.position += speed * Time.deltaTime; 
 
 			}
 			else

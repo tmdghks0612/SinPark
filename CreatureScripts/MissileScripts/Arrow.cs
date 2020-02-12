@@ -25,8 +25,8 @@ public class Arrow : DefaultMissile
         {
             Destroy(this.gameObject);
         }
-        this.gameObject.transform.position += direction;
-        prevY -= fallRate;
+        this.gameObject.transform.position += direction * Time.deltaTime;
+        prevY -= fallRate * Time.deltaTime;
         direction = new Vector3(prevX, prevY, 0);
     }
 }

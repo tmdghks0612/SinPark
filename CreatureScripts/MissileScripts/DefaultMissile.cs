@@ -31,7 +31,7 @@ public class DefaultMissile : MonoBehaviour
     // Update is called once per frame
     protected virtual void Update()
     {
-        this.gameObject.transform.position += direction;
+        this.gameObject.transform.position += direction * Time.deltaTime;
     }
 
     private void OnTriggerEnter2D(Collider2D collision)

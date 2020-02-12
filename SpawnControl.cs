@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using System;
 
 public class SpawnControl : MonoBehaviour
 {
@@ -101,7 +102,7 @@ public class SpawnControl : MonoBehaviour
         //spawn an actor through instantiate
         GameObject newObject;
         DefaultCreature newCreature;
-
+        Debug.Log("Time : " + System.DateTime.Now);
         if (side == GameControl.Sides.Friendly)
         {
             newObject = Instantiate<GameObject>(friendlyCreatureList[buttonNum]);
