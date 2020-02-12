@@ -43,21 +43,23 @@ public class ServerControl : MonoBehaviour
         {
             _socketConnection = new TcpClient(ServerControlForm.GetUrl(), ServerControlForm.GetPort());
             PublicLevel.SetServerStream(_socketConnection.GetStream());
+            ServerControl.SendCreatureList();
         }
         catch(SocketException socketException)
         {
             Debug.Log("SocketException " + socketException.ToString());
             StageButtonMultiplayer.NetworkErrorPanelactive();
         }
+        
     }
 
     public static bool SendCreatureList()
     {
+        Debug.Log("send creature list");
         buffer = new byte[bufferSize];
         try
         {
             // create a socket for streaming data
-
             string serverMessage="";
             Vector2Int[] friendlyType = PublicLevel.GetFriendlyType();
             for(int i = 0; i < PublicLevel.usingCreatureNum; ++i)
@@ -66,6 +68,9 @@ public class ServerControl : MonoBehaviour
             }
             buffer = Encoding.ASCII.GetBytes(serverMessage);
             PublicLevel.GetServerStream().Write(buffer, 0, buffer.Length);
+            StageButtonMultiplayer.SetCreatureSentFlag(true);
+
+            Debug.Log("sent creature list");
             ClearBuffer(buffer);
         }
         catch (SocketException socketException)
@@ -78,6 +83,7 @@ public class ServerControl : MonoBehaviour
 
     public static IEnumerator ListenForHostileCreatureList(float waitTime)
     {
+        Debug.Log("listening");
         yield return new WaitForSeconds(waitTime);
         buffer = new byte[bufferSize];
         try
@@ -86,6 +92,10 @@ public class ServerControl : MonoBehaviour
             PublicLevel.GetServerStream().BeginRead(buffer, 0, bufferSize, OnReceive, null);
             
             creatureReceiveSuccess = true;
+
+            Debug.Log("loading scene");
+            StageButtonMultiplayer.NetworkWaitPanelInactive();
+            StageButtonMultiplayer.SetCreatureReceivedFlag(true);
             // load after creaturelist receive is complete
             LoadingSceneManager.LoadScene("DefaultIngameCopy");
         }
@@ -94,8 +104,7 @@ public class ServerControl : MonoBehaviour
             Debug.Log("ListSendException " + listSendException.ToString());
             StageButtonMultiplayer.NetworkErrorPanelactive();
         }
-        StageButtonMultiplayer.SetCreatureFlag(true);
-        StageButtonMultiplayer.NetworkWaitPanelInactive();
+        
     }
 
     static void OnReceive(IAsyncResult result)
