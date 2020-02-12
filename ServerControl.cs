@@ -35,8 +35,9 @@ public class ServerControl : MonoBehaviour
         tcpListenerThread.Start();
     }
 
-    public static bool OpenStream()
+    public static IEnumerator OpenStream(float waitTime)
     {
+        yield return new WaitForSeconds(waitTime);
         TcpClient _socketConnection;
         try
         {
@@ -46,13 +47,13 @@ public class ServerControl : MonoBehaviour
         catch(SocketException socketException)
         {
             Debug.Log("SocketException " + socketException.ToString());
-            return false;
+            StageButtonMultiplayer.NetworkErrorPanelactive();
         }
-        return true;
     }
 
     public static bool SendCreatureList()
     {
+        buffer = new byte[bufferSize];
         try
         {
             // create a socket for streaming data
@@ -83,33 +84,18 @@ public class ServerControl : MonoBehaviour
         {
             Vector2Int[] _hostileType = new Vector2Int[PublicLevel.usingCreatureNum];
             PublicLevel.GetServerStream().BeginRead(buffer, 0, bufferSize, OnReceive, null);
-
-                // when server sent a creature information
-                /*
-             while(true)
-             {
-                if (PublicLevel.GetServerStream().Read(buffer, 0, buffer.Length) != 0)
-                {
-                    string[] serverMessage = Encoding.UTF8.GetString(buffer).Split(' ');
-                    string[] intPair;
-                    for(int i = 0; i < PublicLevel.usingCreatureNum; ++i)
-                    {
-                        intPair = serverMessage[i].Split(',');
-                        PublicLevel.hostileCreatureList[i] = PublicLevel.hostilePrefab[int.Parse(intPair[0]), int.Parse(intPair[1])];
-                        Debug.Log(intPair[0]+ intPair[1]);
-                    }
-                    ClearBuffer(buffer);
-                    break;
-                }
-            }*/
+            
             creatureReceiveSuccess = true;
             // load after creaturelist receive is complete
             LoadingSceneManager.LoadScene("DefaultIngameCopy");
         }
-        catch (Exception socketException)
+        catch (Exception listSendException)
         {
-            Debug.Log("SocketException " + socketException.ToString());
+            Debug.Log("ListSendException " + listSendException.ToString());
+            StageButtonMultiplayer.NetworkErrorPanelactive();
         }
+        StageButtonMultiplayer.SetCreatureFlag(true);
+        StageButtonMultiplayer.NetworkWaitPanelInactive();
     }
 
     static void OnReceive(IAsyncResult result)
