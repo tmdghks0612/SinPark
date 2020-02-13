@@ -34,6 +34,8 @@ public class GameControl : MonoBehaviour
     protected int selectedCreatureType;
 
     private bool buttonFlag = true;
+    private bool spawnCooldownFlag = true;  //true when able to spawn. False when not able to spawn
+    private float coolDownTime = 0.15f;
     
     private Text[] costText;
     private bool gameOverFlag = false;
@@ -97,9 +99,20 @@ public class GameControl : MonoBehaviour
     
     protected virtual void SummonProcedure(int laneNumber)
     {
-        spawnControl.SpawnCreatureLane(laneNumber, GameControl.Sides.Friendly, selectedCreatureType);
+        if (spawnCooldownFlag)
+        {
+            spawnCooldownFlag = false;
+            StartCoroutine("CoolDownCount");
+            spawnControl.SpawnCreatureLane(laneNumber, GameControl.Sides.Friendly, selectedCreatureType);
+        }
     }
 
+    IEnumerator CoolDownCount()
+    {
+        yield return new WaitForSeconds(coolDownTime);
+        Debug.Log("wait");
+        spawnCooldownFlag = true;
+    }
     //Choose the creature to summon to the lane. Decided data is saved at selectedCreatureType
     void ChooseCreature(int type)
     {

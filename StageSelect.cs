@@ -143,9 +143,17 @@ public class StageSelect : MonoBehaviour
     //make location button interactable(clickable) for player to put decided creature to the position they want
     void TargetCreature(Vector2Int type)
     {
-        changingInfo = type;
-        if (PublicLevel.unlockType[type.x, type.y] == true)
+        
+        if (locationButton[1].interactable == true && changingInfo == type)
         {
+            for (int i = 0; i < PublicLevel.usingCreatureNum; i++)
+            {
+                locationButton[i].interactable = false;
+            }
+        }
+        else if (PublicLevel.unlockType[type.x, type.y] == true)
+        {
+            changingInfo = type;
             for (int i = 0; i < PublicLevel.usingCreatureNum; i++)
             {
                 locationButton[i].interactable = true;
@@ -153,6 +161,7 @@ public class StageSelect : MonoBehaviour
         }
         else
         {
+            changingInfo = type;
             for (int i = 0; i < PublicLevel.usingCreatureNum; i++)
             {
                 locationButton[i].interactable = false;
@@ -162,7 +171,7 @@ public class StageSelect : MonoBehaviour
             if (PublicLevel.GetCorn() < price)
             {
                 unlockPopup.transform.GetChild(1).GetComponent<Button>().interactable = false;
-                unlockPopup.transform.GetChild(1).GetChild(0).GetComponent<Text>().text = "Unlock\n (Not enough corns)";
+                unlockPopup.transform.GetChild(1).GetChild(0).GetComponent<Text>().text = "Unlock\n (needs " + price + " corns)";
             }
             else
             {
