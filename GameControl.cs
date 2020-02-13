@@ -34,7 +34,7 @@ public class GameControl : MonoBehaviour
     protected int selectedCreatureType;
 
     private bool buttonFlag = true;
-    private bool spawnCooldownFlag = true;  //true when able to spawn. False when not able to spawn
+    protected bool spawnCooldownFlag = true;  //true when able to spawn. False when not able to spawn
     private float coolDownTime = 0.15f;
     
     private Text[] costText;

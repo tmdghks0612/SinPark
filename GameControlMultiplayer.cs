@@ -18,6 +18,7 @@ public class GameControlMultiplayer : GameControl
     //check rate for checking if queue is empty
     private float checkRate = 0.01f;
 
+
     protected override void Start()
     {
         // call GameControl.Start()
@@ -52,7 +53,13 @@ public class GameControlMultiplayer : GameControl
     // Send spawn request of creature to server
     protected override void SummonProcedure(int laneNum)
     {
-        StartCoroutine(SendSpawnRequest(laneNum, GameControl.Sides.Friendly, selectedCreatureType));
+        if (spawnCooldownFlag)
+        {
+            spawnCooldownFlag = false;
+            StartCoroutine("CoolDownCount");
+            StartCoroutine(SendSpawnRequest(laneNum, GameControl.Sides.Friendly, selectedCreatureType));
+        }
+        //StartCoroutine(SendSpawnRequest(laneNum, GameControl.Sides.Friendly, selectedCreatureType));
     }
 
     // create and send a SpawnRequestForm

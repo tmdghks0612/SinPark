@@ -16,7 +16,7 @@ public class SpawnControl : MonoBehaviour
 
     // mana related variables
     private float maxMana = 100;
-    private float regenAmount = 0.1f;
+    private float regenAmount = 10f;
 
     [SerializeField]
     private float baseMana;
@@ -49,13 +49,13 @@ public class SpawnControl : MonoBehaviour
 
     private void Update()
     {
-        if (baseMana + regenAmount > maxMana)
+        if (baseMana + regenAmount * Time.deltaTime > maxMana)
         {
             baseMana = maxMana;
         }
         else
         {
-            baseMana += regenAmount;
+            baseMana += regenAmount * Time.deltaTime;
         }
         manaBar.fillAmount = baseMana / maxMana;
     }
