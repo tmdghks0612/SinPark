@@ -10,6 +10,7 @@ public class Arrow : DefaultMissile
     private float startY;
     private float prevX;
     private float prevY;
+    private Vector3 target;
 
     void Start()
     {
@@ -25,8 +26,11 @@ public class Arrow : DefaultMissile
         {
             Destroy(this.gameObject);
         }
+        target = transform.position + direction * Time.deltaTime;
+        transform.right = target - transform.position;
         this.gameObject.transform.position += direction * Time.deltaTime;
         prevY -= fallRate * Time.deltaTime;
         direction = new Vector3(prevX, prevY, 0);
+        
     }
 }
