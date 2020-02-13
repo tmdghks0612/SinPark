@@ -109,16 +109,29 @@ public class ServerControl : MonoBehaviour
 
     static void OnReceive(IAsyncResult result)
     {
-        Debug.Log("hello1");
         string[] serverMessage = Encoding.UTF8.GetString(buffer).Split(' ');
         string[] intPair;
-        Debug.Log("hello2");
+
+        // when number of creature in the list is not matched
+        if(serverMessage.Length != PublicLevel.usingCreatureNum)
+        {
+            StageButtonMultiplayer.SetCreatureReceivedFlag(false);
+            return;
+        }
         for (int i = 0; i < PublicLevel.usingCreatureNum; ++i)
         {
             intPair = serverMessage[i].Split(',');
             PublicLevel.hostileCreatureList[i] = PublicLevel.hostilePrefab[int.Parse(intPair[0]), int.Parse(intPair[1])];
             Debug.Log(intPair[0] + intPair[1]);
+
+            // when a pair is not in right format
+            if(intPair.Length != 2)
+            {
+                StageButtonMultiplayer.SetCreatureReceivedFlag(false);
+                return;
+            }
         }
+        StageButtonMultiplayer.SetCreatureReceivedFlag(true);
         ClearBuffer(buffer);
         return;
     }
