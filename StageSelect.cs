@@ -9,6 +9,8 @@ public class StageSelect : MonoBehaviour
     //GameDataControl is undestructable gameObject, save and load data
     [SerializeField]
     private GameObject gameDataControl;
+    [SerializeField]
+    private ServerControl serverControl;
     private GameData gameData;
     private GameDataForm loadedData;
 
