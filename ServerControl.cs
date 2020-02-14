@@ -62,10 +62,11 @@ public class ServerControl : MonoBehaviour
             // create a socket for streaming data
             string serverMessage="";
             Vector2Int[] friendlyType = PublicLevel.GetFriendlyType();
-            for(int i = 0; i < PublicLevel.usingCreatureNum; ++i)
+            for (int i = 0; i < PublicLevel.usingCreatureNum - 1; ++i)
             {
                 serverMessage = serverMessage + friendlyType[i].x.ToString() + ',' + friendlyType[i].y.ToString() + " ";
             }
+            serverMessage = serverMessage + friendlyType[PublicLevel.usingCreatureNum - 1].x.ToString() + ',' + friendlyType[PublicLevel.usingCreatureNum - 1].y.ToString();
             buffer = Encoding.ASCII.GetBytes(serverMessage);
             PublicLevel.GetServerStream().Write(buffer, 0, buffer.Length);
             StageButtonMultiplayer.SetCreatureSentFlag(true);
@@ -97,7 +98,7 @@ public class ServerControl : MonoBehaviour
             StageButtonMultiplayer.NetworkWaitPanelInactive();
             StageButtonMultiplayer.SetCreatureReceivedFlag(true);
             // load after creaturelist receive is complete
-            LoadingSceneManager.LoadScene("DefaultIngameCopy");
+            LoadingSceneManager.LoadScene("DefaultIngameMultiplayer");
         }
         catch (Exception listSendException)
         {

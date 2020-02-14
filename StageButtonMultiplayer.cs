@@ -47,6 +47,7 @@ public class StageButtonMultiplayer : StageButton
 
     public IEnumerator WaitForServer(float _waitTime)
     {
+        
         yield return new WaitForSeconds(_waitTime);
         for(int i = 0; i < maxAttempt; ++i)
         {
