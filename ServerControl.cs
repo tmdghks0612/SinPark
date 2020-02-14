@@ -14,6 +14,7 @@ public class ServerControl : MonoBehaviour
 {
     // control instances
     public GameControlMultiplayer gameControlMultiplayer;
+    public StageButtonMultiplayer stageButtonMultiplayer;
 
     // stream of server connection
     private NetworkStream serverStream;
@@ -67,7 +68,6 @@ public class ServerControl : MonoBehaviour
     public IEnumerator SendCreatureList(float _waitTime)
     {
         yield return _waitTime;
-        Debug.Log("send creature list");
         buffer = new byte[bufferSize];
         try
         {
@@ -81,9 +81,8 @@ public class ServerControl : MonoBehaviour
             serverMessage = serverMessage + friendlyType[PublicLevel.usingCreatureNum - 1].x.ToString() + ',' + friendlyType[PublicLevel.usingCreatureNum - 1].y.ToString();
             buffer = Encoding.ASCII.GetBytes(serverMessage);
             PublicLevel.GetServerStream().Write(buffer, 0, buffer.Length);
-            StageButtonMultiplayer.SetCreatureSentFlag(true);
+            stageButtonMultiplayer.SetCreatureSentFlag(true);
 
-            Debug.Log("sent creature list");
             ClearBuffer(buffer);
         }
         catch (SocketException socketException)
@@ -103,7 +102,7 @@ public class ServerControl : MonoBehaviour
         }
         catch (Exception listSendException)
         {
-            Debug.Log("ListSendException " + listSendException.ToString());
+            Debug.Log("Send error : " + listSendException);
             StageButtonMultiplayer.NetworkErrorPanelactive();
         }
         
@@ -113,7 +112,6 @@ public class ServerControl : MonoBehaviour
     private void OnReceive(IAsyncResult result)
     {
         string receivedMessage = Encoding.UTF8.GetString(buffer);
-        Debug.Log(receivedMessage);
         // if nothing was received
         if (receivedMessage == null || receivedMessage.Length == 0)
         {
@@ -121,13 +119,11 @@ public class ServerControl : MonoBehaviour
             return;
         }
         receivedMessage = receivedMessage.TrimEnd(' ');
-        Debug.Log(receivedMessage);
 
         // parse into pairs
         string[] parsedMessage = receivedMessage.Split(' ');
         string[] intPair;
 
-        Debug.Log(parsedMessage.Length);
         // when number of creature in the list is not matched
         if (parsedMessage.Length != PublicLevel.usingCreatureNum)
         {
@@ -135,32 +131,27 @@ public class ServerControl : MonoBehaviour
             ClearBuffer(buffer);
             return;
         }
-        Debug.Log("parsing each pair...");
         for (int i = 0; i < PublicLevel.usingCreatureNum; ++i)
         {
             intPair = parsedMessage[i].Split(',');
             PublicLevel.hostileCreatureList[i] = PublicLevel.hostilePrefab[int.Parse(intPair[0]), int.Parse(intPair[1])];
-            Debug.Log(intPair[0] + intPair[1]);
 
             // when a pair is not in right format
             if(intPair.Length != 2)
             {
-                Debug.Log("setting to false in pair");
-
                 StageButtonMultiplayer.NetworkErrorPanelactive();
                 ClearBuffer(buffer);
 
                 return;
             }
         }
-        Debug.Log("loading multiplayer scene...");
-        // load scene when creature list is ready
-        LoadingSceneManager.LoadScene("DefaultIngameMultiplayer");
+
+        stageButtonMultiplayer.SetCreatureReceivedFlag(true);
+        StageButtonMultiplayer.NetworkWaitPanelInactive();
         
         ClearBuffer(buffer);
         return;
     }
-       
 
     // Runs in background TcpServerThread; Handles incomming TcpClient requests
     private void ListenForIncommingRequests()
@@ -178,7 +169,6 @@ public class ServerControl : MonoBehaviour
                 if (serverStream.Read(buffer, 0, buffer.Length) != 0)
                 {
                     serverMessage = Encoding.UTF8.GetString(buffer);
-                    Debug.Log("Server message is " + serverMessage);
                     // ReceiveSpawnRequest will call spawnControl.SummonCreature
                     gameControlMultiplayer.ReceiveSpawnRequest(serverMessage);
 
