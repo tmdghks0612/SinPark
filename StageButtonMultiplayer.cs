@@ -4,6 +4,10 @@ using UnityEngine;
 
 public class StageButtonMultiplayer : StageButton
 {
+    // control instances
+    [SerializeField]
+    private ServerControl serverControl;
+
     // UI game objects
     [SerializeField]
     private static GameObject networkErrorPanel;
@@ -37,15 +41,14 @@ public class StageButtonMultiplayer : StageButton
     //Save parameters stored in the button to the PublicLevel and load scene
     public override void InitLevel()
     {
-        Debug.Log("start");
-        StartCoroutine(ServerControl.OpenStream(3.0f));
-        Debug.Log("level set start");
+        creatureSentFlag = false;
+        creatureReceivedFlag = false;
+        StartCoroutine(serverControl.OpenStream(6.0f));
         PublicLevel.SetLevel(hostileType, manaAmount, manaRegenTime, creatureSpawnTime, stageLevel, false, null);
-        Debug.Log("level set complete");
-        StartCoroutine(WaitForServer(3.0f));
+        //StartCoroutine(WaitForServer(6.0f));
     }
 
-    public IEnumerator WaitForServer(float _waitTime)
+    /*public IEnumerator WaitForServer(float _waitTime)
     {
         yield return new WaitForSeconds(_waitTime);
         for(int i = 0; i < maxAttempt; ++i)
@@ -56,17 +59,49 @@ public class StageButtonMultiplayer : StageButton
                 break;
             }
         }
+        
+        Debug.Log("receive check started");
         for (int i = 0; i < maxAttempt; ++i)
         {
             
             if (creatureReceivedFlag == true)
             {
-                creatureReceivedFlag = false;
+                Debug.Log("receive flag detected");
+
+                NetworkWaitPanelInactive();
+                // load after creaturelist receive is complete
+                LoadingSceneManager.LoadScene("DefaultIngameMultiplayer");
+                Debug.Log("loaded?");
                 break;
             }
         }
-        
-    }
+        NetworkErrorPanelactive();
+        Debug.Log("receive check ended");
+
+    }*/
+
+    /*public IEnumerator WaitForServerReceive(float _waitTime)
+    {
+        Debug.Log("wait for receive");
+        yield return new WaitForSeconds(_waitTime);
+        Debug.Log("receive check started");
+        for (int i = 0; i < maxAttempt; ++i)
+        {
+            
+            if (creatureReceivedFlag == true)
+            {
+                Debug.Log("receive flag detected");
+
+                NetworkWaitPanelInactive();
+                // load after creaturelist receive is complete
+                LoadingSceneManager.LoadScene("DefaultIngameMultiplayer");
+                break;
+            }
+        }
+        NetworkErrorPanelactive();
+        Debug.Log("receive check ended");
+
+    }*/
 
     #region network error UI control functions
 

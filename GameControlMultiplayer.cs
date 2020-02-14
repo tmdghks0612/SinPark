@@ -9,6 +9,9 @@ using UnityEngine.Networking;
 
 public class GameControlMultiplayer : GameControl
 {
+    // control instances
+    public ServerControl serverControl;
+
     // queue for which spawn request waits
     private Queue<SpawnRequestForm> spawnQueue = new Queue<SpawnRequestForm>();
     private int bufferSize = 1024;
@@ -23,6 +26,8 @@ public class GameControlMultiplayer : GameControl
         // call GameControl.Start()
         base.Start();
         aiplayer.AIplayerStop();
+        serverControl = GameObject.Find("ServerControl").GetComponent<ServerControl>();
+        serverControl.ListenToStream();
         InvokeRepeating("CheckQueue", checkRate, checkRate);
     }
 
@@ -52,7 +57,12 @@ public class GameControlMultiplayer : GameControl
     // Send spawn request of creature to server
     protected override void SummonProcedure(int laneNum)
     {
-        StartCoroutine(SendSpawnRequest(laneNum, GameControl.Sides.Friendly, selectedCreatureType));
+        if (spawnCooldownFlag)
+        {
+            spawnCooldownFlag = false;
+            StartCoroutine("CoolDownCount");
+            StartCoroutine(SendSpawnRequest(laneNum, GameControl.Sides.Friendly, selectedCreatureType));
+        }
     }
 
     // create and send a SpawnRequestForm
