@@ -163,10 +163,14 @@ public class SpawnControl : MonoBehaviour
         startCoord = new Vector3[maxLanes];
         endCoord = new Vector3[maxLanes];
 
-        for(int i=0; i < maxLanes; ++i)
+        float cameraHeight = Camera.main.orthographicSize * 2;
+        Vector2 cameraSize = new Vector2(Camera.main.aspect * cameraHeight, cameraHeight);
+
+        float yPosition = cameraSize.y / 90;
+        for (int i=0; i < maxLanes; ++i)
         {
-            startCoord[i] = new Vector3(-15.0f, i * 2.5f -1, 0);
-            endCoord[i] = new Vector3(15.0f, i * 2.5f -1, 0 );
+            startCoord[i] = new Vector3(-15.0f, -yPosition * 18 + yPosition * i * 14, 0);
+            endCoord[i] = new Vector3(15.0f, -yPosition * 18 + yPosition * i * 14, 0 );
         }
     }
 

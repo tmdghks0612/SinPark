@@ -30,9 +30,12 @@ public class ServerControl : MonoBehaviour
     {
         serverStream = PublicLevel.GetServerStream();
         // Start TcpServer background thread
-        tcpListenerThread = new Thread(new ThreadStart(ListenForIncommingRequests));
-        tcpListenerThread.IsBackground = true;
-        tcpListenerThread.Start();
+        if (serverStream != null)
+        {
+            tcpListenerThread = new Thread(new ThreadStart(ListenForIncommingRequests));
+            tcpListenerThread.IsBackground = true;
+            tcpListenerThread.Start();
+        }
     }
 
     public static IEnumerator OpenStream(float waitTime)
