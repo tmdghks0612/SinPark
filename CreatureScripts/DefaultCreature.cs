@@ -142,13 +142,19 @@ public class DefaultCreature : MonoBehaviour
 			else if (creatureAttackType == AttackType.Missile)
 			{
 				combatControl.MissileAttack(currentPosition, projectile, attackDamage, laneNum, side);
+				if (animControl != null)
+					animControl.SetBool("onAttack", true);
 				//animation
 			}
 			else if(creatureAttackType == AttackType.Heal)
 			{
 				combatControl.Heal(currentPosition, attackRange, attackDamage, laneNum, side);
 				if (animControl != null)
+				{
 					animControl.SetBool("onAttack", true);
+					Debug.Log("anim");
+				}
+					
 			}
 		}
 		else
