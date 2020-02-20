@@ -49,6 +49,7 @@ public class StageButtonMultiplayer : StageButton
         else
         {
             NetworkErrorPanelactive();
+            serverControl.CloseSocket();
         }
         
     }

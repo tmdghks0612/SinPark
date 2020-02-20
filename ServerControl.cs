@@ -16,6 +16,9 @@ public class ServerControl : MonoBehaviour
     public GameControlMultiplayer gameControlMultiplayer;
     public StageButtonMultiplayer stageButtonMultiplayer;
 
+    // socket of server connection
+    private TcpClient socketConnection;
+
     // stream of server connection
     private NetworkStream serverStream;
     
@@ -48,11 +51,12 @@ public class ServerControl : MonoBehaviour
     public IEnumerator OpenStream(float waitTime)
     {
         yield return new WaitForSeconds(waitTime);
-        TcpClient _socketConnection;
         try
         {
-            _socketConnection = new TcpClient(ServerControlForm.GetUrl(), ServerControlForm.GetPort());
-            PublicLevel.SetServerStream(_socketConnection.GetStream());
+            socketConnection = new TcpClient(ServerControlForm.GetUrl(), ServerControlForm.GetPort());
+            PublicLevel.SetServerStream(socketConnection.GetStream());
+
+            HandShake();
 
             serverStream = PublicLevel.GetServerStream();
             // if success, send friendly creature list through stream
@@ -198,5 +202,54 @@ public class ServerControl : MonoBehaviour
     public NetworkStream GetServerStream()
     {
         return serverStream;
+    }
+
+    // hand shake between server and client
+    private static void HandShake()
+    {
+        try
+        {
+            buffer = Encoding.ASCII.GetBytes(ServerControlForm.GetHandShakeString());
+            PublicLevel.GetServerStream().Write(buffer, 0, buffer.Length);
+        }
+        catch(Exception socketException)
+        {
+            Debug.Log("SocketException " + socketException.ToString());
+        }
+    }
+
+    private static void CloseHandShake()
+    {
+        try
+        {
+            buffer = Encoding.ASCII.GetBytes(ServerControlForm.GetCloseHandShakeString());
+            PublicLevel.GetServerStream().Write(buffer, 0, buffer.Length);
+        }
+        catch(Exception socketException)
+        {
+            Debug.Log("SocketException " + socketException.ToString());
+        }
+
+    }
+
+    public void CloseSocket()
+    {
+        if(socketConnection != null)
+        {
+            if(PublicLevel.GetServerStream() != null)
+            {
+                CloseHandShake();
+            }
+            try
+            {
+                socketConnection.Close();
+            }
+            catch (Exception socketException)
+            {
+                Debug.Log("SocketException " + socketException.ToString());
+            }
+            socketConnection = null;
+        }
+        return;
     }
 }
