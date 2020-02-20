@@ -9,7 +9,6 @@ public class GameControl : MonoBehaviour
     //Basic Controller during game. put manually by Unity Editor
     public CombatControl combatControl;
     public SpawnControl spawnControl;
-    public ServerControl serverControl;
     public AIplayer aiplayer;
 
 
@@ -34,9 +33,9 @@ public class GameControl : MonoBehaviour
     protected int selectedCreatureType;
 
     private bool buttonFlag = true;
-    protected bool spawnCooldownFlag = true;  //true when able to spawn. False when not able to spawn
     private float coolDownTime = 0.15f;
-    
+    protected bool spawnCooldownFlag = true;  //true when able to spawn. False when not able to spawn
+
     private Text[] costText;
     private bool gameOverFlag = false;
 

@@ -1,9 +1,14 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class StageButtonMultiplayer : StageButton
 {
+    // control instances
+    [SerializeField]
+    private ServerControl serverControl;
+
     // UI game objects
     [SerializeField]
     private static GameObject networkErrorPanel;
@@ -11,12 +16,12 @@ public class StageButtonMultiplayer : StageButton
     private static GameObject networkWaitPanel;
 
     // flag to check if server is ready
-    private static bool creatureSentFlag = false;
-    private static bool creatureReceivedFlag = false;
+    [SerializeField]
+    private bool creatureSentFlag = false;
+    [SerializeField]
+    private bool creatureReceivedFlag = false;
     // flag to check if server is ready
     private static bool socketFlag = false;
-
-    private int maxAttempt = 50000000;
 
     private void Start()
     {
@@ -30,42 +35,31 @@ public class StageButtonMultiplayer : StageButton
     {
         NetworkWaitPanelactive();
         InitLevel();
-        //StartCoroutine("InitLevel");
-        //Invoke("InitLevel", 0.5f);
+        StartCoroutine(WaitForSceneLoad());
+    }
+    
+    private IEnumerator WaitForSceneLoad()
+    {
+        yield return new WaitForSeconds(10.0f);
+        if (creatureReceivedFlag)
+        {
+            NetworkWaitPanelInactive();
+            LoadingSceneManager.LoadScene("DefaultInGameMultiplayer");
+        }
+        else
+        {
+            NetworkErrorPanelactive();
+        }
+        
     }
 
     //Save parameters stored in the button to the PublicLevel and load scene
     public override void InitLevel()
     {
-        Debug.Log("start");
-        StartCoroutine(ServerControl.OpenStream(3.0f));
-        Debug.Log("level set start");
+        creatureSentFlag = false;
+        creatureReceivedFlag = false;
+        StartCoroutine(serverControl.OpenStream(6.0f));
         PublicLevel.SetLevel(hostileType, manaAmount, manaRegenTime, creatureSpawnTime, stageLevel, false, null);
-        Debug.Log("level set complete");
-        StartCoroutine(WaitForServer(3.0f));
-    }
-
-    public IEnumerator WaitForServer(float _waitTime)
-    {
-        
-        yield return new WaitForSeconds(_waitTime);
-        for(int i = 0; i < maxAttempt; ++i)
-        {
-            if (creatureSentFlag)
-            {
-                StartCoroutine(ServerControl.ListenForHostileCreatureList(1.0f));
-                break;
-            }
-        }
-        for (int i = 0; i < maxAttempt; ++i)
-        {
-            
-            if (creatureReceivedFlag == true)
-            {
-                creatureReceivedFlag = false;
-                break;
-            }
-        }
         
     }
 
@@ -94,12 +88,12 @@ public class StageButtonMultiplayer : StageButton
     #endregion
 
     #region Set functions
-    public static void SetCreatureSentFlag(bool _creatureSentFlag)
+    public void SetCreatureSentFlag(bool _creatureSentFlag)
     {
         creatureSentFlag = _creatureSentFlag;
     }
 
-    public static void SetCreatureReceivedFlag(bool _creatureReceivedFlag)
+    public void SetCreatureReceivedFlag(bool _creatureReceivedFlag)
     {
         creatureReceivedFlag = _creatureReceivedFlag;
     }
