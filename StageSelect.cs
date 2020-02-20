@@ -216,7 +216,7 @@ public class StageSelect : MonoBehaviour
         {
             for (int k = 0; k < PublicLevel.friendlyTypeUpgradeNum; k++)
             {
-                listObject = upgradeShop.transform.GetChild(7 + i).gameObject;
+                listObject = upgradeShop.transform.GetChild(6 + i).gameObject;
                 listObject.GetComponent<Image>().sprite = PublicLevel.friendlyImage[i, k];
             }
         }
@@ -224,7 +224,7 @@ public class StageSelect : MonoBehaviour
         //Changes images of location button based on friendlyImageList[]
         for (int i = 0; i < PublicLevel.usingCreatureNum; i++)
         {
-            listObject = upgradeShop.transform.GetChild(2 + i).GetChild(0).gameObject;
+            listObject = upgradeShop.transform.GetChild(1 + i).GetChild(0).gameObject;
             listObject.GetComponent<Image>().sprite = PublicLevel.friendlyImageList[i];
             locationButton[i].interactable = false;
         }
