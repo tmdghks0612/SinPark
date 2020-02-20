@@ -37,9 +37,12 @@ public class ServerControl : MonoBehaviour
     {
         gameControlMultiplayer = GameObject.Find("GameControl").GetComponent<GameControlMultiplayer>();
         // Start TcpServer background thread
-        tcpListenerThread = new Thread(new ThreadStart(ListenForIncommingRequests));
-        tcpListenerThread.IsBackground = true;
-        tcpListenerThread.Start();
+        if (serverStream != null)
+        {
+            tcpListenerThread = new Thread(new ThreadStart(ListenForIncommingRequests));
+            tcpListenerThread.IsBackground = true;
+            tcpListenerThread.Start();
+        }
     }
 
     public IEnumerator OpenStream(float waitTime)
@@ -74,7 +77,7 @@ public class ServerControl : MonoBehaviour
             // create a socket for streaming data
             string serverMessage="";
             Vector2Int[] friendlyType = PublicLevel.GetFriendlyType();
-            for(int i = 0; i < PublicLevel.usingCreatureNum - 1; ++i)
+            for (int i = 0; i < PublicLevel.usingCreatureNum - 1; ++i)
             {
                 serverMessage = serverMessage + friendlyType[i].x.ToString() + ',' + friendlyType[i].y.ToString() + " ";
             }
@@ -98,6 +101,7 @@ public class ServerControl : MonoBehaviour
         try
         {
             Vector2Int[] _hostileType = new Vector2Int[PublicLevel.usingCreatureNum];
+            
             serverStream.BeginRead(buffer, 0, bufferSize, OnReceive, null);
         }
         catch (Exception listSendException)

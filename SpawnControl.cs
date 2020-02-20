@@ -16,7 +16,7 @@ public class SpawnControl : MonoBehaviour
 
     // mana related variables
     private float maxMana = 100;
-    private float regenAmount = 0.1f;
+    private float regenAmount = 10f;
 
     [SerializeField]
     private float baseMana;
@@ -49,13 +49,13 @@ public class SpawnControl : MonoBehaviour
 
     private void Update()
     {
-        if (baseMana + regenAmount > maxMana)
+        if (baseMana + regenAmount * Time.deltaTime > maxMana)
         {
             baseMana = maxMana;
         }
         else
         {
-            baseMana += regenAmount;
+            baseMana += regenAmount * Time.deltaTime;
         }
         manaBar.fillAmount = baseMana / maxMana;
     }
@@ -163,10 +163,14 @@ public class SpawnControl : MonoBehaviour
         startCoord = new Vector3[maxLanes];
         endCoord = new Vector3[maxLanes];
 
-        for(int i=0; i < maxLanes; ++i)
+        float cameraHeight = Camera.main.orthographicSize * 2;
+        Vector2 cameraSize = new Vector2(Camera.main.aspect * cameraHeight, cameraHeight);
+
+        float yPosition = cameraSize.y / 90;
+        for (int i=0; i < maxLanes; ++i)
         {
-            startCoord[i] = new Vector3(-15.0f, i * 2.5f -1, 0);
-            endCoord[i] = new Vector3(15.0f, i * 2.5f -1, 0 );
+            startCoord[i] = new Vector3(-15.0f, -yPosition * 18 + yPosition * i * 14, 0);
+            endCoord[i] = new Vector3(15.0f, -yPosition * 18 + yPosition * i * 14, 0 );
         }
     }
 

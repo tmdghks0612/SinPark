@@ -21,6 +21,7 @@ public class GameControlMultiplayer : GameControl
     //check rate for checking if queue is empty
     private float checkRate = 0.01f;
 
+
     protected override void Start()
     {
         // call GameControl.Start()

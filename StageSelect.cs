@@ -189,7 +189,7 @@ public class StageSelect : MonoBehaviour
         PublicLevel.UpdateFriendlyList(location, changingInfo);
         
     
-        upgradeShop.transform.GetChild(2 + location).GetChild(0).GetComponent<Image>().sprite = PublicLevel.friendlyImageList[location];
+        upgradeShop.transform.GetChild(1 + location).GetChild(0).GetComponent<Image>().sprite = PublicLevel.friendlyImageList[location];
 
         //player use 10 corns per changing upgrade mode will be fixed soon.
         cornText.text = PublicLevel.GetCorn().ToString();
@@ -218,7 +218,7 @@ public class StageSelect : MonoBehaviour
         {
             for (int k = 0; k < PublicLevel.friendlyTypeUpgradeNum; k++)
             {
-                listObject = upgradeShop.transform.GetChild(7 + i).gameObject;
+                listObject = upgradeShop.transform.GetChild(6 + i).gameObject;
                 listObject.GetComponent<Image>().sprite = PublicLevel.friendlyImage[i, k];
             }
         }
@@ -226,7 +226,7 @@ public class StageSelect : MonoBehaviour
         //Changes images of location button based on friendlyImageList[]
         for (int i = 0; i < PublicLevel.usingCreatureNum; i++)
         {
-            listObject = upgradeShop.transform.GetChild(2 + i).GetChild(0).gameObject;
+            listObject = upgradeShop.transform.GetChild(1 + i).GetChild(0).gameObject;
             listObject.GetComponent<Image>().sprite = PublicLevel.friendlyImageList[i];
             locationButton[i].interactable = false;
         }

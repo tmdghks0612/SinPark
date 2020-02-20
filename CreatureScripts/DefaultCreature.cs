@@ -81,7 +81,6 @@ public class DefaultCreature : MonoBehaviour
         FindDeathSound();
     }
 
-	
 	protected void MoveTo(Vector3 st, Vector3 ed)
 	{
 		start = st;
@@ -117,11 +116,15 @@ public class DefaultCreature : MonoBehaviour
 		detectRange = attackRange;
 		maxHp = hp;
 		buttonNum = _buttonNum;
-		if(side == GameControl.Sides.Hostile)
+		if (side == GameControl.Sides.Hostile)
 		{
 			speed.x *= -1;
 			Enemy = true;
-			transform.localScale = new Vector2(transform.localScale.x * -1, transform.localScale.y);
+			transform.localScale = new Vector2(0.3f * -1, 0.3f);
+		}
+		else
+		{
+			transform.localScale = new Vector2(0.3f, 0.3f);
 		}
 
 		MoveTo(st, ed);
@@ -142,13 +145,19 @@ public class DefaultCreature : MonoBehaviour
 			else if (creatureAttackType == AttackType.Missile)
 			{
 				combatControl.MissileAttack(currentPosition, projectile, attackDamage, laneNum, side);
+				if (animControl != null)
+					animControl.SetBool("onAttack", true);
 				//animation
 			}
 			else if(creatureAttackType == AttackType.Heal)
 			{
 				combatControl.Heal(currentPosition, attackRange, attackDamage, laneNum, side);
 				if (animControl != null)
+				{
 					animControl.SetBool("onAttack", true);
+					Debug.Log("anim");
+				}
+					
 			}
 		}
 		else

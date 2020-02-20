@@ -11,7 +11,7 @@ public class DefaultMissile : MonoBehaviour
     public Vector3 direction;
 
     private Vector3 position;
-    private GameControl.Sides side;
+    protected GameControl.Sides side;
     private bool hitFlag;
 
     // Start is called before the first frame update
@@ -55,7 +55,7 @@ public class DefaultMissile : MonoBehaviour
         
     }
 
-    public void SetMissile(Vector3 currentPosition, GameControl.Sides side, int laneNum)
+    public virtual void SetMissile(Vector3 currentPosition, GameControl.Sides side, int laneNum)
     {
         this.gameObject.transform.position = currentPosition;
         this.side = side;
