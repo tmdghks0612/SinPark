@@ -187,7 +187,7 @@ public class StageSelect : MonoBehaviour
         PublicLevel.UpdateFriendlyList(location, changingInfo);
         
     
-        upgradeShop.transform.GetChild(2 + location).GetChild(0).GetComponent<Image>().sprite = PublicLevel.friendlyImageList[location];
+        upgradeShop.transform.GetChild(1 + location).GetChild(0).GetComponent<Image>().sprite = PublicLevel.friendlyImageList[location];
 
         //player use 10 corns per changing upgrade mode will be fixed soon.
         cornText.text = PublicLevel.GetCorn().ToString();

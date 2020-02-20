@@ -94,7 +94,7 @@ public class GameControl : MonoBehaviour
 
         //Values for android touch. Get Screen Size and set minimum swipe distant as 1/14 of it.
         ScreenSize = new Vector2(Screen.width, Screen.height);
-        minSwipeDist = Mathf.Max(ScreenSize.x, ScreenSize.y) / 10f;
+        minSwipeDist = Mathf.Max(ScreenSize.x, ScreenSize.y) / 15f;
     }
     
     protected virtual void SummonProcedure(int laneNumber)
@@ -210,11 +210,13 @@ public class GameControl : MonoBehaviour
                 currentPos = new Vector2(t.position.x, t.position.y);
                 if(touchDownPos.x - currentPos.x > minSwipeDist)
                 {
-                    targetPosition = mainCamera.transform.position + cameraSpeed * (touchDownPos.x - currentPos.x) / 5 ; //5 is constant number to adjust camera move speed
+                    if(targetPosition.x <= 15)
+                        targetPosition = mainCamera.transform.position + cameraSpeed * Mathf.Sqrt((touchDownPos.x - currentPos.x) / 50) ; //100 is constant number to adjust camera move speed
                 }
                 else if(currentPos.x - touchDownPos.x > minSwipeDist)
                 {
-                    targetPosition = mainCamera.transform.position - cameraSpeed * (currentPos.x - touchDownPos.x) / 5; //5 is constant number to adjust camera move speed
+                    if (targetPosition.x >= -15)
+                        targetPosition = mainCamera.transform.position - cameraSpeed * Mathf.Sqrt((currentPos.x - touchDownPos.x) / 50); //100 is constant number to adjust camera move speed
                 }
             }
             else if (t.phase == TouchPhase.Ended)
