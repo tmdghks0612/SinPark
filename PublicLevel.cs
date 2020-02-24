@@ -128,8 +128,8 @@ public static class PublicLevel
         {
             for (int k = 0; k < friendlyTypeUpgradeNum; ++k)
             {
-                friendlyPrefab[i, k] = Resources.Load("creature" + i.ToString() + "/creature" + i.ToString() + "_" + k.ToString() + "/creature" + i.ToString() + "_" + k.ToString() + "Prefab") as GameObject;
-                friendlyImage[i,k] = Resources.Load<Sprite>("creature" + i.ToString() + "/creature" + i.ToString() + "_" + k.ToString() + "/creature" + i.ToString() + "_" + k.ToString() + "Image") as Sprite;
+                friendlyPrefab[i, k] = Resources.Load("friendly" + i.ToString() + "/creature" + i.ToString() + "_" + k.ToString() + "/creature" + i.ToString() + "_" + k.ToString() + "Prefab") as GameObject;
+                friendlyImage[i,k] = Resources.Load<Sprite>("friendly" + i.ToString() + "/creature" + i.ToString() + "_" + k.ToString() + "/creature" + i.ToString() + "_" + k.ToString() + "Image") as Sprite;
                 unlockType[i, k] = false;
             }
         }
@@ -139,7 +139,7 @@ public static class PublicLevel
         {
             for (int k = 0; k < hostileTypeUpgradeNum; ++k)
             {
-                hostilePrefab[i, k] = Resources.Load("creature" + i.ToString() + "/creature" + i.ToString() + "_" + k.ToString() + "/creature" + i.ToString() + "_" + k.ToString() + "Prefab") as GameObject;
+                hostilePrefab[i, k] = Resources.Load("hostile" + i.ToString() + "/creature" + i.ToString() + "_" + k.ToString() + "/creature" + i.ToString() + "_" + k.ToString() + "Prefab") as GameObject;
             }
         }
 

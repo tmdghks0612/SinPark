@@ -8,7 +8,6 @@ public class creature1_0 : DefaultCreature
     {
         attackSound = Resources.Load<AudioClip>("Sound/MeleeHit1");
         //audioSource.clip = attackSound;
-        Debug.Log("found attack sound!");
     }
 
     public override void FindDeathSound()

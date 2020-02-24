@@ -134,7 +134,6 @@ public class DefaultCreature : MonoBehaviour
 	{
 		if (attackFlag)
 		{
-			Debug.Log("Time : " + System.DateTime.Now);
 			playAttackSound();
 			if (creatureAttackType == AttackType.Melee)
 			{
@@ -155,7 +154,6 @@ public class DefaultCreature : MonoBehaviour
 				if (animControl != null)
 				{
 					animControl.SetBool("onAttack", true);
-					Debug.Log("anim");
 				}
 					
 			}
