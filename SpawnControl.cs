@@ -96,6 +96,21 @@ public class SpawnControl : MonoBehaviour
         SummonCreature(laneNum, side, buttonNum);
     }
 
+    // spawn selected craeture in selected lane
+    public void SpawnCreatureLaneMultiplayer(int laneNum, GameControl.Sides side, int buttonNum)
+    {
+        if (side == GameControl.Sides.Friendly)
+        {
+            // when a friendly creature was spawned
+            if(!UseMana(friendlyCreatureManaCost[buttonNum]))
+            {
+                // when mana is not sufficient to spawn such creature
+                return;
+            }
+        }
+        SummonCreature(laneNum, side, buttonNum);
+    }
+
     // summon a creature in certain lane, instantiate in the scene
     public void SummonCreature(int laneNum, GameControl.Sides side, int buttonNum)
     {

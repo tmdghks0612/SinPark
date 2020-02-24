@@ -185,7 +185,7 @@ public class GameControl : MonoBehaviour
         gameOverFlag = true;
         aiplayer.AIplayerStop();
     }
-    public void LoadGameScene()
+    public virtual void LoadGameScene()
     {
         SceneManager.LoadScene("StageSelect");
     }

@@ -5,6 +5,7 @@ using System;
 using System.Net.Sockets;
 using System.Text;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.Networking;
 
 public class GameControlMultiplayer : GameControl
@@ -20,6 +21,7 @@ public class GameControlMultiplayer : GameControl
     private readonly object lock_spawn = new object();
     //check rate for checking if queue is empty
     private float checkRate = 0.01f;
+    //private float checkRate = 0.01f;
 
 
     protected override void Start()
@@ -48,7 +50,7 @@ public class GameControlMultiplayer : GameControl
                 while (spawnQueue.Count != 0)
                 {
                     newRequestForm = spawnQueue.Dequeue();
-                    spawnControl.SummonCreature(newRequestForm.GetlaneNum(), newRequestForm.GetSide(), newRequestForm.GetSelectedCreatureType());
+                    spawnControl.SpawnCreatureLaneMultiplayer(newRequestForm.GetlaneNum(), newRequestForm.GetSide(), newRequestForm.GetSelectedCreatureType());
                 }
                 InvokeRepeating("CheckQueue", checkRate, checkRate);
             }
@@ -114,7 +116,7 @@ public class GameControlMultiplayer : GameControl
         }
         return;
     }
-
+    
     // update PublicLevel to save win on exitting game
     public override void GameOver(bool isWin)
     {

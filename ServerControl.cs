@@ -234,21 +234,17 @@ public class ServerControl : MonoBehaviour
 
     public void CloseSocket()
     {
-        if(socketConnection != null)
+        if (PublicLevel.GetServerStream() != null)
         {
-            if(PublicLevel.GetServerStream() != null)
-            {
-                CloseHandShake();
-            }
-            try
-            {
-                socketConnection.Close();
-            }
-            catch (Exception socketException)
-            {
-                Debug.Log("SocketException " + socketException.ToString());
-            }
-            socketConnection = null;
+            CloseHandShake();
+        }
+        try
+        {
+            socketConnection.Close();
+        }
+        catch (Exception socketException)
+        {
+            Debug.Log("SocketException " + socketException.ToString());
         }
         return;
     }

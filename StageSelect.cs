@@ -41,6 +41,12 @@ public class StageSelect : MonoBehaviour
     //Save the type of creature to put on the button until player decides which number of button to change.
     private Vector2Int changingInfo;
 
+    private void Awake()
+    {
+        Debug.Log("calling CloseSocket");
+        serverControl.CloseSocket();
+    }
+
     private void Start()
     {
         //make buttons to call TargetCreature function which sends upgradeoption[temp] as a parameter.
@@ -118,6 +124,7 @@ public class StageSelect : MonoBehaviour
 
                 PublicLevel.friendlyImageList[i] = PublicLevel.friendlyImage[PublicLevel.friendlyType[i].x, PublicLevel.friendlyType[i].y];
             }
+
         }
 
         cornText.text = PublicLevel.GetCorn().ToString();
@@ -274,6 +281,7 @@ public class StageSelect : MonoBehaviour
             }
             Debug.Log("changing music to stageselect!");
             GameObject.Find("BGMControl").GetComponent<BGMControl>().ChangeBGMToMainMenu();
+
         }
         if(scene.name == "DefaultIngame")
         {
