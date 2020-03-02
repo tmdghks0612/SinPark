@@ -18,6 +18,9 @@ public static class PublicLevel
     public static int usingCreatureNum = 5;
     public static int usingLaneNum = 3;
 
+    [SerializeField]
+    private static bool isTutorial = false;
+
     // Adjust difficulties of the stage by changing mana regenration amount/period and spawn cooldown
     [SerializeField]
     private static int manaAmount;
@@ -166,6 +169,7 @@ public static class PublicLevel
     }
 
     #region Set functions
+
     // Called when game ends, or attempts to load. Set Player's level. Player's level only maintains or increases, not decreases
     public static void SetPlayerLevel(int newLevel)
     {
@@ -204,13 +208,17 @@ public static class PublicLevel
         isBoss = _isBoss;
     }
 
-    #endregion
-
     public static void SetCorn(int currentCorn)
     {
         cornNum = currentCorn;
     }
 
+    public static void SetTutorial(bool tutorialFlag)
+    {
+        isTutorial = tutorialFlag;
+    }
+
+    #endregion
 
     #region Get functions
 
@@ -272,5 +280,11 @@ public static class PublicLevel
     {
         return serverStream;
     }
+
+    public static bool GetTurorial()
+    {
+        return isTutorial;
+    }
+
     #endregion
 }

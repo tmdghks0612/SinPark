@@ -82,7 +82,6 @@ public class StageSelect : MonoBehaviour
 
             loadedData = gameData.LoadGameData();
 
-
             //load when StageSelect scene was first loaded. If there's no loadedData, make a default setting for player - level, win, creature type using.
             if (loadedData == null)
             {
@@ -97,6 +96,8 @@ public class StageSelect : MonoBehaviour
                 {
                     PublicLevel.friendlyType[i] = new Vector2Int(i, 0);
                 }
+                PublicLevel.SetTutorial(true);
+                Debug.Log("tutorial ready!");
             }
             else
             {

@@ -36,7 +36,15 @@ public class StageButton : MonoBehaviour
     public virtual void InitLevel()
     {
         PublicLevel.SetLevel(hostileType, manaAmount, manaRegenTime, creatureSpawnTime, stageLevel, isBoss, bossPrefab);
-        LoadingSceneManager.LoadScene("DefaultIngame");
+        if (PublicLevel.GetTurorial())
+        {
+            PublicLevel.SetTutorial(false);
+            LoadingSceneManager.LoadScene("Tutorial");
+        }
+        else
+        {
+            LoadingSceneManager.LoadScene("DefaultIngame");
+        }
     }
 
     
