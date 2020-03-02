@@ -68,7 +68,7 @@ public class GameControl : MonoBehaviour
         for (int i = 0; i < SummonButton.Length; i++)
         {
             SummonButton[i] = GameObject.Find("SummonButton" + (i + 1));
-            int temp = creatureType[i];
+            int temp = creatureType[i+1];
             SummonButton[i].GetComponent<Button>().onClick.AddListener(delegate { ChooseCreature(temp); });
         }
         selectedCreatureType = 0;
@@ -265,9 +265,9 @@ public class GameControl : MonoBehaviour
         costText = new Text[PublicLevel.usingCreatureNum];
         for (int i = 0; i < PublicLevel.usingCreatureNum; i++)
         {
-            SummonButton[i].GetComponent<Image>().sprite = PublicLevel.friendlyImageList[i];
+            SummonButton[i].GetComponent<Image>().sprite = PublicLevel.friendlyImageList[i+1];
             costText[i] = SummonButton[i].transform.GetChild(0).gameObject.GetComponent<Text>();
-            costText[i].text = PublicLevel.friendlyCreatureList[i].GetComponent<DefaultCreature>().GetManaCost().ToString();
+            costText[i].text = PublicLevel.friendlyCreatureList[i+1].GetComponent<DefaultCreature>().GetManaCost().ToString();
         }
     }
 

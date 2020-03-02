@@ -50,7 +50,7 @@ public class StageSelect : MonoBehaviour
     private void Start()
     {
         //make buttons to call TargetCreature function which sends upgradeoption[temp] as a parameter.
-        for (int i = 0; i < PublicLevel.friendlyTypeCreatureNum; i++)
+        for (int i = 0; i < PublicLevel.friendlyTypeCreatureNum - 1; i++)
         {
             upgradeButton[i] = GameObject.Find("UpgradeButton" + (i + 1)).GetComponent<Button>();
             int temp = i; //used temp since just using i makes every buttons to send last i value as a parameter
@@ -62,7 +62,8 @@ public class StageSelect : MonoBehaviour
         {
             locationButton[i] = GameObject.Find("Location" + (i + 1)).GetComponent<Button>();
             int temp = i;
-            locationButton[temp].onClick.AddListener(delegate { ChangeCreature(temp); });
+            int temp2 = i + 1;
+            locationButton[temp].onClick.AddListener(delegate { ChangeCreature(temp2); });
         }
 
         unlockPopup.SetActive(false);
@@ -103,7 +104,7 @@ public class StageSelect : MonoBehaviour
                 PublicLevel.SetPlayerWin(loadedData.GetPlayerWin());
                 PublicLevel.SetCorn(loadedData.GetCorn());
 
-                for (int i = 0; i < PublicLevel.usingCreatureNum; i++)
+                for (int i = 0; i < PublicLevel.usingCreatureNum + 1; i++)
                 {
                     PublicLevel.friendlyType[i] = new Vector2Int(loadedData.GetFriendlyType()[i].x, loadedData.GetFriendlyType()[i].y);
                 }
@@ -196,7 +197,7 @@ public class StageSelect : MonoBehaviour
         PublicLevel.UpdateFriendlyList(location, changingInfo);
         
     
-        upgradeShop.transform.GetChild(1 + location).GetChild(0).GetComponent<Image>().sprite = PublicLevel.friendlyImageList[location];
+        upgradeShop.transform.GetChild(location).GetChild(0).GetComponent<Image>().sprite = PublicLevel.friendlyImageList[location];
 
         //player use 10 corns per changing upgrade mode will be fixed soon.
         cornText.text = PublicLevel.GetCorn().ToString();
@@ -221,20 +222,20 @@ public class StageSelect : MonoBehaviour
         upgradeShop.SetActive(true);
         cornText.text = PublicLevel.GetCorn().ToString();
         //Changes images of button to the UpgradeOption buttons based on friendlyImage[,]
-        for (int i=0; i<PublicLevel.friendlyTypeCreatureNum;i++)
+        for (int i=0; i<PublicLevel.friendlyTypeCreatureNum - 1;i++)
         {
             for (int k = 0; k < PublicLevel.friendlyTypeUpgradeNum; k++)
             {
                 listObject = upgradeShop.transform.GetChild(6 + i).gameObject;
-                listObject.GetComponent<Image>().sprite = PublicLevel.friendlyImage[i, k];
+                listObject.GetComponent<Image>().sprite = PublicLevel.friendlyImage[i+1, k];
             }
         }
 
         //Changes images of location button based on friendlyImageList[]
-        for (int i = 0; i < PublicLevel.usingCreatureNum; i++)
+        for (int i = 0; i < PublicLevel.usingCreatureNum - 1; i++)
         {
             listObject = upgradeShop.transform.GetChild(1 + i).GetChild(0).gameObject;
-            listObject.GetComponent<Image>().sprite = PublicLevel.friendlyImageList[i];
+            listObject.GetComponent<Image>().sprite = PublicLevel.friendlyImageList[i+1];
             locationButton[i].interactable = false;
         }
         
