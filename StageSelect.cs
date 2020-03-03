@@ -233,7 +233,7 @@ public class StageSelect : MonoBehaviour
         }
 
         //Changes images of location button based on friendlyImageList[]
-        for (int i = 0; i < PublicLevel.usingCreatureNum - 1; i++)
+        for (int i = 0; i < PublicLevel.usingCreatureNum; i++)
         {
             listObject = upgradeShop.transform.GetChild(1 + i).GetChild(0).gameObject;
             listObject.GetComponent<Image>().sprite = PublicLevel.friendlyImageList[i+1];
