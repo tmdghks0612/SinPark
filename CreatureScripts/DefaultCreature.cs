@@ -120,11 +120,11 @@ public class DefaultCreature : MonoBehaviour
 		{
 			speed.x *= -1;
 			Enemy = true;
-			transform.localScale = new Vector2(0.3f * -1, 0.3f);
+			transform.localScale = new Vector2(transform.localScale.x * -1, transform.localScale.y);
 		}
 		else
 		{
-			transform.localScale = new Vector2(0.3f, 0.3f);
+			transform.localScale = new Vector2(transform.localScale.x, transform.localScale.y);
 		}
 
 		MoveTo(st, ed);

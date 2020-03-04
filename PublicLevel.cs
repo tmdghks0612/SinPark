@@ -7,7 +7,7 @@ using System.Net.Sockets;
 public static class PublicLevel
 {
     //Total number of creatures and upgrades : friendly side
-    public readonly static int friendlyTypeCreatureNum = 8;
+    public readonly static int friendlyTypeCreatureNum = 9;
     public readonly static int friendlyTypeUpgradeNum = 1;
 
     //Total number of creatures and upgrades : hostile side
