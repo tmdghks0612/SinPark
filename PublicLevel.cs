@@ -7,7 +7,7 @@ using System.Net.Sockets;
 public static class PublicLevel
 {
     //Total number of creatures and upgrades : friendly side
-    public readonly static int friendlyTypeCreatureNum = 8;
+    public readonly static int friendlyTypeCreatureNum = 9;
     public readonly static int friendlyTypeUpgradeNum = 1;
 
     //Total number of creatures and upgrades : hostile side
@@ -17,6 +17,11 @@ public static class PublicLevel
     // number of actually using creatures' number
     public static int usingCreatureNum = 5;
     public static int usingLaneNum = 3;
+
+    [SerializeField]
+    private static float playerMaxMana;
+    [SerializeField]
+    private static float playerManaRegen;
 
     [SerializeField]
     private static bool isTutorial = false;
@@ -168,6 +173,25 @@ public static class PublicLevel
         PublicLevel.friendlyType[_location] = _changingInfo;
     }
 
+    // function call for upgrade maximum mana in shop
+    public static void UpgradeMaxMana()
+    {
+        playerMaxMana += 25;
+    }
+
+    // function call for upgrade mana regeneration amount in shop
+    public static void UpgradeRegenAmount()
+    {
+        playerManaRegen += 2;
+    }
+
+    // initialize when first called
+    public static void InitMana()
+    {
+        playerMaxMana = 50f;
+        playerManaRegen = 4f;
+    }
+
     #region Set functions
 
     // Called when game ends, or attempts to load. Set Player's level. Player's level only maintains or increases, not decreases
@@ -216,6 +240,16 @@ public static class PublicLevel
     public static void SetTutorial(bool tutorialFlag)
     {
         isTutorial = tutorialFlag;
+    }
+
+    public static void SetPlayerMaxMana(float _playerMaxMana)
+    {
+        playerMaxMana = _playerMaxMana;
+    }
+
+    public static void SetPlayerManaRegen(float _playerManaRegen)
+    {
+        playerManaRegen = _playerManaRegen;
     }
 
     #endregion
@@ -284,6 +318,16 @@ public static class PublicLevel
     public static bool GetTurorial()
     {
         return isTutorial;
+    }
+
+    public static float GetPlayerMaxMana()
+    {
+        return playerMaxMana;
+    }
+
+    public static float GetPlayerManaRegen()
+    {
+        return playerManaRegen;
     }
 
     #endregion

@@ -15,8 +15,8 @@ public class SpawnControl : MonoBehaviour
     private bool manaFlag;
 
     // mana related variables
-    private float maxMana = 100;
-    private float regenAmount = 10f;
+    private float maxMana = 50f;
+    private float regenAmount = 4f;
 
     [SerializeField]
     private float baseMana;
@@ -25,6 +25,7 @@ public class SpawnControl : MonoBehaviour
     private int[] hostileCreatureManaCost;
 
     public Image manaBar;
+    public Text manaText;
 
     // maxLanes according to CombatControl
     private int maxLanes;
@@ -58,6 +59,7 @@ public class SpawnControl : MonoBehaviour
             baseMana += regenAmount * Time.deltaTime;
         }
         manaBar.fillAmount = baseMana / maxMana;
+        manaText.text = Mathf.FloorToInt(baseMana).ToString() + " / " + maxMana.ToString();
     }
 
     // Start is called before the first frame update
@@ -70,6 +72,7 @@ public class SpawnControl : MonoBehaviour
         // data structure initializations
         InitLaneCoords();
         InitStage();
+        InitMana();
 
         // initialize combat control
         combatControl.InitCombatControl();
@@ -187,6 +190,13 @@ public class SpawnControl : MonoBehaviour
             startCoord[i] = new Vector3(-15.0f, -yPosition * 18 + yPosition * i * 14, 0);
             endCoord[i] = new Vector3(15.0f, -yPosition * 18 + yPosition * i * 14, 0 );
         }
+    }
+
+    void InitMana()
+    {
+        maxMana = PublicLevel.GetPlayerMaxMana();
+        regenAmount = PublicLevel.GetPlayerManaRegen();
+        baseMana = 0;
     }
 
     public void OnUnitDeath()

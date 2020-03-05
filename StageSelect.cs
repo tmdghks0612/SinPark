@@ -57,6 +57,9 @@ public class StageSelect : MonoBehaviour
             upgradeButton[i].GetComponent<Button>().onClick.AddListener(delegate { TargetCreature(upgradeOption[temp]); });
         }
 
+        GameObject.Find("UpgradeMaxMana").GetComponent<Button>().onClick.AddListener(delegate { UpgradeMaxMana(); });
+        GameObject.Find("UpgradeManaRegen").GetComponent<Button>().onClick.AddListener(delegate { UpgradeManaRegen(); });
+
         //make buttons toi call ChangeCreature fucntion
         for (int i = 0; i < PublicLevel.usingCreatureNum; i++)
         {
@@ -97,7 +100,7 @@ public class StageSelect : MonoBehaviour
                     PublicLevel.friendlyType[i] = new Vector2Int(i, 0);
                 }
                 PublicLevel.SetTutorial(true);
-                Debug.Log("tutorial ready!");
+                PublicLevel.InitMana();
             }
             else
             {
@@ -252,12 +255,6 @@ public class StageSelect : MonoBehaviour
         upgradeShop.SetActive(false);
     }
 
-    //make OnSceneLoaded called when scene is loaded
-    void OnEnable()
-    {
-        SceneManager.sceneLoaded += OnSceneLoaded;
-    }
-
     public void UnlockCancel()
     {
         unlockPopup.SetActive(false);
@@ -269,6 +266,25 @@ public class StageSelect : MonoBehaviour
         PublicLevel.SetCorn(PublicLevel.GetCorn() - cost);
         PublicLevel.unlockType[changingInfo.x, changingInfo.y] = true;
         unlockPopup.SetActive(false);
+    }
+
+
+    public void UpgradeMaxMana()
+    {
+        PublicLevel.UpgradeMaxMana();
+        Debug.Log("maxmana is now " + PublicLevel.GetPlayerMaxMana());
+    }
+
+    public void UpgradeManaRegen()
+    {
+        PublicLevel.UpgradeRegenAmount();
+        Debug.Log("manaregen is now " + PublicLevel.GetPlayerManaRegen());
+    }
+
+    //make OnSceneLoaded called when scene is loaded
+    void OnEnable()
+    {
+        SceneManager.sceneLoaded += OnSceneLoaded;
     }
 
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
