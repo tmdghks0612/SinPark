@@ -91,14 +91,16 @@ public class StageSelect : MonoBehaviour
                 PublicLevel.SetPlayerLevel(1);
                 PublicLevel.SetPlayerWin(0);
                 PublicLevel.SetCorn(0);
-                for(int i=1; i<6; i++)
+                PublicLevel.unlockType[1, 0] = true;
+
+                PublicLevel.friendlyType[0] = new Vector2Int(0, 0);
+                PublicLevel.friendlyType[1] = new Vector2Int(1, 0);
+                /*
+                for (int i = 1; i < PublicLevel.friendlyTypeCreatureNum; i++)
                 {
-                    PublicLevel.unlockType[i, 0] = true;
+                    PublicLevel.friendlyType[i] = new Vector2Int(1, 0);
                 }
-                for (int i = 0; i < PublicLevel.friendlyTypeCreatureNum; i++)
-                {
-                    PublicLevel.friendlyType[i] = new Vector2Int(i, 0);
-                }
+                */
                 PublicLevel.SetTutorial(true);
                 PublicLevel.InitMana();
             }
@@ -202,7 +204,9 @@ public class StageSelect : MonoBehaviour
         
     
         upgradeShop.transform.GetChild(location).GetChild(0).GetComponent<Image>().sprite = PublicLevel.friendlyImageList[location];
-
+        Color changeAlpha = upgradeShop.transform.GetChild(location).GetChild(0).GetComponent<Image>().color;
+        changeAlpha.a = 255;
+        upgradeShop.transform.GetChild(location).GetChild(0).GetComponent<Image>().color = changeAlpha;
         //player use 10 corns per changing upgrade mode will be fixed soon.
         cornText.text = PublicLevel.GetCorn().ToString();
 
@@ -232,6 +236,7 @@ public class StageSelect : MonoBehaviour
             {
                 listObject = upgradeShop.transform.GetChild(6 + i).gameObject;
                 listObject.GetComponent<Image>().sprite = PublicLevel.friendlyImage[i+1, k];
+                
             }
         }
 
@@ -240,6 +245,12 @@ public class StageSelect : MonoBehaviour
         {
             listObject = upgradeShop.transform.GetChild(1 + i).GetChild(0).gameObject;
             listObject.GetComponent<Image>().sprite = PublicLevel.friendlyImageList[i+1];
+            if(PublicLevel.friendlyType[i+1] == new Vector2Int(0,0))
+            {
+                Color changeAlpha = upgradeShop.transform.GetChild(1 + i).GetChild(0).GetComponent<Image>().color;
+                changeAlpha.a = 0;
+                upgradeShop.transform.GetChild(1 + i).GetChild(0).GetComponent<Image>().color = changeAlpha;
+            }
             locationButton[i].interactable = false;
         }
         

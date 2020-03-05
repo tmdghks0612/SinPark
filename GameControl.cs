@@ -265,9 +265,20 @@ public class GameControl : MonoBehaviour
         costText = new Text[PublicLevel.usingCreatureNum];
         for (int i = 0; i < PublicLevel.usingCreatureNum; i++)
         {
-            SummonButton[i].GetComponent<Image>().sprite = PublicLevel.friendlyImageList[i+1];
-            costText[i] = SummonButton[i].transform.GetChild(0).gameObject.GetComponent<Text>();
-            costText[i].text = PublicLevel.friendlyCreatureList[i+1].GetComponent<DefaultCreature>().GetManaCost().ToString();
+            if(PublicLevel.friendlyType[i+1].x == 0)
+            {
+                Color alphaChecker = SummonButton[i].GetComponent<Image>().color;
+                alphaChecker.a = 0;
+                SummonButton[i].GetComponent<Image>().color = alphaChecker;
+                SummonButton[i].GetComponent<Button>().interactable = false;
+            }
+            else
+            {
+                SummonButton[i].GetComponent<Image>().sprite = PublicLevel.friendlyImageList[i + 1];
+                costText[i] = SummonButton[i].transform.GetChild(0).gameObject.GetComponent<Text>();
+                costText[i].text = PublicLevel.friendlyCreatureList[i + 1].GetComponent<DefaultCreature>().GetManaCost().ToString();
+            }
+            
         }
     }
 
