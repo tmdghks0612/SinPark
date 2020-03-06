@@ -21,6 +21,9 @@ public class StageSelect : MonoBehaviour
     private GameObject stageMap;
     [SerializeField]
     private GameObject unlockPopup;
+    [SerializeField]
+    private GameObject[] shopTutorial;
+    
     private GameObject manaMaxPopup;
     private GameObject manaGenPopup;
 
@@ -347,6 +350,14 @@ public class StageSelect : MonoBehaviour
         PublicLevel.UpgradeRegenAmount();
         cornText.text = PublicLevel.GetCorn().ToString();
         manaGenPopup.SetActive(false);
+    }
+
+    public void ActivateShopTutorial()
+    {
+        for(int i = 0; i < shopTutorial.Length; ++i)
+        {
+            shopTutorial[i].SetActive(true);
+        }
     }
 
     //make OnSceneLoaded called when scene is loaded
