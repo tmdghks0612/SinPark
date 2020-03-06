@@ -287,6 +287,7 @@ public class StageSelect : MonoBehaviour
         int cost = PublicLevel.friendlyPrefab[changingInfo.x, changingInfo.y].GetComponent<DefaultCreature>().GetUnlockCost();
         PublicLevel.SetCorn(PublicLevel.GetCorn() - cost);
         PublicLevel.unlockType[changingInfo.x, changingInfo.y] = true;
+        cornText.text = PublicLevel.GetCorn().ToString();
         unlockPopup.SetActive(false);
     }
 
@@ -315,8 +316,8 @@ public class StageSelect : MonoBehaviour
         int left = PublicLevel.GetCorn() - ((int)PublicLevel.GetPlayerMaxMana() + 25);
         PublicLevel.SetCorn(left);
         PublicLevel.UpgradeMaxMana();
-        Debug.Log("Maxmana");
-        unlockPopup.SetActive(false);
+        cornText.text = PublicLevel.GetCorn().ToString();
+        manaMaxPopup.SetActive(false);
     }
 
     public void UpgradeManaRegen()
@@ -344,8 +345,8 @@ public class StageSelect : MonoBehaviour
         int left = PublicLevel.GetCorn() - ((int)(PublicLevel.GetPlayerManaRegen() * 12.5f));
         PublicLevel.SetCorn(left);
         PublicLevel.UpgradeRegenAmount();
-        Debug.Log("manaregen is now " + PublicLevel.GetPlayerManaRegen());
-        unlockPopup.SetActive(false);
+        cornText.text = PublicLevel.GetCorn().ToString();
+        manaGenPopup.SetActive(false);
     }
 
     //make OnSceneLoaded called when scene is loaded
