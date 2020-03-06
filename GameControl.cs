@@ -42,6 +42,7 @@ public class GameControl : MonoBehaviour
     //UI Panel hidden. One of the panel become active when game ends
     public GameObject losePanel;
     public GameObject winPanel;
+    public GameObject surrenderPanel;
 
     //Parameters For Android Touch/Swipe Function
     Vector2 ScreenSize;
@@ -185,6 +186,17 @@ public class GameControl : MonoBehaviour
         gameOverFlag = true;
         aiplayer.AIplayerStop();
     }
+
+    public void ActivateSurrenderPanel()
+    {
+        surrenderPanel.SetActive(true);
+    }
+
+    public void DeactivateSurrenderPanel()
+    {
+        surrenderPanel.SetActive(false);
+    }
+
     public virtual void LoadGameScene()
     {
         SceneManager.LoadScene("StageSelect");

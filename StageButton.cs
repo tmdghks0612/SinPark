@@ -39,7 +39,7 @@ public class StageButton : MonoBehaviour
         if (PublicLevel.GetTurorial())
         {
             PublicLevel.SetTutorial(false);
-            LoadingSceneManager.LoadScene("Tutorial");
+            SceneManager.LoadScene("Tutorial");
         }
         else
         {

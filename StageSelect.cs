@@ -21,6 +21,8 @@ public class StageSelect : MonoBehaviour
     private GameObject stageMap;
     [SerializeField]
     private GameObject unlockPopup;
+    [SerializeField]
+    private GameObject[] shopTutorial;
 
     //show number of corns player have
     [SerializeField]
@@ -290,6 +292,14 @@ public class StageSelect : MonoBehaviour
     {
         PublicLevel.UpgradeRegenAmount();
         Debug.Log("manaregen is now " + PublicLevel.GetPlayerManaRegen());
+    }
+
+    public void ActivateShopTutorial()
+    {
+        for(int i = 0; i < shopTutorial.Length; ++i)
+        {
+            shopTutorial[i].SetActive(true);
+        }
     }
 
     //make OnSceneLoaded called when scene is loaded
