@@ -23,6 +23,9 @@ public class StageSelect : MonoBehaviour
     private GameObject unlockPopup;
     [SerializeField]
     private GameObject[] shopTutorial;
+    
+    private GameObject manaMaxPopup;
+    private GameObject manaGenPopup;
 
     //show number of corns player have
     [SerializeField]
@@ -32,6 +35,8 @@ public class StageSelect : MonoBehaviour
     private Button[] upgradeButton = new Button[PublicLevel.friendlyTypeCreatureNum * PublicLevel.friendlyTypeUpgradeNum];
     private Button[] locationButton = new Button[PublicLevel.usingCreatureNum];
     private GameObject[] stageButton;
+    private Button ManaMaxButton;
+    private Button ManaGenButton;
 
     //connects the type of creatures to select and button. datas put mannually in editor
     [SerializeField]
@@ -61,6 +66,11 @@ public class StageSelect : MonoBehaviour
 
         GameObject.Find("UpgradeMaxMana").GetComponent<Button>().onClick.AddListener(delegate { UpgradeMaxMana(); });
         GameObject.Find("UpgradeManaRegen").GetComponent<Button>().onClick.AddListener(delegate { UpgradeManaRegen(); });
+
+        manaMaxPopup = GameObject.Find("ManaMaxPopup");
+        manaMaxPopup.SetActive(false);
+        manaGenPopup = GameObject.Find("ManaGenPopup");
+        manaGenPopup.SetActive(false);
 
         //make buttons toi call ChangeCreature fucntion
         for (int i = 0; i < PublicLevel.usingCreatureNum; i++)
@@ -268,9 +278,11 @@ public class StageSelect : MonoBehaviour
         upgradeShop.SetActive(false);
     }
 
-    public void UnlockCancel()
+    public void PopupCancel()
     {
         unlockPopup.SetActive(false);
+        manaGenPopup.SetActive(false);
+        manaMaxPopup.SetActive(false);
     }
 
     public void UnlockCreature()
@@ -278,20 +290,66 @@ public class StageSelect : MonoBehaviour
         int cost = PublicLevel.friendlyPrefab[changingInfo.x, changingInfo.y].GetComponent<DefaultCreature>().GetUnlockCost();
         PublicLevel.SetCorn(PublicLevel.GetCorn() - cost);
         PublicLevel.unlockType[changingInfo.x, changingInfo.y] = true;
+        cornText.text = PublicLevel.GetCorn().ToString();
         unlockPopup.SetActive(false);
     }
 
 
-    public void UpgradeMaxMana()
+    private void UpgradeMaxMana()
     {
+        manaMaxPopup.SetActive(true);
+        
+        int price = (int)PublicLevel.GetPlayerMaxMana() + 25;
+
+        manaMaxPopup.transform.GetChild(0).GetComponent<Text>().text = "Increases Maximum Mana by 25\n Current Maximum Mana : " + (price - 25);
+        if (PublicLevel.GetCorn() < price)
+        {
+            manaMaxPopup.transform.GetChild(1).GetComponent<Button>().interactable = false;
+            manaMaxPopup.transform.GetChild(1).GetChild(0).GetComponent<Text>().text = "Unlock\n (needs " + price + " corns)";
+        }
+        else
+        {
+            manaMaxPopup.transform.GetChild(1).GetComponent<Button>().interactable = true;
+            manaMaxPopup.transform.GetChild(1).GetChild(0).GetComponent<Text>().text = "Unlock\n (" + price + " corn )";
+        }
+    }
+
+    public void UpgradeMaxManaButton()
+    {
+        int left = PublicLevel.GetCorn() - ((int)PublicLevel.GetPlayerMaxMana() + 25);
+        PublicLevel.SetCorn(left);
         PublicLevel.UpgradeMaxMana();
-        Debug.Log("maxmana is now " + PublicLevel.GetPlayerMaxMana());
+        cornText.text = PublicLevel.GetCorn().ToString();
+        manaMaxPopup.SetActive(false);
     }
 
     public void UpgradeManaRegen()
     {
+        manaGenPopup.SetActive(true);
+
+        int price = (int)(PublicLevel.GetPlayerManaRegen() * 12.5f);
+
+        manaGenPopup.transform.GetChild(0).GetComponent<Text>().text = "Increases Mana Regeneration Rate by 2\n Current Mana Regeneration Rate : " + PublicLevel.GetPlayerManaRegen();
+        if (PublicLevel.GetCorn() < price)
+        {
+            manaGenPopup.transform.GetChild(1).GetComponent<Button>().interactable = false;
+            manaGenPopup.transform.GetChild(1).GetChild(0).GetComponent<Text>().text = "Unlock\n (needs " + price + " corns)";
+        }
+        else
+        {
+            manaGenPopup.transform.GetChild(1).GetComponent<Button>().interactable = true;
+            manaGenPopup.transform.GetChild(1).GetChild(0).GetComponent<Text>().text = "Unlock\n (" + price + " corn )";
+        }
+        
+    }
+
+    public void UpgradeGenManaButton()
+    {
+        int left = PublicLevel.GetCorn() - ((int)(PublicLevel.GetPlayerManaRegen() * 12.5f));
+        PublicLevel.SetCorn(left);
         PublicLevel.UpgradeRegenAmount();
-        Debug.Log("manaregen is now " + PublicLevel.GetPlayerManaRegen());
+        cornText.text = PublicLevel.GetCorn().ToString();
+        manaGenPopup.SetActive(false);
     }
 
     public void ActivateShopTutorial()
@@ -327,6 +385,11 @@ public class StageSelect : MonoBehaviour
             Debug.Log("changing music to Ingame!");
             GameObject.Find("BGMControl").GetComponent<BGMControl>().ChangeBGMToIngame();
         }
+    }
+
+    public void GiveMeMoney()
+    {
+        PublicLevel.SetCorn(1000);
     }
 
 }
