@@ -17,7 +17,9 @@ public class LoadingSceneManager : MonoBehaviour
         loadCircle = GameObject.Find("Circle");
         int ran = Random.Range(1, 8);
         GameObject creature = Instantiate<GameObject>(PublicLevel.friendlyPrefab[ran,0],loadCircle.transform);
+        creature.GetComponent<DefaultCreature>().Loading();
         creature.GetComponent<DefaultCreature>().SetCreature(loadCircle.transform.position, loadCircle.transform.position, 0, 0, GameControl.Sides.Friendly);
+
         creature.transform.localScale = new Vector3(creature.transform.localScale.x * 1.5f, creature.transform.localScale.y * 1.5f, creature.transform.localScale.z *1.5f);
         StartCoroutine(LoadScene());
     }

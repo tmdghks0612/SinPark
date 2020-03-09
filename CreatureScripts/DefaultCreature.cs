@@ -56,6 +56,7 @@ public class DefaultCreature : MonoBehaviour
     protected bool moveFlag = true;
 	
 	protected bool Enemy = false;
+	private bool isLoading = false;
 
 	
 
@@ -89,6 +90,10 @@ public class DefaultCreature : MonoBehaviour
 		moveFlag = true;
 	}
 
+	public void Loading()
+	{
+		isLoading = true;
+	}
 
 	protected virtual void DetectEnemy()
 	{
@@ -108,7 +113,10 @@ public class DefaultCreature : MonoBehaviour
 	}
 	public virtual void SetCreature(Vector3 st, Vector3 ed, int _buttonNum, int lane, GameControl.Sides sideCheck)
 	{
-		InitCreature();
+		if (!isLoading)
+		{
+			InitCreature();
+		}
 		laneNum = lane;
 		gameObject.tag = "Lane" + lane;
 		gameObject.layer = 15 - lane;
