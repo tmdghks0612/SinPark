@@ -24,6 +24,7 @@ public class PlayerBase : DefaultCreature
     void Start()
     {
         //start game with full health
+        friendlyMaxHealth = (int)PublicLevel.GetPlayerMaxMana() * 8;
         friendlyCurrentHealth = friendlyMaxHealth;
         hostileCurrentHealth = hostileMaxHealth;
         

@@ -81,11 +81,11 @@ public class ServerControl : MonoBehaviour
             // create a socket for streaming data
             string serverMessage="";
             Vector2Int[] friendlyType = PublicLevel.GetFriendlyType();
-            for (int i = 0; i < PublicLevel.usingCreatureNum - 1; ++i)
+            for (int i = 0; i < PublicLevel.usingCreatureNum; ++i)
             {
                 serverMessage = serverMessage + friendlyType[i].x.ToString() + ',' + friendlyType[i].y.ToString() + " ";
             }
-            serverMessage = serverMessage + friendlyType[PublicLevel.usingCreatureNum - 1].x.ToString() + ',' + friendlyType[PublicLevel.usingCreatureNum - 1].y.ToString();
+            serverMessage = serverMessage + friendlyType[PublicLevel.usingCreatureNum].x.ToString() + ',' + friendlyType[PublicLevel.usingCreatureNum].y.ToString();
             buffer = Encoding.ASCII.GetBytes(serverMessage);
             PublicLevel.GetServerStream().Write(buffer, 0, buffer.Length);
             stageButtonMultiplayer.SetCreatureSentFlag(true);
@@ -104,7 +104,7 @@ public class ServerControl : MonoBehaviour
         buffer = new byte[bufferSize];
         try
         {
-            Vector2Int[] _hostileType = new Vector2Int[PublicLevel.usingCreatureNum];
+            Vector2Int[] _hostileType = new Vector2Int[PublicLevel.usingCreatureNum + 1];
             
             serverStream.BeginRead(buffer, 0, bufferSize, OnReceive, null);
         }
@@ -133,13 +133,13 @@ public class ServerControl : MonoBehaviour
         string[] intPair;
 
         // when number of creature in the list is not matched
-        if (parsedMessage.Length != PublicLevel.usingCreatureNum)
+        if (parsedMessage.Length != PublicLevel.usingCreatureNum +1)
         {
             StageButtonMultiplayer.NetworkErrorPanelactive(); ;
             ClearBuffer(buffer);
             return;
         }
-        for (int i = 0; i < PublicLevel.usingCreatureNum; ++i)
+        for (int i = 0; i < PublicLevel.usingCreatureNum +1; ++i)
         {
             intPair = parsedMessage[i].Split(',');
             PublicLevel.hostileCreatureList[i] = PublicLevel.hostilePrefab[int.Parse(intPair[0]), int.Parse(intPair[1])];
