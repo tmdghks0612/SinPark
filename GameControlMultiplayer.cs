@@ -76,18 +76,21 @@ public class GameControlMultiplayer : GameControl
         {
             Byte[] buffer = new Byte[bufferSize];
 
-            // save variables to class sending through socket
-            SpawnRequestForm spawnRequestForm = new SpawnRequestForm();
-            spawnRequestForm.SetlaneNum(_laneNum);
-            spawnRequestForm.SetSelectedCreatureType(_selectedCreatureType);
-            spawnRequestForm.SetSide(_side);
+            if(spawnControl.UseMana( spawnControl.GetManaCostMultiplayer(_selectedCreatureType)))
+            {
+                // save variables to class sending through socket
+                SpawnRequestForm spawnRequestForm = new SpawnRequestForm();
+                spawnRequestForm.SetlaneNum(_laneNum);
+                spawnRequestForm.SetSelectedCreatureType(_selectedCreatureType);
+                spawnRequestForm.SetSide(_side);
 
-            // create a JSON string with SpawnRequestForm instance
-            string serverMessage = JsonUtility.ToJson(spawnRequestForm);
-            buffer = Encoding.ASCII.GetBytes(serverMessage);
-            serverControl.GetServerStream().Write(buffer, 0, buffer.Length );
+                // create a JSON string with SpawnRequestForm instance
+                string serverMessage = JsonUtility.ToJson(spawnRequestForm);
+                buffer = Encoding.ASCII.GetBytes(serverMessage);
+                serverControl.GetServerStream().Write(buffer, 0, buffer.Length);
 
-            ClearBuffer(buffer);
+                ClearBuffer(buffer);
+            }
         }
         catch (SocketException socketException)
         {
@@ -102,7 +105,6 @@ public class GameControlMultiplayer : GameControl
     {
         try
         {
-            Debug.Log(jsonString);
             SpawnRequestForm newRequestForm = new SpawnRequestForm();
             newRequestForm = JsonUtility.FromJson<SpawnRequestForm>(jsonString);
             lock (lock_spawn)

@@ -50,7 +50,6 @@ public class StageSelect : MonoBehaviour
 
     private void Awake()
     {
-        Debug.Log("calling CloseSocket");
         serverControl.CloseSocket();
     }
 
@@ -376,20 +375,13 @@ public class StageSelect : MonoBehaviour
             {
                 gameData = gameDataControl.GetComponent<GameData>();
             }
-            Debug.Log("changing music to stageselect!");
             GameObject.Find("BGMControl").GetComponent<BGMControl>().ChangeBGMToMainMenu();
 
         }
-        if(scene.name == "DefaultIngame")
+        if(scene.name == "DefaultIngame" || scene.name == "DefaultIngameMultiplayer")
         {
-            Debug.Log("changing music to Ingame!");
             GameObject.Find("BGMControl").GetComponent<BGMControl>().ChangeBGMToIngame();
         }
-    }
-
-    public void GiveMeMoney()
-    {
-        PublicLevel.SetCorn(1000);
     }
 
 }

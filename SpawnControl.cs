@@ -102,15 +102,6 @@ public class SpawnControl : MonoBehaviour
     // spawn selected craeture in selected lane
     public void SpawnCreatureLaneMultiplayer(int laneNum, GameControl.Sides side, int buttonNum)
     {
-        if (side == GameControl.Sides.Friendly)
-        {
-            // when a friendly creature was spawned
-            if(!UseMana(friendlyCreatureManaCost[buttonNum]))
-            {
-                // when mana is not sufficient to spawn such creature
-                return;
-            }
-        }
         SummonCreature(laneNum, side, buttonNum);
     }
 
@@ -120,7 +111,6 @@ public class SpawnControl : MonoBehaviour
         //spawn an actor through instantiate
         GameObject newObject;
         DefaultCreature newCreature;
-        Debug.Log("Time : " + System.DateTime.Now);
         if (side == GameControl.Sides.Friendly)
         {
             newObject = Instantiate<GameObject>(friendlyCreatureList[buttonNum]);
@@ -156,7 +146,7 @@ public class SpawnControl : MonoBehaviour
     #region mana related functions
 
     // use user mana
-    bool UseMana(int cost)
+    public bool UseMana(int cost)
     {
         lock (lock_mana)
         {
@@ -235,11 +225,6 @@ public class SpawnControl : MonoBehaviour
     // summon friendly and hostile base
     public void SummonBoss()
     {
-        /*for (int i = 0; i < 3; i++)
-        {
-            //create three invisible creatures to take all lane's damage
-            SummonCreature(i, GameControl.Sides.Hostile, 0);
-        }*/
 
         for (int i = 0; i < PublicLevel.usingLaneNum; ++i)
         {
@@ -292,5 +277,9 @@ public class SpawnControl : MonoBehaviour
         }
     }
 
+    public int GetManaCostMultiplayer(int _selectedType)
+    {
+        return friendlyCreatureManaCost[_selectedType];
+    }
 }
 

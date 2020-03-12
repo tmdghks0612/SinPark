@@ -110,7 +110,6 @@ public class GameControl : MonoBehaviour
     IEnumerator CoolDownCount()
     {
         yield return new WaitForSeconds(coolDownTime);
-        Debug.Log("wait");
         spawnCooldownFlag = true;
     }
     //Choose the creature to summon to the lane. Decided data is saved at selectedCreatureType
@@ -162,7 +161,6 @@ public class GameControl : MonoBehaviour
                 aiplayer.AIplayerStop();
                 winPanel.SetActive(true);
                 winPanel.transform.GetChild(0).GetComponent<Text>().text = "Your level is " + PublicLevel.GetPlayerLevel().ToString();
-                Debug.Log("player win!");
             }
             
             for(int i = 0; i < PublicLevel.usingLaneNum; ++i)

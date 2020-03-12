@@ -77,7 +77,6 @@ public static class PublicLevel
     // Used by AIController to know which creature to spawn.
     public static void GetHostileCreatureList(GameObject[] _hostileCreatureList)
     {
-        Debug.Log(_hostileCreatureList.Length + " " + hostileCreatureList.Length + " " + hostileTypeCreatureNum);
         for(int i = 0; i < hostileTypeCreatureNum; ++i)
         {
             _hostileCreatureList[i] = hostileCreatureList[i];
@@ -205,7 +204,7 @@ public static class PublicLevel
         else if(newLevel > playerLevel)
         {
             playerLevel = newLevel;
-            SetCorn(GetCorn() + 30);
+            SetCorn(GetCorn() + 60);
         }
         else
             SetCorn(GetCorn() + 15);

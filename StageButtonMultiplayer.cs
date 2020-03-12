@@ -48,8 +48,12 @@ public class StageButtonMultiplayer : StageButton
         }
         else
         {
-            NetworkErrorPanelactive();
-            serverControl.CloseSocket();
+            if (serverControl.GetCancelFlag())
+            {
+                serverControl.SetCancelFlag(false);
+                NetworkErrorPanelactive();
+                serverControl.CloseSocket();
+            }
         }
         
     }
@@ -59,9 +63,14 @@ public class StageButtonMultiplayer : StageButton
     {
         creatureSentFlag = false;
         creatureReceivedFlag = false;
-        StartCoroutine(serverControl.OpenStream(6.0f));
-        PublicLevel.SetLevel(hostileType, manaAmount, manaRegenTime, creatureSpawnTime, stageLevel, false, null);
-        
+
+        // user interrupt to end connection
+        if (!serverControl.GetCancelFlag())
+        {
+            StartCoroutine(serverControl.OpenStream(6.0f));
+            PublicLevel.SetLevel(hostileType, manaAmount, manaRegenTime, creatureSpawnTime, stageLevel, false, null);
+        }
+
     }
 
     #region network error UI control functions

@@ -13,7 +13,6 @@ public class DefaultBoss : PlayerBase
 
     private void Start()
     {
-        Debug.Log("spawned boss on lane" + laneNum);
         // Find Gamecontrol
         gameControl = GameObject.Find("GameControl").GetComponent<GameControl>();
 
@@ -22,7 +21,6 @@ public class DefaultBoss : PlayerBase
         {
             DefaultBoss _bossGameObject = null;
             GameObject[] bossObjects = GameObject.FindGameObjectsWithTag("Boss");
-            Debug.Log("found bosses : " + bossObjects.Length);
             foreach (GameObject bossObject in bossObjects)
             {
                 if (bossObject.GetComponent<DefaultCreature>().GetLaneNum() == (PublicLevel.usingLaneNum / 2))
@@ -40,7 +38,6 @@ public class DefaultBoss : PlayerBase
 
             for(int i = 0; i < PublicLevel.usingLaneNum; ++i)
             {
-                Debug.Log("my lane is "+bossObjects[i].GetComponent<DefaultCreature>().GetLaneNum());
                 bossObjects[i].tag = "Lane" + i.ToString();
                 bossObjects[i].GetComponent<DefaultBoss>().SetBossObject(_bossGameObject);
                 // set boss healthbar
@@ -63,7 +60,6 @@ public class DefaultBoss : PlayerBase
     protected virtual void PhaseUp()
     {
         phase--;
-        Debug.Log("boss phase is " + phase.ToString());
     }
 
     // bosses detect all lanes
@@ -108,7 +104,6 @@ public class DefaultBoss : PlayerBase
                 PhaseUp();
             }
         }
-        Debug.Log("hostile current health is : " + hostileCurrentHealth.ToString());
     }
 
     // bosses attack attacks all lanes
